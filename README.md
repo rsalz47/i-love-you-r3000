@@ -8,4 +8,4 @@ This project is a software simulator of the MIPS R3000 processor.
 - [An overview of the opcodes available in the MIPS instruction set](https://mathcs.holycross.edu/~csci226/MIPS/summaryHO.pdf), via University of the Holy Cross
 - [Register Field Breakdown](https://cgi.cse.unsw.edu.au/~cs3231/doc/mips.php#instructions), via UNSW Sydney
 - [R3000 Software Reference Manual](https://usermanual.wiki/Document/r3000manual.723589236/view)
-- Support from viewers like you
+- Support from viewers like you.
