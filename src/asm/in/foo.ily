@@ -1,3 +1,3 @@
-AND r0 r1 r2
-ADDI r0 r1 r2
-HCF
+add r0 r1 r2
+addi r0 r1 r2
+hcf
