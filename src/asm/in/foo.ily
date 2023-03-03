@@ -1,0 +1,3 @@
+AND r0 r1 r2
+ADDI r0 r1 r2
+HCF
