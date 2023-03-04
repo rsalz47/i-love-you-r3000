@@ -14,3 +14,6 @@ Because all instructions are stored within a std::map, the corresponding opcodes
 ## Usage
 Within src/asm/, compile `assembler.cpp` with your favorite C++ compiler (g++ was used during development). Once compiled, pass in the names of anything in `asm/in/` that you would like assembled as a command line flag. For instace, to compile the provided samples `asm/in/foo.ily` and `asm/in/bar.ily`, the command would look like
 `./assembler foo.ily bar.ily`. The assembled files will then be output in the `asm/out/` directory.
+Note: If out folder does not exist, make one!
+
+
