@@ -2,8 +2,10 @@
 #include <iostream>
 #include <fstream> 
 #include <vector>
+#include <bitset>
 
 #include "assembler.h"
+#include "../mem/registers.h"
 
 using namespace std;
 
@@ -13,16 +15,37 @@ unsigned long make_r_type(vector<string> tokens) {
     unsigned long opc = RFormat::RTypes[op];
 
     if(op == "add") {
-        return opc; 
+        instruction |= pack_opcode(opc);
+        instruction |= pack_rs(Registers[tokens[1]]);
+        instruction |= pack_rt(Registers[tokens[2]]);
+        instruction |= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction |= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction |= RFormat::pack_funct((unsigned long) 0x0);
+
     }
     else if(op == "sub") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "mul") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "div") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sll") {
         return opc; 
@@ -43,44 +66,99 @@ unsigned long make_r_type(vector<string> tokens) {
         return opc; 
     }
     else if(op == "and") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "or") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "xor") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "nor") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "jr") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
     }
     else if(op == "jral") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
     }
     else if(op == "move") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
     }
     else if(op == "seq") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sge") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sgt") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sle") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "slt") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sne") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= RFormat::pack_shamt((unsigned long) 0x0);
+        instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
+    cout << bitset<32>(instruction) << endl;
     return instruction;
 }
 
@@ -90,71 +168,135 @@ unsigned long make_i_type(vector<string> tokens) {
     unsigned long opc = IFormat::ITypes[op];
 
     if(op == "addi") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "subi") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "muli") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "divi") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "slti") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "andi") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "ori") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "xori") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "sw") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "lw") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "li") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[2]));
     }
     else if(op == "b") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[1]));
     }
     else if(op == "beq") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bne") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgt") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blt") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtz") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltz") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgte") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blte") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtez") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltez") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
+    cout << bitset<32>(instruction) << endl;
     return instruction;
 }
 
@@ -164,10 +306,12 @@ unsigned long make_j_type(vector<string> tokens) {
     unsigned long opc = JFormat::JTypes[op];
 
     if(op == "j") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= JFormat::pack_target_addr(stoul(tokens[1]));
     }
     else if(op == "jal") {
-        return opc; 
+        instruction &= pack_opcode(opc);
+        instruction &= JFormat::pack_target_addr(stoul(tokens[1]));
     }
     else if(op == "nop") {
         return opc; 
@@ -175,6 +319,7 @@ unsigned long make_j_type(vector<string> tokens) {
     else if(op == "hcf") {
         return opc; 
     }
+    cout << bitset<32>(instruction) << endl;
     return instruction;
 }
 
