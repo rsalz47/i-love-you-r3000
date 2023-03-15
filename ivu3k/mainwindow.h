@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +22,11 @@ public:
 private slots:
     void on_loadAssembButton_clicked();
 
+    void on_quicLoadButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    void loadAssembly(QString filename);
 };
 #endif // MAINWINDOW_H
