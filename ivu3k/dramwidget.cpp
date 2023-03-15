@@ -6,7 +6,7 @@ DRAMWidget::DRAMWidget(QWidget *parent):
 {
     setColumnCount(2);
     QStringList headers;
-    headers << "address" << "data";
+    headers << "Address" << "Data";
     setHorizontalHeaderLabels(headers);
     horizontalHeader()->setStretchLastSection(true);
 }

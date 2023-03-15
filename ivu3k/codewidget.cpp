@@ -6,7 +6,7 @@ CodeWidget::CodeWidget(QWidget *parent) :
 {
     setColumnCount(3);
     QStringList headers;
-    headers << "address" << "assembly" << "binary";
+    headers << "Address" << "Assembly" << "Binary";
     setHorizontalHeaderLabels(headers);
     //horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     horizontalHeader()->setStretchLastSection(true);
@@ -19,12 +19,12 @@ CodeWidget::CodeWidget(QWidget *parent) :
         }
         QString text = horizontalHeaderItem(logicalIndex)->text();
         bool binary = true;
-        if (QString::compare(text, "binary", Qt::CaseInsensitive)) {
+        if (QString::compare(text, "Binary", Qt::CaseInsensitive)) {
             //header is "hex"
             binary = false;
-            horizontalHeaderItem(2)->setText("binary");
+            horizontalHeaderItem(2)->setText("Binary");
         } else {
-            horizontalHeaderItem(2)->setText("hexadecimal");
+            horizontalHeaderItem(2)->setText("Hexadecimal");
         }
         for (int i = 0; i < rowCount(); i++) {
             QString current = item(i, 2)->text();

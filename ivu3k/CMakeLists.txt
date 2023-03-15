@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
         codewidget.cpp
         dramwidget.h
         dramwidget.cpp
+        cachewidget.h
+        cachewidget.cpp
         asm/assembler.h
         asm/assembler.cpp
         mem/registers.h
