@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         mainwindow.ui
         codewidget.h
         codewidget.cpp
+        dramwidget.h
+        dramwidget.cpp
         asm/assembler.h
         asm/assembler.cpp
         mem/registers.h

@@ -5,7 +5,7 @@ RegistersWidget::RegistersWidget(QWidget *parent):
 {
     setColumnCount(2);
     QStringList headers;
-    headers << "register" << "value";
+    headers << "register" << "data";
     setHorizontalHeaderLabels(headers);
     //horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     horizontalHeader()->setStretchLastSection(true);

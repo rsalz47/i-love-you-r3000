@@ -47,13 +47,23 @@
      </item>
     </layout>
    </widget>
-   <widget class="RegistersWidget" name="widget" native="true">
+   <widget class="RegistersWidget" name="registersPanel" native="true">
     <property name="geometry">
      <rect>
       <x>790</x>
       <y>30</y>
       <width>521</width>
       <height>991</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="DRAMWidget" name="DRAMPanel" native="true">
+    <property name="geometry">
+     <rect>
+      <x>1350</x>
+      <y>30</y>
+      <width>341</width>
+      <height>451</height>
      </rect>
     </property>
    </widget>
@@ -64,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>2242</width>
-     <height>28</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>
@@ -81,6 +91,12 @@
    <class>RegistersWidget</class>
    <extends>QWidget</extends>
    <header>registerswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DRAMWidget</class>
+   <extends>QWidget</extends>
+   <header>dramwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

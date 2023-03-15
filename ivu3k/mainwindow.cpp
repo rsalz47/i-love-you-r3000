@@ -33,6 +33,7 @@ void MainWindow::on_loadAssembButton_clicked()
 
    ui->codePanel->setRowCount(0);
    QTextStream in(&file);
+   unsigned long address = 0;
 
    while (!in.atEnd()) {
        QString line = in.readLine();
@@ -41,9 +42,12 @@ void MainWindow::on_loadAssembButton_clicked()
        unsigned long binary = build_instruction(line_string);
        QTableWidgetItem *assemInstruction = new QTableWidgetItem(line);
        QTableWidgetItem *binaryInstruction = new QTableWidgetItem(QString("0x%1").arg(binary,8,16,QLatin1Char('0')));
+       QTableWidgetItem *addressItem = new QTableWidgetItem(QString("0x%1").arg(address,3,16,QLatin1Char('0')));
        ui->codePanel->setRowCount(ui->codePanel->rowCount() + 1);
        ui->codePanel->setItem(ui->codePanel->rowCount() - 1, 1, assemInstruction);
        ui->codePanel->setItem(ui->codePanel->rowCount() - 1, 2, binaryInstruction);
+       ui->codePanel->setItem(ui->codePanel->rowCount() - 1, 0, addressItem);
+       address += 4;
    }
    file.close();
 }
