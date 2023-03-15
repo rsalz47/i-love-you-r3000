@@ -61,3 +61,4 @@ void write_to_memory(uint32_t address, int32_t value)
     memory[(address / 4) % 256][address % 4] = value;
     return;
 }
+

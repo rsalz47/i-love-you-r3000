@@ -13,3 +13,8 @@ std::map<std::string, unsigned long> Registers {
     {"r6", (unsigned long) 0b110},
     {"r7", (unsigned long) 0b111}
 };
+
+
+
+// write to register()
+// read from register()
