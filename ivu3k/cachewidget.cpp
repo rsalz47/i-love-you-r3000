@@ -6,7 +6,7 @@ CacheWidget::CacheWidget(QWidget *parent) :
 {
     setColumnCount(5); //for now put the data of a line in on column, may separate them by adding offset columns
     QStringList headers;
-    headers << "Tag" << "Index" << "Data" << "Valid" << "Data";
+    headers << "Tag" << "Index" << "Dirty" << "Valid" << "Data";
     setHorizontalHeaderLabels(headers);
     horizontalHeader()->setStretchLastSection(true);
 
