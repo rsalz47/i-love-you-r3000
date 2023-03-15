@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1474</width>
-    <height>1104</height>
+    <width>2242</width>
+    <height>1428</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,16 +43,19 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="loadHexButton">
-         <property name="text">
-          <string>Load Hexadecimal</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="RegistersWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>30</y>
+      <width>521</width>
+      <height>991</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -60,7 +63,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1474</width>
+     <width>2242</width>
      <height>28</height>
     </rect>
    </property>
@@ -72,6 +75,12 @@
    <class>CodeWidget</class>
    <extends>QWidget</extends>
    <header>codewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RegistersWidget</class>
+   <extends>QWidget</extends>
+   <header>registerswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
