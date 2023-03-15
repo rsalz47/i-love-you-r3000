@@ -3,11 +3,18 @@
 #include <string>
 
 // 2^26 total mem bits / 2^5 int32_t bits gives us 2^21 = 2097152 bits -> indexes of memory / 4 (to exploit spacial locality) = 2^19 = 524288
-// Signed int32_t type -> signed arithmetic
+// Signed int32_t type -> signed arithmetic <---- RS: no need, we can cast to signed if need be, starting w/ signed can introduce errors
 
-int32_t registers[32];
+uint32_t registers[32];
 
-int32_t memory[524288][4];
+uint32_t memory[524288][4]; // this means each cache line is 128 bits
+
+/*
+* RS: I don't think these register macros will come in handy, unfortunately
+* only know what register we're working with after we parse it out of the instruction
+* we won't be specifying any registers ourselves
+* (also have concerns about reg0/reg1/... being used in code looking too much like asm)
+*/
 
 // method to access registers. accessing the value in registers is as easy as saying val = reg0.
 #define reg0  registers[0b00000]
