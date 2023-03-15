@@ -2,7 +2,9 @@
 Follow the instructions from this [link](https://youtu.be/nscgFv4l53w) to install Qt 6 on Linux, Mac or Windows.
 
 # Build and Run
-This project is currently built using CMake. Thus Cmake along with Qt must be installed to build the project. For linux distros, may need to install OpenGL as well.
+This project can definitely be built and run using `Qt Creator`.
+
+One can also build the project using command line. This project is currently built using `CMake`. Thus `Cmake` along with `Qt` must be installed to build the project. For linux distros, may need to install `OpenGL` as well.
 
 ## Linux 
 
@@ -22,7 +24,7 @@ Note: `path_to_qt` is the path to your Qt installation directory.
 ```
 
 ## Windows
-To build on Windows, we may need some CMake generator. I am using Visual Studio 16 2019, one may use other CMAKE generators, e.g. Ninja, etc.
+To build on Windows, we may need some CMake generator. I am using `Visual Studio 16 2019`, one may use other CMake generators, e.g. `Ninja`, etc.
 
 ### Build
 The `MSVC 2019` component of Qt needs to be added in order to build using VS2019. Use the following commands to generate `.sln` file.
@@ -49,5 +51,11 @@ One may add the path of `MSBuild` and `"path_to_qt\Qt\6.4.2\msvc2019_64\bin"` to
 [Qt documentation](https://doc.qt.io/qt-6/cmake-build-on-cmdline.html)
 
 [A Youtube video](https://www.youtube.com/watch?v=HRGZDnNMc5U&t=360s)
+
+# Log
+## 3/14/2023
+Currently the assembler could be run using GUI. An assembly file can be loaded. While loading, the assembly will be complied to instructions in hex. Both assembly and hex instructions will appear in the code panel. Will add the addresses of the instructions later.
+
+Added a basic register panel, which records the value each register currently holds.
 
 
