@@ -1,5 +1,5 @@
 src/asm/*.out
 src/asm/out/*
 *~
-ivu3k/build
 ivu3k/*.ui.autosave
+*build*

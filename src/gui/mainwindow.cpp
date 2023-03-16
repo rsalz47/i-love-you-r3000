@@ -2,7 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QFileDialog>
 #include <QFile>
-#include "asm/assembler.h"
+#include "../asm/assembler.h"
 #include <string>
 #include <iostream>
 
