@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1116</width>
+    <width>1049</width>
     <height>707</height>
    </rect>
   </property>
@@ -14,8 +14,8 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" rowminimumheight="50,150">
-    <item row="0" column="0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+    <item row="0" column="1">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="CodeWidget" name="codePanel" native="true">
@@ -47,7 +47,10 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item row="0" column="2">
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+    <item row="1" column="0" colspan="3">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -170,7 +173,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1116</width>
+     <width>1049</width>
      <height>17</height>
     </rect>
    </property>
