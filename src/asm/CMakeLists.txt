@@ -1,11 +1,17 @@
 file(GLOB LIB_SOURCES *.cpp)
 file(GLOB LIB_HEADERS *.h)
-file(GLOB LIB_UI *.ui)
 
-add_library(asm_lib STATIC ${LIB_SOURCES} ${LIB_HEADERS} ${LIB_UI})
-target_include_directories (asm_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+option(GUI "build with GUI" ON)
 
-      
-# target_link_libraries(${LIB_NAME} PUBLIC Qt6::Widgets)
-target_include_directories(asm_lib PRIVATE ${CMAKE_SOURCE_DIR}/src)
-# target_link_libraries(ivu3k_lib PUBLIC asm_lib)
+if(GUI)
+    add_library(asm_lib STATIC ${LIB_SOURCES} ${LIB_HEADERS})
+    target_include_directories (asm_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+    target_include_directories(asm_lib PRIVATE ${CMAKE_SOURCE_DIR}/src)
+else()
+    cmake_minimum_required(VERSION 3.13)
+    set(CMAKE_CXX_STANDARD 17)
+    project(asm)
+    add_executable(asm ${LIB_SOURCES} ${LIB_HEADERS})
+    target_include_directories (asm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
