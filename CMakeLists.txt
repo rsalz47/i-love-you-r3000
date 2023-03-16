@@ -16,24 +16,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-#set(PROJECT_SOURCES
-#        main.cpp
-#        registerswidget.h
-#        registerswidget.cpp
-#        mainwindow.cpp
-#        mainwindow.h
-#        mainwindow.ui
-#        codewidget.h
-#        codewidget.cpp
-#        dramwidget.h
-#        dramwidget.cpp
-#        cachewidget.h
-#        cachewidget.cpp
-#        asm/assembler.h
-#        asm/assembler.cpp
-#        mem/registers.h
-#)
-
 ###########################
 # Library setup
 ###########################
@@ -68,7 +50,7 @@ endif()
 target_link_libraries(ivu3k PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Link project library
-target_link_libraries(ivu3k PRIVATE asm_lib gui_lib)
+target_link_libraries(ivu3k PRIVATE gui_lib asm_lib)
 
 set_target_properties(ivu3k PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

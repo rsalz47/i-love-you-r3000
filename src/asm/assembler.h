@@ -115,6 +115,7 @@ inline unsigned long pack_rs(unsigned long rs) {
 inline unsigned long pack_rt(unsigned long rt) {
     return (rt & 0x1F) << 16;
 }
+
 unsigned long make_r_type(std::vector<std::string> tokens);
 unsigned long make_j_type(std::vector<std::string> tokens);
 unsigned long make_i_type(std::vector<std::string> tokens);
