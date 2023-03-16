@@ -1,64 +1,62 @@
-#include <iostream>
-#include <map>
-#include <string>
-
-// 2^26 total mem bits / 2^5 int32_t bits gives us 2^21 = 2097152 bits -> indexes of memory / 4 (to exploit spacial locality) = 2^19 = 524288
-// Signed int32_t type -> signed arithmetic <---- RS: no need, we can cast to signed if need be, starting w/ signed can introduce errors
-
-uint32_t registers[32];
-
-uint32_t memory[524288][4]; // this means each cache line is 128 bits
-
-/*
-* RS: I don't think these register macros will come in handy, unfortunately
-* only know what register we're working with after we parse it out of the instruction
-* we won't be specifying any registers ourselves
-* (also have concerns about reg0/reg1/... being used in code looking too much like asm)
-*/
-
-// method to access registers. accessing the value in registers is as easy as saying val = reg0.
-#define reg0  registers[0b00000]
-#define reg1  registers[1]
-#define reg2  registers[2]
-#define reg3  registers[3] 
-#define reg4  registers[4]
-#define reg5  registers[5]
-#define reg6  registers[6]
-#define reg7  registers[0b00111] 
-#define reg8  registers[8]
-#define reg9  registers[9]
-#define reg10 registers[10]
-#define reg11 registers[11] 
-#define reg12 registers[12]
-#define reg13 registers[13]
-#define reg14 registers[14]
-#define reg15 registers[15] 
-#define reg16 registers[16]
-#define reg17 registers[17]
-#define reg18 registers[18]
-#define reg19 registers[19] 
-#define reg20 registers[20]
-#define reg21 registers[21]
-#define reg22 registers[22]
-#define reg23 registers[23] 
-#define reg24 registers[24]
-#define reg25 registers[25]
-#define reg26 registers[26]
-#define reg27 registers[27] 
-#define reg28 registers[28]
-#define reg29 registers[29]
-#define reg30 registers[30]
-#define reg31 registers[31]
-
-int32_t read_from_memory(uint32_t address)
+// words and lines values taken from slide deck 7 example of memory calculations.
+#define WORDS_PER_LINE 4
+#define NUM_LINES 32
+class Memory
 {
-    int32_t ret_val = memory[(address / 4) % 256][address % 4];
-    return ret_val;
-}
+public:
+    // spent an hour debugging this. using memory[524288][4] is too large for the code stack. using defaults from slides
+    uint32_t memory[NUM_LINES][WORDS_PER_LINE];
 
-void write_to_memory(uint32_t address, int32_t value)
-{
-    memory[(address / 4) % 256][address % 4] = value;
-    return;
-}
-
+    // return value stored memory
+    uint32_t fetch(uint32_t addr, int *delay_int)
+    {
+        // with this solution, any pipeline that calls fetch, will be waiting for fetch to return and does not need to call fetch every single time as a spin lock
+        while (*delay_int != 0)
+        {
+            (*delay_int) = (*delay_int) - 1;
+        }
+        // after waiting the appropriate amount of time,
+        // fetch from the memory array at ADDR
+        uint32_t ret_val = this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)][addr % WORDS_PER_LINE];
+        return ret_val;
+    }
+    // stores data in memory[addr]
+    uint32_t store(uint32_t addr, uint32_t data, int *delay_int)
+    {
+        while (*delay_int != 0)
+        {
+            (*delay_int) = (*delay_int) - 1;
+        }
+        // after waiting the appropriate amount of time,
+        // store DATA in the memory array at ADDR
+        this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)][addr % WORDS_PER_LINE] = data;
+        return 1;
+    }
+    // assign all memory locations to NULL (essentially 0s) 
+    void reset()
+    {
+        for (int i = 0; i < NUM_LINES; i++)
+        {
+            for (int j = 0; j < WORDS_PER_LINE; j++)
+            {
+                // uint32_t(NULL) = 0 as it writes is as 32bits of 0 I think
+                this->memory[i][j] = uint32_t(NULL);
+            }
+        }
+    }
+    // prints out a formatted memory status in the terminal 
+    void cur_status()
+    {
+        {
+            for (int i = 0; i < NUM_LINES; i++)
+            {
+                for (int j = 0; j < WORDS_PER_LINE; j++)
+                {
+                    printf("%15d | ",this->memory[i][j]);
+                }
+                printf("\n--------------- | --------------- | --------------- | --------------- | \n");
+                
+            }
+        }
+    }
+};
