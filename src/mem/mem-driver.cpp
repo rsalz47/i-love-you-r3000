@@ -6,11 +6,20 @@
 #include <unistd.h>
 #include <iostream>
 
+#include "cache.h"
 #include "memory.h"
 #define MEM_DELAY 100
-using namespace std;
+using std::cout;
+using std::endl;
+//or put std:: before each std thing
+
+
 
 int main() {
+    Cache l1;
+    l1.cur_status();
+    l1.reset();
+    l1.cur_status();
     Memory main_mem;
     volatile int clock;
 
