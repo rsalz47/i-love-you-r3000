@@ -1,29 +1,27 @@
-
-// RAM address is currently 26 bits
-// we need atleast 4 words in a line for our cache
-struct cache_access {
-    int sucess;
-    uint32_t data;
-    uint32_t addr;
-    int delay_timer;
-};
-
 class Cache {
+   
    public:
-    // current plan is to do 3 tag + 4 index + 3 offset bits + dirty + valid
+    // in_use
+    // delay_int
+    // Memroy * to main_mem
+    // 4 tag + 4 index + 2 offset bits + dirty + valid
     uint32_t cache[16][8];
 
-    int load(cache_access cache_req) {
+    int load(uint32_t addr) {
         // first extracts tag, index and offset bits into variables
-        //  index essentially becomes which row of the cache we need to access
-        //  tag is verifying that it is the correct row
+        // index essentially becomes which row of the cache we need to access
+        // tag is verifying that it is the correct row
         // offset is which word to pick from the line.
 
         // extract index
-        // go to that index and check valid bit, if not valid load line from
-        // memory if valid ok, compare tag bit. if tags do not match load line
-        // from memory, set valid = 1 if tags match, return value from word
+        // go to that index and check valid bit, if not valid load line from //
+        // cache miss here memory if valid ok, compare tag bit. if tags do not
+        // match load line from memory, set valid = 1 if tags match, return
+        // value from word // cache hit
+        return -1;
     }
+
+    int store(uint32_t addr, uint32_t data) { return -1;}
 
     // prints out the current cache status
     void cur_status() {
@@ -54,23 +52,3 @@ class Cache {
     }
 };
 
-// TODO: later
-// class Cache {
-//    public:
-//        Memory* next_level_down; // Issue: what if next level down is another
-//        cache? Ask prof, think cache and mem are different enough that they
-//        can't be same int* cache; //should be 2D
-//
-//        Cache(cache_size) {
-//          cache = malloc(cache_size);
-//        }
-//
-//        int load_from_cache(addr, int* delay int) {
-//            //check if it is currently in the cache, i.e. the array class
-//            member
-//            //else, load from next level down
-//            return -1;
-//        }
-//
-//
-//}

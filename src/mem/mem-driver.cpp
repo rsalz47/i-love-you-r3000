@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+
 #include <iostream>
 
 #include "cache.h"
@@ -11,48 +12,82 @@
 #define MEM_DELAY 100
 using std::cout;
 using std::endl;
-//or put std:: before each std thing
+// or put std:: before each std thing
 
-
-
+// if fetch is false, then it is a store instruction
+struct Instruction {
+    bool fetch;
+    uint32_t addr;
+    uint32_t data;
+    int caller_id;  // possibly the PC value?
+    uint32_t* result = nullptr;
+};
 int main() {
-    Cache l1;
-    l1.cur_status();
-    l1.reset();
-    l1.cur_status();
     Memory main_mem;
-    volatile int clock;
+    volatile int clock = 0;
 
-    mem_access store_req1 = {
-        0,              // sucess
-        uint32_t(777),  // data
-        6,              // addr
-        10              // delay int
-    };
+    Instruction a;
+    a.fetch = false;
+    a.addr = 6;
+    a.caller_id = 1;
+    a.data = 42;
 
-    mem_access fetch_req1 = {
-        0,               // sucess
-        uint32_t(NULL),  // data
-        6,               // addr
-        5                // delay int
-    };
+    Instruction b;
+    b.fetch = true;
+    b.addr = 6;
+    b.caller_id = 2;
+    b.data = uint32_t(NULL);
 
-    //TODO switch to while(clock++) when we need to let the clock run to infinity/ EOF
+    Instruction c;
+    c.fetch = false;
+    c.addr = 5;
+    c.caller_id = 3;
+    c.data = 22;
 
-    for (clock = 0; clock < 200; clock++) {
-        // main_mem.store is called in every iteration of the for loop until it
-        // returns 1
-        if (main_mem.store(&store_req1) > 0) {
-            cout << store_req1.sucess << endl;
-            break;  // stops ticking of clock as the access is finished here
+    Instruction instruction_set[3]; // can read instructions from file into this array
+    instruction_set[0] = a;
+    instruction_set[1] = b;
+    instruction_set[2] = c;
+
+    uint32_t* ret_val;
+    for (Instruction inst : instruction_set) {
+        while (true) {
+            if (inst.fetch == false) {
+                inst.result =
+                    main_mem.store(inst.addr, inst.data, inst.caller_id);
+            }
+            if (inst.fetch == true) {
+                inst.result = main_mem.fetch(inst.addr, inst.caller_id);
+            }
+
+            clock++;
+            if (inst.result != nullptr) {
+                // delay default is currently 5, but we get an off by one error because 5,4,3,2,1,0 is 6 values...
+                cout << inst.caller_id << " finished at " << clock << endl;
+                break;
+            }
         }
     }
-    for (;clock < 200; clock++) {
-        // main_mem.fetch is called in every iteration of the for loop until it
-        // returns 1
-        if (main_mem.fetch(&fetch_req1) > 0) {
-            cout << fetch_req1.data << endl;
-            break;  // stops ticking of clock as the access is finished here
-        }
-    }
+
+
+
+    // below is code that highlights parallel memory access requests
+
+    // uint32_t* data_addr = nullptr;
+    // uint32_t* data_addr1 = nullptr;
+    // uint32_t* temp = nullptr;
+    // for (; clock < 200; clock++) {
+    //     main_mem.store(1, 777777, 1);
+    //     if (temp != nullptr) {
+    //         data_addr = temp;
+    //         break;
+    //     }
+    //     temp = main_mem.fetch(1, 2);
+    //     if (temp != nullptr) {
+    //         data_addr1 = temp;
+    //         break;
+    //     }
+    // }
+    // cout << clock << endl;
+    // cout << *data_addr1 << endl;
 }

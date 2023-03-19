@@ -2,48 +2,74 @@
 // calculations.
 #define WORDS_PER_LINE 4
 #define NUM_LINES 32
+#define DEFAULT_DELAY 5
 
-struct mem_access {
-    int sucess;
-    uint32_t data;
-    uint32_t addr;
-    int delay_timer;
-};
+// remove mem_access
+// add delay_int and in_use to memory class
+// rework functions to work with above changes
 
 class Memory {
    public:
+    int delay_timer = DEFAULT_DELAY;
+    // will be polled by function calling load or store
+    bool in_use = false;
+    // pipeline*
+    int cur_caller_id = -1;  // this is to return to the correct person to be
+                         // replaced with pipeline stage
+
     // spent an hour debugging this. using memory[524288][4] is too large for
     // the code stack. using defaults from slides
     uint32_t memory[NUM_LINES][WORDS_PER_LINE];
 
-    // return value stored memory
-    int fetch(mem_access *fetch_req) {
-        if (fetch_req->delay_timer != 0) {
-            fetch_req->delay_timer -= 1;
-            return -1;
+    uint32_t* fetch(uint32_t addr, int whois_calling) {
+        if (this->in_use == false) {
+            this->in_use = true;
+            cur_caller_id = whois_calling; // this ensures that each fetch is unique to a single caller
         }
-        // after waiting the appropriate amount of time,
-        // fetch from the memory array at ADDR
-        fetch_req->data = this->memory[(fetch_req->addr / WORDS_PER_LINE) %
-                                       (WORDS_PER_LINE * NUM_LINES)]
-                                      [fetch_req->addr % WORDS_PER_LINE];
-        fetch_req->sucess = 1;
-        return 1;
-    }
-    // stores data in memory[addr]
-    int store(mem_access *store_req) {
-        if (store_req->delay_timer != 0) {
-            store_req->delay_timer -= 1;
-            return -1;
+        if (!(this->in_use == true && whois_calling == cur_caller_id)) {
+            return nullptr; // says wait to other callers other than caller_id
         }
-        // after waiting the appropriate amount of time,
-        // store DATA in the memory array at ADDR
-        this->memory[(store_req->addr / WORDS_PER_LINE) %
-                     (WORDS_PER_LINE * NUM_LINES)]
-                    [store_req->addr % WORDS_PER_LINE] = store_req->data;
-        store_req->sucess = 1;
-        return 1;
+        if (this->in_use == true && whois_calling == cur_caller_id &&
+            this->delay_timer > 0) {
+            this->delay_timer -= 1; //decrement for current caller
+            return nullptr;
+        }
+        // once you reach here in the code, delay_timer should be 0, so we reset
+        // memory and free it for other calls
+        this->delay_timer = DEFAULT_DELAY;
+        this->in_use = false;
+        cur_caller_id = -1; //reset caller id
+        return &(
+            this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)]
+                        [addr % WORDS_PER_LINE]);
     }
+    uint32_t* store(uint32_t addr, uint32_t data, int whois_calling) {
+        if (this->in_use == false) {
+            this->in_use = true;
+            cur_caller_id = whois_calling;
+        }
+        if (!(this->in_use == true && whois_calling == cur_caller_id)) {
+            return nullptr;
+        }
+        if (this->in_use == true && whois_calling == cur_caller_id &&
+            this->delay_timer > 0) {
+            this->delay_timer -= 1;
+            return nullptr;
+        }
+        // once you reach reset memory as delay_timer = 0;
+        this->delay_timer = DEFAULT_DELAY;
+        this->in_use = false;
+        cur_caller_id = -1;
+
+        // assigning data to address
+        this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)]
+                    [addr % WORDS_PER_LINE] = data;
+
+        return &(
+            this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)]
+                        [addr % WORDS_PER_LINE]);
+    }
+
     // assign all memory locations to NULL (essentially 0s)
     void reset() {
         for (int i = 0; i < NUM_LINES; i++) {
@@ -53,6 +79,7 @@ class Memory {
             }
         }
     }
+
     // prints out a formatted memory status in the terminal
     void cur_status() {
         {
