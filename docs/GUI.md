@@ -34,7 +34,7 @@ One can also build the project using command line. This project is currently bui
 
 ### Build
 ```
-cd ivu3k
+# in i-love-you-r3000 root directory
 mkdir build
 cd build
 cmake -DCMAKE_PREFIX_PATH="path_to_qt/Qt/6.4.2/gcc_64/lib/cmake" ..
@@ -53,7 +53,7 @@ To build on Windows, we may need some CMake generator. I am using `Visual Studio
 ### Build
 The `MSVC 2019` component of Qt needs to be added in order to build using VS2019. Use the following commands to generate `.sln` file.
 ```
-cd ivu3k
+# in i-love-you-r3000 root directory
 mkdir build
 cd build
 cmake -S .. -B . -DCMAKE_PREFIX_PATH="path_to_qt\Qt\6.4.2\msvc2019_64"
