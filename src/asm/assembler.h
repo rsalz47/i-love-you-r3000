@@ -1,11 +1,15 @@
+#ifndef ASSEMBLER_H
+#define ASSEMBLER_H
+
 #include <map>
 #include <string>
+#include <vector>
 
 enum InstructionFormat {R, I, J};
 
 
 namespace RFormat {
-    std::map<std::string, unsigned long> RTypes {
+    inline std::map<std::string, unsigned long> RTypes {
         {"add",  0b000000},
         {"sub",  0b000001},
         {"mul",  0b000010},
@@ -31,21 +35,21 @@ namespace RFormat {
         {"sne",  0b010110}
     };
 
-    unsigned long pack_rd(unsigned long rd) {
+    inline unsigned long pack_rd(unsigned long rd) {
         return (rd & 0x1F) << 11;
     }
 
-    unsigned long pack_shamt(unsigned long shamt) {
+    inline unsigned long pack_shamt(unsigned long shamt) {
         return (shamt & 0x1F) << 6;
     }
 
-    unsigned long pack_funct(unsigned long funct) {
+    inline unsigned long pack_funct(unsigned long funct) {
         return funct & 0x3F;
     }
 }
 
-namespace IFormat {
-    std::map<std::string, unsigned long> ITypes {
+inline namespace IFormat {
+    inline std::map<std::string, unsigned long> ITypes {
         {"addi",  0b010111},
         {"subi",  0b011000},
         {"muli",  0b011001},
@@ -72,25 +76,25 @@ namespace IFormat {
         {"bltez", 0b101110}
     };
 
-    unsigned long pack_addr_imm(unsigned long addr_or_imm) {
+    inline unsigned long pack_addr_imm(unsigned long addr_or_imm) {
         return addr_or_imm & 0xFF;
     }
 }
 
-namespace JFormat {
-    std::map<std::string, unsigned long> JTypes {
+inline namespace JFormat {
+    inline std::map<std::string, unsigned long> JTypes {
         {"j",   0b101111},
         {"jal", 0b110000},
         {"nop", 0b110001},
         {"hcf", 0b111111}
     };
 
-    unsigned long pack_target_addr(unsigned long target_addr) {
+    inline unsigned long pack_target_addr(unsigned long target_addr) {
         return target_addr & 0x3FFFFFF;
     }
 }
 
-int format_of(std::string op) {
+inline int format_of(std::string op) {
     if(RFormat::RTypes.count(op))
         return R;
     if(IFormat::ITypes.count(op))
@@ -100,14 +104,21 @@ int format_of(std::string op) {
     return -1;
 }
 
-unsigned long pack_opcode(unsigned long op) {
+inline unsigned long pack_opcode(unsigned long op) {
     return (op & 0x3F) << 26;
 }
 
-unsigned long pack_rs(unsigned long rs) {
+inline unsigned long pack_rs(unsigned long rs) {
     return (rs & 0x1F) << 21;
 }
 
-unsigned long pack_rt(unsigned long rt) {
+inline unsigned long pack_rt(unsigned long rt) {
     return (rt & 0x1F) << 16;
 }
+
+unsigned long make_r_type(std::vector<std::string> tokens);
+unsigned long make_j_type(std::vector<std::string> tokens);
+unsigned long make_i_type(std::vector<std::string> tokens);
+unsigned long build_instruction(std::string instr);
+
+#endif
