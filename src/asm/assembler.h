@@ -120,5 +120,6 @@ unsigned long make_r_type(std::vector<std::string> tokens);
 unsigned long make_j_type(std::vector<std::string> tokens);
 unsigned long make_i_type(std::vector<std::string> tokens);
 unsigned long build_instruction(std::string instr);
+void assemble(std::string file);
 
 #endif
