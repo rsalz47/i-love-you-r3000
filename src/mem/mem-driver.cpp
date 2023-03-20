@@ -9,7 +9,6 @@
 
 #include "cache.h"
 #include "memory.h"
-#define MEM_DELAY 100
 using std::cout;
 using std::endl;
 // or put std:: before each std thing
@@ -25,6 +24,10 @@ struct Instruction {
 int main() {
     Memory main_mem;
     volatile int clock = 0;
+
+    Cache main_cache;
+    main_cache.reset();
+    main_cache.cur_status();
 
     Instruction a;
     a.fetch = false;
@@ -44,7 +47,8 @@ int main() {
     c.caller_id = 3;
     c.data = 22;
 
-    Instruction instruction_set[3]; // can read instructions from file into this array
+    Instruction
+        instruction_set[3];  // can read instructions from file into this array
     instruction_set[0] = a;
     instruction_set[1] = b;
     instruction_set[2] = c;
@@ -60,16 +64,13 @@ int main() {
                 inst.result = main_mem.fetch(inst.addr, inst.caller_id);
             }
 
-            clock++;
             if (inst.result != nullptr) {
-                // delay default is currently 5, but we get an off by one error because 5,4,3,2,1,0 is 6 values...
                 cout << inst.caller_id << " finished at " << clock << endl;
                 break;
             }
+            clock++;
         }
     }
-
-
 
     // below is code that highlights parallel memory access requests
 
