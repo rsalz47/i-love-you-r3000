@@ -7,8 +7,8 @@
 
 #include <iostream>
 
-#include "cache.h"
-#include "memory.h"
+#include "cache.cpp"
+#include "memory.cpp"
 using std::cout;
 using std::endl;
 // or put std:: before each std thing
@@ -21,6 +21,7 @@ struct Instruction {
     int caller_id;  // possibly the PC value?
     uint32_t* result = nullptr;
 };
+
 int main() {
     Memory main_mem;
     volatile int clock = 0;
@@ -47,8 +48,7 @@ int main() {
     c.caller_id = 3;
     c.data = 22;
 
-    Instruction
-        instruction_set[3];  // can read instructions from file into this array
+    Instruction instruction_set[3];  // can read instructions from file into this array
     instruction_set[0] = a;
     instruction_set[1] = b;
     instruction_set[2] = c;
