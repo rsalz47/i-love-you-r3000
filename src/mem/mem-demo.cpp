@@ -14,12 +14,10 @@ void print_options(int clock_cycle, int dram_delay, int cache_delay) {
   std::cout << "| 4. Enter a read command (R addr stage)                 |" << std::endl;
   std::cout << "| 5. Enter a write command (W value addr stage)          |" << std::endl;
   std::cout << "| 6. Enter a view command (V level line)                 |" << std::endl;
-  std::cout << "| 7. Display DRAM                                        |" <<
-std::endl;
+  std::cout << "| 7. Display DRAM                                        |" << std::endl;
   std::cout << "| 8. Display Cache                                       |" << std::endl;
   std::cout << "| 9. Reset Cache                                         |" << std::endl;
-  std::cout << "| A. Reset clock cycle count                             |"
-<< std::endl;
+  std::cout << "| A. Reset clock cycle count                             |" << std::endl;
   std::cout << "| B. Set DRAM delay                                      |" << std::endl;
   std::cout << "| C. Set Cache delay                                     |" << std::endl;
   std::cout << "| F. Quit the program                                    |" << std::endl;
