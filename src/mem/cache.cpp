@@ -22,7 +22,7 @@ class Cache {
         // on cache miss, we need to:
         // fetch the line we want from memory
         uint32_t* fetched_line =
-            this->main_mem->fetch(addr / WORDS_PER_LINE, whois_calling);
+            this->main_mem->fetch_cache_ver(addr, whois_calling);
         if (fetched_line == nullptr) {
             return 0;
         }

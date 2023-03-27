@@ -39,19 +39,19 @@ int main() {
 
     Instruction c;
     c.fetch = false;
-    c.addr = 6;
+    c.addr = 33;
     c.caller_id = 3;
     c.data = 77;
 
     Instruction d;
     d.fetch = true;
-    d.addr = 6;
+    d.addr = 33;
     d.caller_id = 4;
     d.data = 0;
 
     Instruction e;
     e.fetch = true;
-    e.addr = 6;
+    e.addr = 33;
     e.caller_id = 5;
     e.data = 0;
 
@@ -65,6 +65,8 @@ int main() {
     uint32_t* ret_val;
 
     for (Instruction inst : instruction_set) {
+        main_cache.cur_status();
+        cout << "\n" << endl;
         while (true) {
             if (inst.fetch == false) {
                 inst.result =
