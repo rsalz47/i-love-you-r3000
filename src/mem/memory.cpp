@@ -24,12 +24,19 @@ class Memory {
 
     // to access the rest of the words, you simply add the word offset to the
     // returned address for example,
-    //    cout << *(main_mem.fetch_cache_ver(addr 9)<this will return memory[2][0] /
-    //    addr 8> + 1<adding 1 to addr 8 will give addr 9 >) << endl;
+    //    cout << *(main_mem.fetch_cache_ver(addr 9)<this will return
+    //    memory[2][0] / addr 8> + 1<adding 1 to addr 8 will give addr 9 >) <<
+    //    endl;
     uint32_t* fetch_cache_ver(uint32_t addr) {
         return &(this->memory[(addr / WORDS_PER_LINE)][0]);
     }
-
+    uint32_t* store_cache_ver(uint32_t addr, uint32_t data) {
+        // assigning data to address
+        this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)]
+                    [addr % WORDS_PER_LINE] = data;
+        return &(this->memory[(addr / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES)]
+                    [addr % WORDS_PER_LINE]);
+    }
     uint32_t* fetch(uint32_t addr, int whois_calling) {
         if (this->in_use == false) {
             this->in_use = true;

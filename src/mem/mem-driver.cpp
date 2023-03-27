@@ -7,8 +7,7 @@
 
 #include <iostream>
 
-// #include "cache.cpp"
-#include "memory.cpp"
+#include "cache.cpp" // cache.cpp includes memory.cpp
 using std::cout;
 using std::endl;
 // or put std:: before each std thing
@@ -26,9 +25,9 @@ int main() {
     Memory main_mem;
     volatile int clock = 0;
 
-    // Cache main_cache;
-    // main_cache.reset();
-    // main_cache.cur_status();
+    Cache main_cache = Cache(&main_mem);
+    main_cache.reset();
+    main_cache.cur_status();
 
     Instruction a;
     a.fetch = false;
