@@ -3,6 +3,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
+#include <stdio.h>
 #include "cache.cpp"
 void print_options(int clock_cycle, int dram_delay, int cache_delay) {
 	// future: set associativity, enable/disable cache
@@ -81,7 +82,8 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 				result = cache.load(addr, stage_id);
 				if (result != nullptr) {
 					// load success
-					std::cout << old_instr << " finishes at cycle " << clock << std::endl;
+					printf("%-10s finishes at cycle %d\n", old_instr.c_str(), clock);
+//					std::cout << old_instr << " finishes at cycle " << clock << std::endl;
 					return;
 				}
 				clock++;
@@ -107,7 +109,8 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 				result = cache.store(addr, data, stage_id);
 				if (result != nullptr) {
 					// store success
-					std::cout << old_instr << " finishes at " << clock << std::endl;
+					printf("%-10s finishes at cycle %d\n", old_instr.c_str(), clock);
+					// std::cout << old_instr << " finishes at " << clock << std::endl;
 					return;
 				}
 				clock++;
