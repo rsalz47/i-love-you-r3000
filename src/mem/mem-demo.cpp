@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
-
+#include <cstring>
+#include <fstream>
+#include <vector>
+#include "cache.cpp"
 void print_options(int clock_cycle, int dram_delay, int cache_delay) {
 	// future: set associativity, enable/disable cache
 	std::cout << "+--------------------------------------------------------+" << std::endl;
@@ -25,19 +28,15 @@ void print_options(int clock_cycle, int dram_delay, int cache_delay) {
 	std::cout << "+--------------------------------------------------------+" << std::endl;
 }
 
-void run_instructions(Cache cache, int& current_cycle, std::string filename) {
-    std::ifstream file;
-    file.open(filename);
-    if (!file.is_open()) {
-		std::cout << "Cannot open file\n";
-		return;
-    }
-    std::string line;
-    while(std::getline(file, line)) {
-		run_instruction(line);
-	}  
-	file.close();
-} 
+// helper function to tokenize an instruction
+void tokenize(std::string const &str, const char* delim, 
+              std::vector<std::string> &out) { 
+	char *token = strtok(const_cast<char*>(str.c_str()), delim); 
+	while (token != nullptr) { 
+		out.push_back(std::string(token)); 
+		token = strtok(nullptr, delim); 
+	} 
+}
 
 // there are view possible type of instructions/commands:
 // load:  L addr  stage
@@ -45,12 +44,12 @@ void run_instructions(Cache cache, int& current_cycle, std::string filename) {
 // store: S value addr stage
 // singel write: W addr data statge
 // TODO view command: V level line, where level is cache or mem
-void run_instruction(Cache cache, int& clock, std::string instruction) {
+void run_instruction(Cache* cache, volatile int& clock, std::string instruction) {
 	std::vector<std::string> out;
-	tokenize(line, " ", out); 
+	tokenize(instruction, " ", out);
 	if (out.size() == 3) {
-		// load instruction or a single read command
-		if (out[0] != "l" || out[0] != "L" || out[0] != 'r' || out[0] != 'R') {
+		// load instruction or a single read command		
+		if (out[0] != "l" && out[0] != "L" && out[0] != "r" && out[0] != "R") {
 			// error
 			std::cout << "Supposed to be a load/read instruction/command, but not start with l/L or r/R\n";
 			return;
@@ -61,21 +60,21 @@ void run_instruction(Cache cache, int& clock, std::string instruction) {
 		if (out[0] != "l" || out[0] != "L") {
 			// a load instruction, run till the load succeeds
 			while (true) {
-				result = cache.fetch(addr, stage_id);
+				result = cache->load(addr, stage_id);
 				if (result != nullptr) {
 					// load success
-					std::cout << line << " finishes at " << clock << std::endl;
+					std::cout << instruction << " finishes at " << clock << std::endl;
 					break;
 				}
 				clock++;
 			}
 		} else { 
-			cache.fetch(addr, stage_id);
+			cache->load(addr, stage_id);
 			clock++;
 		}
 	} else if (out.size() == 4) {
 		// store instruction or a single write command
-		if (out[0] != "s" || out[0] != "S" || out[0] != 'w' || out[0] != 'W') {
+		if (out[0] != "s" && out[0] != "S" && out[0] != "w" && out[0] != "W") {
 			std::cout << "Supposed to be a store/write instruction/command, but not start with s/S or w/W\n";
 			return;
 		}
@@ -86,16 +85,16 @@ void run_instruction(Cache cache, int& clock, std::string instruction) {
 		if (out[0] != "s" || out[0] != "S") {
 			// a store instruction, run till the store succeeds
 			while (true) {
-				result = cache.store(addr, data, stage_id);
+				result = cache->store(addr, data, stage_id);
 				if (result != nullptr) {
 					// store success
-					std::cout << line << " finishes at " << clock << std::endl;
+					std::cout << instruction << " finishes at " << clock << std::endl;
 					break;
 				}
 				clock++;
 			}
 		} else {
-			cache.store(addr, data, stage_id);
+			cache->store(addr, data, stage_id);
 			clock++;
 		}		
 	} else {
@@ -103,19 +102,23 @@ void run_instruction(Cache cache, int& clock, std::string instruction) {
 	}
 }
 
-// helper function to tokenize an instruction
-void tokenize(std::string const &str, const char* delim, 
-              std::vector<std::string> &out) { 
-	char *token = strtok(const_cast<char*>(str.c_str()), delim); 
-	while (token != nullptr) { 
-		out.push_back(std::string(token)); 
-		token = strtok(nullptr, delim); 
-	} 
-} 
+void run_instructions(Cache* cache, volatile int& current_cycle, std::string filename) {
+    std::ifstream file;
+    file.open(filename);
+    if (!file.is_open()) {
+		std::cout << "Cannot open file\n";
+		return;
+    }
+    std::string line;
+    while(std::getline(file, line)) {
+		run_instruction(cache, current_cycle, line);
+	}  
+	file.close();
+}  
 
 int main() {
 	Memory* main_mem;
-	Cache* cache;
+	Cache* cache = new Cache(main_mem);
 	volatile int clock = 0;
 	int dram_delay = 3;
 	int cache_delay = 0;
@@ -124,44 +127,56 @@ int main() {
 		print_options(clock, dram_delay, cache_delay);
 		std::cin >> option;
 		switch(option){
-		case '1':
+		case '1':{
 			std::string filename;
 			std::cout << "Enter the file name: ";
 			std::cin >> filename;
+			filename = "../../test/mem/" + filename;
+			std::cout << filename << std::endl;
 			run_instructions(cache, clock, filename);
 			break;
+		}
 		case '2':
 		case '3':
 		case '4':
-		case '5':
+		case '5': {
 			std::string instruction;
 			std::cout << "Instruction or command: ";
 			std::cin >> instruction;
 			run_instruction(cache, clock, instruction);				
 			break;
+		}
 		case '6':
 			// TODO
 			break;
-		case '7':
+		case '7': {
+			cache->cur_status();
 			break;
-		case '8':
+		}
+		case '8': {
+			cache->cur_status();
 			break;
-		case '9':
+		}
+		case '9': {
+			cache->reset();
 			break;
+		}
 		case 'A':
 		case 'a':
 			clock = 0;
 			break;
 		case 'B':
-		case 'b':
+		case 'b': {
 			std::cout << "Enter new DRAM delay: ";
 			std::cin >> dram_delay;
 			break;
+		}
 		case 'C':
-		case 'c':
+		case 'c': {
 			std::cout << "Enter new Cache delay: ";
 			std::cin >> cache_delay;
 			break;
+		}
 		case 'F':
 		case 'f':
 			return 0;
