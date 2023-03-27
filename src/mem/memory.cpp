@@ -24,7 +24,7 @@ class Memory {
 
     // to access the rest of the words, you simply add the word offset to the
     // returned address for example,
-    //    cout << *(main_mem.fetch_cache_ver(9)<this will return memory[2][0] or
+    //    cout << *(main_mem.fetch_cache_ver(addr 9)<this will return memory[2][0] /
     //    addr 8> + 1<adding 1 to addr 8 will give addr 9 >) << endl;
     uint32_t* fetch_cache_ver(uint32_t addr) {
         return &(this->memory[(addr / WORDS_PER_LINE)][0]);
