@@ -39,23 +39,29 @@ int main() {
 
     Instruction c;
     c.fetch = false;
-    c.addr = 2;
+    c.addr = 6;
     c.caller_id = 3;
     c.data = 77;
 
     Instruction d;
-    c.fetch = true;
-    c.addr = 2;
-    c.caller_id = 4;
-    c.data = 0;
+    d.fetch = true;
+    d.addr = 6;
+    d.caller_id = 4;
+    d.data = 0;
+
+    Instruction e;
+    e.fetch = true;
+    e.addr = 6;
+    e.caller_id = 5;
+    e.data = 0;
 
     Instruction
-        instruction_set[4];  // can read instructions from file into this array
+        instruction_set[5];  // can read instructions from file into this array
     instruction_set[0] = a;
     instruction_set[1] = b;
     instruction_set[2] = c;
     instruction_set[3] = d;
-
+    instruction_set[4] = e;
     uint32_t* ret_val;
 
     for (Instruction inst : instruction_set) {
@@ -69,8 +75,7 @@ int main() {
             }
 
             if (inst.result != 0) {
-                cout << inst.caller_id
-                     << " finished at " << clock << endl;
+                cout << inst.caller_id << " finished at " << clock << endl;
                 break;
             }
             clock++;

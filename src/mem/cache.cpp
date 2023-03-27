@@ -21,8 +21,9 @@ class Cache {
                                uint32_t offset, int whois_calling) {
         // on cache miss, we need to:
         // fetch the line we want from memory
-        uint32_t* fetched_line = this->main_mem->fetch(addr/WORDS_PER_LINE, whois_calling);
-        if (fetched_line == nullptr){
+        uint32_t* fetched_line =
+            this->main_mem->fetch(addr / WORDS_PER_LINE, whois_calling);
+        if (fetched_line == nullptr) {
             return 0;
         }
         // find row in cache to evict
@@ -95,7 +96,7 @@ class Cache {
         }
         // if we did not find the corresponding address then we have a cache
         // miss
-        //std::cout << "cache miss on address" << addr << std::endl;
+        // std::cout << "cache miss on address" << addr << std::endl;
         if (handle_cache_miss(addr, tag, index, offset, whois_calling) == 0) {
             return 0;
         }
@@ -132,6 +133,8 @@ class Cache {
             // if hit, fill in the corresponding line
             if (matching_line) {
                 matching_line[0] = data;
+                std::cout << matching_line[0] << std::endl;
+
             }
             // write directly to memory
             else {
