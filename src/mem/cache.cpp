@@ -27,13 +27,14 @@ class Cache {
             return 0;
         }
         // find row in cache to evict
-        // this should be trivial because it's just replace at current index
+        // this should be trivial because it's just replace at current index //bug here
         uint32_t* line = nullptr;
-        for (int i = 0; i < 16; i++) {
-            if (cache[i][1] == tag) {
-                line = cache[i];
-            }
-        }
+        //for (int i = 0; i < 16; i++) {
+        //    if (cache[i][1] == tag) {
+        //        line = cache[i];
+        //    }
+        //}
+        line = cache[index];
 
         // if dirty, evict line by writing to main mem
         if (line[6]) {
