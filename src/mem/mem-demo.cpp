@@ -44,8 +44,9 @@ void tokenize(std::string const &str, const char* delim,
 // store: S value addr stage
 // singel write: W addr data statge
 // TODO view command: V level line, where level is cache or mem
-void run_instruction(Cache* cache, volatile int& clock, std::string instruction) {
+void run_instruction(Cache* cache, volatile int& clock, std::string const &instruction) {
 	std::vector<std::string> out;
+	std::string old_instr = instruction;
 	tokenize(instruction, " ", out);
 	if (out.size() == 3) {
 		// load instruction or a single read command		
@@ -63,7 +64,7 @@ void run_instruction(Cache* cache, volatile int& clock, std::string instruction)
 				result = cache->load(addr, stage_id);
 				if (result != nullptr) {
 					// load success
-					std::cout << instruction << " finishes at " << clock << std::endl;
+					std::cout << old_instr << " finishes at " << clock << std::endl;
 					break;
 				}
 				clock++;
@@ -88,7 +89,7 @@ void run_instruction(Cache* cache, volatile int& clock, std::string instruction)
 				result = cache->store(addr, data, stage_id);
 				if (result != nullptr) {
 					// store success
-					std::cout << instruction << " finishes at " << clock << std::endl;
+					std::cout << old_instr << " finishes at " << clock << std::endl;
 					break;
 				}
 				clock++;
@@ -113,7 +114,7 @@ void run_instructions(Cache* cache, volatile int& current_cycle, std::string fil
     while(std::getline(file, line)) {
 		run_instruction(cache, current_cycle, line);
 	}  
-	file.close();
+	file.close();	
 }  
 
 int main() {
