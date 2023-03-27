@@ -16,7 +16,7 @@ struct Instruction {
     uint32_t addr;
     uint32_t data;
     int caller_id;  // possibly the PC value?
-    int result = -1;
+    uint32_t* result = nullptr;
 };
 int main() {
     Memory main_mem;
@@ -74,7 +74,7 @@ int main() {
                 inst.result = main_cache.load(inst.addr, inst.caller_id);
             }
 
-            if (inst.result != 0) {
+            if (inst.result != nullptr) {
                 cout << inst.caller_id << " finished at " << clock << endl;
                 break;
             }

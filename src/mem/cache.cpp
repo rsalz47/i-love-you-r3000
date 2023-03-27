@@ -27,13 +27,14 @@ class Cache {
             return 0;
         }
         // find row in cache to evict
-        // this should be trivial because it's just replace at current index //bug here
+        // this should be trivial because it's just replace at current index
+        // //bug here
         uint32_t* line = nullptr;
-        //for (int i = 0; i < 16; i++) {
-        //    if (cache[i][1] == tag) {
-        //        line = cache[i];
-        //    }
-        //}
+        // for (int i = 0; i < 16; i++) {
+        //     if (cache[i][1] == tag) {
+        //         line = cache[i];
+        //     }
+        // }
         line = cache[index];
 
         // if dirty, evict line by writing to main mem
@@ -62,18 +63,18 @@ class Cache {
         line[7] = 1;
         return 1;
     }
-    uint32_t load(uint32_t addr, int whois_calling) {
+    uint32_t* load(uint32_t addr, int whois_calling) {
         if (this->cache_in_use == false) {
             this->cache_in_use = true;
             cur_caller_id = whois_calling;
         }
         if (!(this->cache_in_use == true && whois_calling == cur_caller_id)) {
-            return 0;
+            return nullptr;
         }
         if (this->cache_in_use == true && whois_calling == cur_caller_id &&
             this->cache_delay_timer > 0) {
             this->cache_delay_timer -= 1;
-            return 0;
+            return nullptr;
         }
         // here cache_delay should be 0
 
@@ -92,37 +93,39 @@ class Cache {
                 this->cache_delay_timer = CACHE_DELAY_DEFAULT;
                 this->cache_in_use = false;
                 cur_caller_id = -1;  // reset caller id
-                return cache[i][2 + offset];
+                return &(cache[i][2 + offset]);
             }
         }
         // if we did not find the corresponding address then we have a cache
         // miss
         // std::cout << "cache miss on address" << addr << std::endl;
         if (handle_cache_miss(addr, tag, index, offset, whois_calling) == 0) {
-            return 0;
+            return nullptr;
         }
         // should be in the cache by now
         return load(addr, whois_calling);
     }
 
-    uint32_t store(uint32_t addr, uint32_t data, int whois_calling) {
+    uint32_t* store(uint32_t addr, uint32_t data, int whois_calling) {
         // mask tag, index, offset out from addr
         if (this->cache_in_use == false) {
             this->cache_in_use = true;
             cur_caller_id = whois_calling;
         }
         if (!(this->cache_in_use == true && whois_calling == cur_caller_id)) {
-            return 0;
+            return nullptr;
         }
         if (this->cache_in_use == true && whois_calling == cur_caller_id &&
             this->cache_delay_timer > 0) {
             this->cache_delay_timer -= 1;
-            return 0;
+            return nullptr;
         }
 
         uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b1111;
         uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
         uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
+
+        uint32_t* ret_val = this->main_mem->store(addr, data, whois_calling);
 
         // Check if cache hit
         uint32_t* matching_line = nullptr;
@@ -135,18 +138,17 @@ class Cache {
             if (matching_line) {
                 matching_line[0] = data;
                 std::cout << matching_line[0] << std::endl;
-
             }
             // write directly to memory
+
             else {
-                if (this->main_mem->store(addr, data, whois_calling) ==
-                    nullptr) {
-                    return 0;
+                if (ret_val == nullptr) {
+                    return nullptr;
                 } else {
                     this->cache_delay_timer = CACHE_DELAY_DEFAULT;
                     this->cache_in_use = false;
                     cur_caller_id = -1;  // reset caller id
-                    return 1;            // indicating success
+                    return ret_val;      // indicating success
                 }
             }
         }
@@ -154,8 +156,8 @@ class Cache {
         // memory and free it for other calls
         this->cache_delay_timer = CACHE_DELAY_DEFAULT;
         this->cache_in_use = false;
-        cur_caller_id = -1;  // reset caller id
-        return 1;            // indicating success
+        cur_caller_id = -1;    // reset caller id
+        return matching_line;  // indicating success
     }
 
     // prints out the current cache status
