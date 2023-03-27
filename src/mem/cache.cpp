@@ -137,19 +137,16 @@ class Cache {
             // if hit, fill in the corresponding line
             if (matching_line) {
                 matching_line[0] = data;
-                std::cout << matching_line[0] << std::endl;
             }
             // write directly to memory
 
-            else {
-                if (ret_val == nullptr) {
-                    return nullptr;
-                } else {
-                    this->cache_delay_timer = CACHE_DELAY_DEFAULT;
-                    this->cache_in_use = false;
-                    cur_caller_id = -1;  // reset caller id
-                    return ret_val;      // indicating success
-                }
+            if (ret_val == nullptr) {
+                return nullptr;
+            } else {
+                this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+                this->cache_in_use = false;
+                cur_caller_id = -1;  // reset caller id
+                return ret_val;      // indicating success
             }
         }
         // once you reach here in the code, delay_timer should be 0, so we reset

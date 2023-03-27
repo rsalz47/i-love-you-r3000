@@ -39,19 +39,19 @@ int main() {
 
     Instruction c;
     c.fetch = false;
-    c.addr = 6;
+    c.addr = 2;
     c.caller_id = 3;
     c.data = 77;
 
     Instruction d;
     d.fetch = true;
-    d.addr = 6;
+    d.addr = 2;
     d.caller_id = 4;
     d.data = 0;
 
     Instruction e;
     e.fetch = true;
-    e.addr = 6;
+    e.addr = 2;
     e.caller_id = 5;
     e.data = 0;
 
@@ -76,8 +76,12 @@ int main() {
 
             if (inst.result != nullptr) {
                 cout << inst.caller_id << " finished at " << clock << endl;
+                main_cache.cur_status();
+                cout << "\n" << endl;
+                main_mem.cur_status();
                 break;
             }
+
             clock++;
         }
     }
