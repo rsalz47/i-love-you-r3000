@@ -13,18 +13,19 @@ void print_options(int clock_cycle, int dram_delay, int cache_delay) {
 	printf("| Current Cache delay: %-34d|\n", cache_delay);    
 	std::cout << "| Select from the options below:                         |" << std::endl;          
 	std::cout << "| 1. Load a file containing load and store instructions  |" << std::endl;
-	std::cout << "| 2. Enter a load instruction (L addr stage)             |" << std::endl;
-	std::cout << "| 3. Enter a store instruction (S value addr stage)      |" << std::endl;
-	std::cout << "| 4. Enter a read command (R addr stage)                 |" << std::endl;
-	std::cout << "| 5. Enter a write command (W value addr stage)          |" << std::endl;
-	std::cout << "| 6. Enter a view command (V level line)                 |" << std::endl;
-	std::cout << "| 7. Display DRAM                                        |" << std::endl;
-	std::cout << "| 8. Display Cache                                       |" << std::endl;
-	std::cout << "| 9. Reset Cache                                         |" << std::endl;
-	std::cout << "| A. Reset clock cycle count                             |" << std::endl;
-	std::cout << "| B. Set DRAM delay                                      |" << std::endl;
-	std::cout << "| C. Set Cache delay                                     |" << std::endl;
-	std::cout << "| F. Quit the program                                    |" << std::endl;
+	std::cout << "| 2. Enter an instruction/command:                       |" << std::endl;
+	std::cout << "|      - Load : L addr stage_num                         |" << std::endl;
+	std::cout << "|      - Store: S addr value stage_num                   |" << std::endl;
+	std::cout << "|      - Read:  R addr stage_num                         |" << std::endl;
+	std::cout << "|      - Write: W addr value stage_num                   |" << std::endl;
+	std::cout << "|      - View:  V cache/dram line                        |" << std::endl;	
+	std::cout << "| 3. Display DRAM                                        |" << std::endl;
+	std::cout << "| 4. Display Cache                                       |" << std::endl;
+	std::cout << "| 5. Reset Cache                                         |" << std::endl;
+	std::cout << "| 6. Reset clock cycle count                             |" << std::endl;
+	std::cout << "| 7. Set DRAM delay                                      |" << std::endl;
+	std::cout << "| 8. Set Cache delay                                     |" << std::endl;
+	std::cout << "| 0. Quit the program                                    |" << std::endl;
 	std::cout << "+--------------------------------------------------------+" << std::endl;
 }
 
@@ -44,7 +45,7 @@ void tokenize(std::string const &str, const char* delim,
 // store: S value addr stage
 // singel write: W addr data statge
 // TODO view command: V level line, where level is cache or mem
-void run_instruction(Cache* cache, volatile int& clock, std::string const &instruction) {
+void run_instruction(Cache& cache, volatile int& clock, std::string const &instruction) {
 	std::vector<std::string> out;
 	std::string old_instr = instruction;
 	tokenize(instruction, " ", out);
@@ -61,17 +62,18 @@ void run_instruction(Cache* cache, volatile int& clock, std::string const &instr
 		if (out[0] != "l" || out[0] != "L") {
 			// a load instruction, run till the load succeeds
 			while (true) {
-				result = cache->load(addr, stage_id);
+				result = cache.load(addr, stage_id);
 				if (result != nullptr) {
 					// load success
 					std::cout << old_instr << " finishes at " << clock << std::endl;
-					break;
+					return;
 				}
 				clock++;
 			}
 		} else { 
-			cache->load(addr, stage_id);
+			cache.load(addr, stage_id);
 			clock++;
+			return;
 		}
 	} else if (out.size() == 4) {
 		// store instruction or a single write command
@@ -86,24 +88,25 @@ void run_instruction(Cache* cache, volatile int& clock, std::string const &instr
 		if (out[0] != "s" || out[0] != "S") {
 			// a store instruction, run till the store succeeds
 			while (true) {
-				result = cache->store(addr, data, stage_id);
+				result = cache.store(addr, data, stage_id);
 				if (result != nullptr) {
 					// store success
 					std::cout << old_instr << " finishes at " << clock << std::endl;
-					break;
+					return;
 				}
 				clock++;
 			}
 		} else {
-			cache->store(addr, data, stage_id);
+			cache.store(addr, data, stage_id);
 			clock++;
+			return;
 		}		
 	} else {
 		std::cout << "The instruction/command entered does not have proper length.\n";
 	}
 }
 
-void run_instructions(Cache* cache, volatile int& current_cycle, std::string filename) {
+void run_instructions(Cache& cache, volatile int& current_cycle, std::string filename) {
     std::ifstream file;
     file.open(filename);
     if (!file.is_open()) {
@@ -113,16 +116,16 @@ void run_instructions(Cache* cache, volatile int& current_cycle, std::string fil
     std::string line;
     while(std::getline(file, line)) {
 		run_instruction(cache, current_cycle, line);
-	}  
+	}
 	file.close();	
 }  
 
 int main() {
-	Memory* main_mem;
-	Cache* cache = new Cache(main_mem);
+	Memory main_mem;
+	Cache cache = Cache(&main_mem);
 	volatile int clock = 0;
-	int dram_delay = 3;
-	int cache_delay = 0;
+	int dram_delay = DEFAULT_DELAY;
+	int cache_delay = CACHE_DELAY_DEFAULT;
 	char option;
 	while (true) {
 		print_options(clock, dram_delay, cache_delay);
@@ -131,55 +134,49 @@ int main() {
 		case '1':{
 			std::string filename;
 			std::cout << "Enter the file name: ";
+			std::cin.ignore();
 			std::cin >> filename;
 			filename = "../../test/mem/" + filename;
 			std::cout << filename << std::endl;
 			run_instructions(cache, clock, filename);
 			break;
 		}
-		case '2':
-		case '3':
-		case '4':
-		case '5': {
+		case '2': {
 			std::string instruction;
 			std::cout << "Instruction or command: ";
-			std::cin >> instruction;
-			run_instruction(cache, clock, instruction);				
+			std::cin.ignore();
+			std::getline(std::cin, instruction);
+			run_instruction(cache, clock, instruction);
+			// to do view
 			break;
 		}
-		case '6':
-			// TODO
-			break;
-		case '7': {
-			cache->cur_status();
+		case '3': {
+			cache.cur_status();
 			break;
 		}
-		case '8': {
-			cache->cur_status();
+		case '4': {
+			cache.cur_status();
 			break;
 		}
-		case '9': {
-			cache->reset();
+		case '5': {
+			cache.reset();
 			break;
 		}
-		case 'A':
-		case 'a':
+		case '6': {
 			clock = 0;
 			break;
-		case 'B':
-		case 'b': {
+		}
+		case '7': {
 			std::cout << "Enter new DRAM delay: ";
 			std::cin >> dram_delay;
 			break;
 		}
-		case 'C':
-		case 'c': {
+		case '8': {
 			std::cout << "Enter new Cache delay: ";
 			std::cin >> cache_delay;
 			break;
 		}
-		case 'F':
-		case 'f':
+		case '0':
 			return 0;
 		}
 	}
