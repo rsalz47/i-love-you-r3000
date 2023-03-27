@@ -17,11 +17,14 @@ class Cache {
         this->main_mem = main_mem;
     }
 
-    void handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
-                           uint32_t offset) {
+    uint32_t handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
+                               uint32_t offset, int whois_calling) {
         // on cache miss, we need to:
         // fetch the line we want from memory
-        uint32_t* fetched_line = this->main_mem->fetch_cache_ver(addr);
+        uint32_t* fetched_line = this->main_mem->fetch(addr/WORDS_PER_LINE, whois_calling);
+        if (fetched_line == nullptr){
+            return 0;
+        }
         // find row in cache to evict
         // this should be trivial because it's just replace at current index
         uint32_t* line = nullptr;
@@ -55,8 +58,23 @@ class Cache {
         // mark the cache location as clean and valid
         line[6] = 0;
         line[7] = 1;
+        return 1;
     }
-    uint32_t load(uint32_t addr) {
+    uint32_t load(uint32_t addr, int whois_calling) {
+        if (this->cache_in_use == false) {
+            this->cache_in_use = true;
+            cur_caller_id = whois_calling;
+        }
+        if (!(this->cache_in_use == true && whois_calling == cur_caller_id)) {
+            return 0;
+        }
+        if (this->cache_in_use == true && whois_calling == cur_caller_id &&
+            this->cache_delay_timer > 0) {
+            this->cache_delay_timer -= 1;
+            return 0;
+        }
+        // here cache_delay should be 0
+
         // first extracts tag, index and offset bits into variables
         // index essentially becomes which row of the cache we need to access
         // tag is verifying that it is the correct row
@@ -69,16 +87,20 @@ class Cache {
         // if no valid match by end of loop, cache miss and fetch from mem
         for (int i = 0; i < 16; i++) {
             if (cache[i][0] == tag && cache[i][1] == index & cache[i][7]) {
+                this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+                this->cache_in_use = false;
+                cur_caller_id = -1;  // reset caller id
                 return cache[i][2 + offset];
             }
         }
         // if we did not find the corresponding address then we have a cache
         // miss
-        std::cout << "cache miss on address" << addr << std::endl;
-        handle_cache_miss(addr, tag, index, offset);
-
+        //std::cout << "cache miss on address" << addr << std::endl;
+        if (handle_cache_miss(addr, tag, index, offset, whois_calling) == 0) {
+            return 0;
+        }
         // should be in the cache by now
-        return load(addr);
+        return load(addr, whois_calling);
     }
 
     uint32_t store(uint32_t addr, uint32_t data, int whois_calling) {
@@ -113,8 +135,14 @@ class Cache {
             }
             // write directly to memory
             else {
-                if (this->main_mem->store(addr, data, whois_calling) == nullptr){
+                if (this->main_mem->store(addr, data, whois_calling) ==
+                    nullptr) {
                     return 0;
+                } else {
+                    this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+                    this->cache_in_use = false;
+                    cur_caller_id = -1;  // reset caller id
+                    return 1;            // indicating success
                 }
             }
         }
@@ -123,7 +151,7 @@ class Cache {
         this->cache_delay_timer = CACHE_DELAY_DEFAULT;
         this->cache_in_use = false;
         cur_caller_id = -1;  // reset caller id
-        return 1;  // indicating success
+        return 1;            // indicating success
     }
 
     // prints out the current cache status
