@@ -50,22 +50,38 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 	std::string old_instr = instruction;
 	tokenize(instruction, " ", out);
 	if (out.size() == 3) {
-		// load instruction or a single read command		
-		if (out[0] != "l" && out[0] != "L" && out[0] != "r" && out[0] != "R") {
+		// load instruction or a single read command or view command		
+		if (out[0] != "l" && out[0] != "L" && out[0] != "r" && out[0] != "R" && out[0] != "V") {
 			// error
 			std::cout << "Supposed to be a load/read instruction/command, but not start with l/L or r/R\n";
 			return;
-		}            
+		}
+		// handle the view command
+		if (out[0] == "V" || out[0] == "v") {
+			int line_num = static_cast<int>(std::stoul(out[2]));
+			if (out[1] == "dram") {
+				for (int i = 0; i < WORDS_PER_LINE; i++) {
+					printf("%15d | \n", cache.main_mem->memory[line_num][i]);
+				}
+			} else if (out[1] == "cache") {
+				for (int i = 0; i < 8 ; i++) {					
+					printf("%15d | \n", cache.cache[line_num][i]);
+				}
+			} else {
+				std::cout << "invalid command" << std::endl;
+			}
+			return;
+		}		   					
 		uint32_t addr = static_cast<uint32_t>(std::stoul(out[1]));
 		uint32_t stage_id = static_cast<int>(std::stoul(out[2]));
 		uint32_t* result;
-		if (out[0] != "l" || out[0] != "L") {
+		if (out[0] == "l" || out[0] == "L") {
 			// a load instruction, run till the load succeeds
 			while (true) {
 				result = cache.load(addr, stage_id);
 				if (result != nullptr) {
 					// load success
-					std::cout << old_instr << " finishes at " << clock << std::endl;
+					std::cout << old_instr << " finishes at cycle " << clock << std::endl;
 					return;
 				}
 				clock++;
@@ -85,7 +101,7 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 		uint32_t data = static_cast<uint32_t>(std::stoul(out[2]));
 		uint32_t stage_id = static_cast<int>(std::stoul(out[3]));
 		uint32_t* result;
-		if (out[0] != "s" || out[0] != "S") {
+		if (out[0] == "s" || out[0] == "S") {
 			// a store instruction, run till the store succeeds
 			while (true) {
 				result = cache.store(addr, data, stage_id);
@@ -107,14 +123,14 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 }
 
 void run_instructions(Cache& cache, volatile int& current_cycle, std::string filename) {
-    std::ifstream file;
-    file.open(filename);
-    if (!file.is_open()) {
+	std::ifstream file;
+	file.open(filename);
+	if (!file.is_open()) {
 		std::cout << "Cannot open file\n";
 		return;
-    }
-    std::string line;
-    while(std::getline(file, line)) {
+	}
+	std::string line;
+	while(std::getline(file, line)) {
 		run_instruction(cache, current_cycle, line);
 	}
 	file.close();	
