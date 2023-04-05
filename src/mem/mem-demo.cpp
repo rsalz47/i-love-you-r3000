@@ -40,6 +40,31 @@ void tokenize(std::string const &str, const char* delim,
 	} 
 }
 
+void view_cache(Cache& cache, uint32_t addr) {
+	uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
+	for (int i = 0; i < 8 ; i++) {					
+		printf("%15d |", cache.cache[index][i]);
+	}
+	std::cout << std::endl;
+}
+
+void view_dram(Cache& cache, uint32_t addr) {
+	for (int i = 0; i < WORDS_PER_LINE; i++) {
+		printf("%15d |", cache.main_mem->memory[addr/4][i]);
+	}
+	std::cout << std::endl;
+}
+
+void print_memory_info(Cache& cache, uint32_t addr) {	
+	std::cout << std::string(136, '-') << std::endl; 
+	std::cout << "dram info:\n";
+	view_dram(cache, addr);
+	std::cout << "cache info:\n";
+	view_cache(cache, addr);
+	std::cout << std::string(136, '-') << std::endl;
+}
+
+
 // there are view possible type of instructions/commands:
 // load:  L addr  stage
 // single read: R addr stage
@@ -54,20 +79,16 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 		// load instruction or a single read command or view command		
 		if (out[0] != "l" && out[0] != "L" && out[0] != "r" && out[0] != "R" && out[0] != "V") {
 			// error
-			std::cout << "Supposed to be a load/read instruction/command, but not start with l/L or r/R\n";
+			std::cout << "wrong command" << std::endl;
 			return;
 		}
 		// handle the view command
 		if (out[0] == "V" || out[0] == "v") {
 			int line_num = static_cast<int>(std::stoul(out[2]));
 			if (out[1] == "dram") {
-				for (int i = 0; i < WORDS_PER_LINE; i++) {
-					printf("%15d | \n", cache.main_mem->memory[line_num][i]);
-				}
+				view_dram(cache, line_num);
 			} else if (out[1] == "cache") {
-				for (int i = 0; i < 8 ; i++) {					
-					printf("%15d | \n", cache.cache[line_num][i]);
-				}
+				view_cache(cache, line_num);
 			} else {
 				std::cout << "invalid command" << std::endl;
 			}
@@ -83,20 +104,27 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 				if (result != nullptr) {
 					// load success
 					printf("%-10s finishes at cycle %d\n", old_instr.c_str(), clock);
-//					std::cout << old_instr << " finishes at cycle " << clock << std::endl;
+					print_memory_info(cache, addr);
+					clock++;
 					return;
 				}
 				clock++;
 			}
 		} else { 
-			cache.load(addr, stage_id);
+			result = cache.load(addr, stage_id);
+			if (result == nullptr) {
+				std::cout << "wait\n";
+			} else {
+				std::cout << "read success!\n";
+			}
 			clock++;
+			print_memory_info(cache, addr);
 			return;
 		}
 	} else if (out.size() == 4) {
 		// store instruction or a single write command
 		if (out[0] != "s" && out[0] != "S" && out[0] != "w" && out[0] != "W") {
-			std::cout << "Supposed to be a store/write instruction/command, but not start with s/S or w/W\n";
+			std::cout << "wrong command" << std::endl;
 			return;
 		}
 		uint32_t addr = static_cast<uint32_t>(std::stoul(out[1]));
@@ -110,14 +138,22 @@ void run_instruction(Cache& cache, volatile int& clock, std::string const &instr
 				if (result != nullptr) {
 					// store success
 					printf("%-10s finishes at cycle %d\n", old_instr.c_str(), clock);
-					// std::cout << old_instr << " finishes at " << clock << std::endl;
+					print_memory_info(cache, addr);
+					clock++;
 					return;
 				}
 				clock++;
 			}
 		} else {
 			cache.store(addr, data, stage_id);
+			if (result == nullptr) {
+				std::cout << "wait\n";
+			} else {
+				std::cout << "write success at cycle " << clock << std::endl;
+			}						
 			clock++;
+			// print memory info
+			print_memory_info(cache, addr);
 			return;
 		}		
 	} else {
@@ -140,11 +176,12 @@ void run_instructions(Cache& cache, volatile int& current_cycle, std::string fil
 }  
 
 int main() {
-	Memory main_mem;
-	Cache cache = Cache(&main_mem);
 	volatile int clock = 0;
 	int dram_delay = DEFAULT_DELAY;
 	int cache_delay = CACHE_DELAY_DEFAULT;
+	Memory main_mem;
+	Cache cache = Cache(&main_mem, cache_delay);
+
 	char option;
 	while (true) {
 		print_options(clock, dram_delay, cache_delay);
@@ -166,11 +203,10 @@ int main() {
 			std::cin.ignore();
 			std::getline(std::cin, instruction);
 			run_instruction(cache, clock, instruction);
-			// to do view
 			break;
 		}
 		case '3': {
-			cache.cur_status();
+			cache.main_mem->cur_status();
 			break;
 		}
 		case '4': {
@@ -188,11 +224,15 @@ int main() {
 		case '7': {
 			std::cout << "Enter new DRAM delay: ";
 			std::cin >> dram_delay;
+			cache.main_mem->initial_delay = dram_delay;
+			cache.main_mem->delay_timer = dram_delay;
 			break;
 		}
 		case '8': {
 			std::cout << "Enter new Cache delay: ";
 			std::cin >> cache_delay;
+			cache.initial_delay = cache_delay;
+			cache.cache_delay_timer = cache_delay;
 			break;
 		}
 		case '0':
