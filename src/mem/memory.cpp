@@ -7,6 +7,7 @@
 
 class Memory {
    public:
+	int initial_delay = DEFAULT_DELAY;
     int delay_timer = DEFAULT_DELAY;
     // will be polled by function calling load or store
     bool in_use = false;
@@ -18,6 +19,20 @@ class Memory {
     // the code stack. using defaults from slides
     uint32_t memory[NUM_LINES][WORDS_PER_LINE];
 
+	// default constructor
+	Memory(){}
+	
+	Memory(int delay) {
+		initial_delay = delay;
+		delay_timer = delay;
+	}
+
+
+	void set_initial_delay(int delay) {
+		initial_delay = delay;
+		delay_timer = delay;
+	}
+	
     // This returns a pointer to the start of the matching line of the addr. For
     // example, for addr 9, with line length 4, it will return memory[2][0] as
     // the address.
@@ -42,7 +57,7 @@ class Memory {
             return nullptr;
         }
         // delay reaches 0
-        this->delay_timer = DEFAULT_DELAY;
+        this->delay_timer = initial_delay;
         this->in_use = false;
         cur_caller_id = -1;  // reset caller id
         return &(this->memory[(addr / WORDS_PER_LINE)][0]);
@@ -71,7 +86,7 @@ class Memory {
         }
         // once you reach here in the code, delay_timer should be 0, so we reset
         // memory and free it for other calls
-        this->delay_timer = DEFAULT_DELAY;
+        this->delay_timer = initial_delay;
         this->in_use = false;
         cur_caller_id = -1;  // reset caller id
         return &(
@@ -92,7 +107,7 @@ class Memory {
             return nullptr;
         }
         // once you reach reset memory as delay_timer = 0;
-        this->delay_timer = DEFAULT_DELAY;
+        this->delay_timer = initial_delay;
         this->in_use = false;
         cur_caller_id = -1;
 

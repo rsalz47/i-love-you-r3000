@@ -2,6 +2,7 @@
 #define CACHE_DELAY_DEFAULT 2
 class Cache {
    public:
+	int initial_delay;
     int cache_delay_timer;
     bool cache_in_use;
     int cur_caller_id = -1;
@@ -11,11 +12,27 @@ class Cache {
     uint32_t cache[16][8];
 
     Cache(Memory* main_mem) {
+		initial_delay = CACHE_DELAY_DEFAULT;
         cache_delay_timer = CACHE_DELAY_DEFAULT;
         cache_in_use = false;
         cur_caller_id = -1;
         this->main_mem = main_mem;
+
+		//set the valid bits to 0
+		for (int i = 0; i < 16; i++) {
+			cache[i][7] = 0;
+		}
     }
+
+	Cache(Memory* main_mem, int delay) : Cache(main_mem) {
+		initial_delay = delay;
+		cache_delay_timer = delay;
+	}
+
+	void set_initial_delay(int delay) {
+		initial_delay = delay;
+		cache_delay_timer = delay;
+	}
 
     uint32_t handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
                                uint32_t offset, int whois_calling) {
@@ -23,6 +40,7 @@ class Cache {
         // fetch the line we want from memory
         uint32_t* fetched_line =
             this->main_mem->fetch_cache_ver(addr, whois_calling);
+
         if (fetched_line == nullptr) {
             return 0;
         }
@@ -84,13 +102,13 @@ class Cache {
         // offset is which word to pick from the line.
         uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b1111;
         uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
-        uint32_t offset = (uint32_t)((unsigned char)addr && 0b0011);
+        uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
 
         // loop over all 16 entries checking for the right index
         // if no valid match by end of loop, cache miss and fetch from mem
         for (int i = 0; i < 16; i++) {
             if (cache[i][0] == tag && cache[i][1] == index & cache[i][7]) {
-                this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+                this->cache_delay_timer = initial_delay;
                 this->cache_in_use = false;
                 cur_caller_id = -1;  // reset caller id
                 return &(cache[i][2 + offset]);
@@ -143,7 +161,7 @@ class Cache {
             if (ret_val == nullptr) {
                 return nullptr;
             } else {
-                this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+                this->cache_delay_timer = initial_delay;
                 this->cache_in_use = false;
                 cur_caller_id = -1;  // reset caller id
                 return ret_val;      // indicating success
@@ -151,7 +169,7 @@ class Cache {
         }
         // once you reach here in the code, delay_timer should be 0, so we reset
         // memory and free it for other calls
-        this->cache_delay_timer = CACHE_DELAY_DEFAULT;
+        this->cache_delay_timer = initial_delay;
         this->cache_in_use = false;
         cur_caller_id = -1;    // reset caller id
         return matching_line;  // indicating success
