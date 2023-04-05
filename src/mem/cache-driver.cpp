@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "cache.cpp"  // cache.cpp includes memory.cpp
+
 using std::cout;
 using std::endl;
 // or put std:: before each std thing
@@ -55,6 +56,21 @@ int main() {
     e.caller_id = 5;
     e.data = 0;
 
+    // test loading at same index, different tag
+    // test write through no allocate check for valid bits
+    // set assoiativity 
+    // fill cache test case
+    // need a bigger memory
+    // 16 line cache -> 16 kilo byte memory 
+    // wrap around isnt actually that hard its a one liner might be easy 
+    // add stats to the view window cycle counts and stuff
+    // space to see what is in the pipe line stages
+    // symbol table? 
+    // as you test modules create tests in the testing framewowrk 
+    // allows you to rerun the tests
+    
+
+
     Instruction
         instruction_set[5];  // can read instructions from file into this array
     instruction_set[0] = a;
@@ -76,12 +92,8 @@ int main() {
 
             if (inst.result != nullptr) {
                 cout << inst.caller_id << " finished at " << clock << endl;
-                main_cache.cur_status();
-                cout << "\n" << endl;
-                main_mem.cur_status();
                 break;
             }
-
             clock++;
         }
     }
