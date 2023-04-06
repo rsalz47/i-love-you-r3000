@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <iterator>
 #include "memory.cpp"
 #define CACHE_DELAY_DEFAULT 2
 class Cache {
@@ -18,7 +20,7 @@ class Cache {
         cur_caller_id = -1;
         this->main_mem = main_mem;
 
-		//set the valid bits to 0
+		// set the valid bits to 0
 		for (int i = 0; i < 16; i++) {
 			cache[i][7] = 0;
 		}
@@ -41,9 +43,17 @@ class Cache {
         uint32_t* fetched_line =
             this->main_mem->fetch_cache_ver(addr, whois_calling);
 
+
         if (fetched_line == nullptr) {
             return 0;
         }
+
+		//  need a copy of the fetched_line rather, fetched_line cannot be a pointer b/c
+		//  if the dirty bit is set, then data will be written back to memory
+		//  thus "fetched_line" will be polluted and the cache will not update		
+		uint32_t fetched_line_copy[4];
+		std::copy(fetched_line, fetched_line+4, std::begin(fetched_line_copy));
+
         // find row in cache to evict
         // this should be trivial because it's just replace at current index
         // //bug here
@@ -55,8 +65,8 @@ class Cache {
         // }
         line = cache[index];
 
-        // if dirty, evict line by writing to main mem
-        if (line[6]) {
+        // if valid and dirty, evict line by writing to main mem
+        if (line[7] && line[6]) {
             uint32_t addr_to_write_to = tag;
             addr_to_write_to = addr_to_write_to << 4;
             addr_to_write_to += index;
@@ -71,10 +81,11 @@ class Cache {
         // load in new data with appropriate tag/index/offset
         line[0] = tag;
         line[1] = index;
-        line[2] = fetched_line[0];
-        line[3] = fetched_line[1];
-        line[4] = fetched_line[2];
-        line[5] = fetched_line[3];
+        line[2] = fetched_line_copy[0];
+        line[3] = fetched_line_copy[1];
+        line[4] = fetched_line_copy[2];
+        line[5] = fetched_line_copy[3];
+
 
         // mark the cache location as clean and valid
         line[6] = 0;
