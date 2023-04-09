@@ -25,7 +25,7 @@ class WritebackStage {
 	//pending registers?
 
  public:
-    bool noop;
+    bool noop = true;
     executed_instruction executed;
 
     WritebackStage(uint32_t* registers);

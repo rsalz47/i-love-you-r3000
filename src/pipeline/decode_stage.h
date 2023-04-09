@@ -11,10 +11,11 @@
 
 class DecodeStage {
  private: 
-    ExecuteStage execute_stage;
+    ExecuteStage &execute_stage;
     uint32_t* registers;
  public:
     bool blocked = false;
+    bool noop = true;
     uint32_t encoded_instruction = 0x0;
     decoded_instruction decoded;
     

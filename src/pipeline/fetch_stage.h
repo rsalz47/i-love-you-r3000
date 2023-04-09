@@ -11,7 +11,7 @@ class FetchStage {
     uint32_t* pc;
     uint32_t curr_addr_fetching; // This variable is needed in the case that the pc changes while we are in the middle of a fetch 
     Cache* cache;
-    DecodeStage decode_stage;
+    DecodeStage &decode_stage;
 
  public:
     bool blocked = false;

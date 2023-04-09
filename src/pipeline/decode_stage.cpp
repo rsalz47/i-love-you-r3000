@@ -5,6 +5,7 @@ DecodeStage::DecodeStage(ExecuteStage &e, uint32_t* registers) : execute_stage(e
 // In one tick of the decode stage, we decode one instruction 
 // as long as the stage is not currently blocked.
 void DecodeStage::tick() {
+    std::cout << "Decode: Current instruction: " << encoded_instruction << std::endl;
     if(encoded_instruction == 0x0) {
         std::cout << "Decode: Cannot decode an instruction, because Fetch has not delivered an instruction. Idle for this cycle..." << std::endl;
         return;
@@ -74,6 +75,7 @@ void DecodeStage::tick() {
     }
     else {
         execute_stage.decoded = decoded;
+        execute_stage.noop = false;
         std::cout << "Decode: Delivered instruction to Execute." << std::endl;
         blocked = false;
     }

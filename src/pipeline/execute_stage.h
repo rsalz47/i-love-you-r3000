@@ -26,11 +26,11 @@ typedef struct decoded_instruction {
 
 class ExecuteStage {
  private:
-    MemoryStage memory_stage;
+    MemoryStage &memory_stage;
 
  public:
     bool noop = true;
-    bool blocked = true;
+    bool blocked = false;
     decoded_instruction decoded;
     executed_instruction executed;
 

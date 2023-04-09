@@ -1,11 +1,17 @@
+#include <iostream>
 #include "execute_stage.h"
 
 ExecuteStage::ExecuteStage(MemoryStage &m_s) : memory_stage(m_s) {}
 
 // In one clock tick, execute executes the instruction that decode has decoded.
 void ExecuteStage::tick() {
+    if (noop) {
+        return;
+    }
     if (!blocked) {
+        std::cout << "Execute: Decode has delivered an instruction, now executing... \n";
         // execute an instruction
+        std::cout << "Execute: Opcode: " << static_cast<int>(decoded.opcode) << std::endl;
         executed.opcode = decoded.opcode;
         executed.destination = decoded.destination;
         switch(executed.opcode) {
@@ -36,9 +42,12 @@ void ExecuteStage::tick() {
             break;
             // branch
         }
+        std::cout << "Finished executing the instruction, opcode: " << decoded.opcode << " destination: " << executed.destination << " value: " << executed.value << std::endl; 
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction
+        std::cout << "Delivering instruction to memory" << std::endl;
         memory_stage.executed = executed;
+        memory_stage.noop = false;
         blocked = false;
     } else {
         blocked = true;

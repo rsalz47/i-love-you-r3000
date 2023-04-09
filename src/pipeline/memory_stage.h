@@ -6,7 +6,7 @@
 
 class MemoryStage {
  private:
-    WritebackStage wb_stage;
+    WritebackStage &wb_stage;
     Cache* cache;
 
  public:
