@@ -16,34 +16,34 @@ unsigned long make_r_type(vector<string> tokens) {
 
     if(op == "add") {
         instruction |= pack_opcode(opc);
-        instruction |= pack_rs(Registers[tokens[1]]);
-        instruction |= pack_rt(Registers[tokens[2]]);
-        instruction |= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction |= pack_rs(RegistersToBits[tokens[1]]);
+        instruction |= pack_rt(RegistersToBits[tokens[2]]);
+        instruction |= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction |= RFormat::pack_shamt((unsigned long) 0x0);
         instruction |= RFormat::pack_funct((unsigned long) 0x0);
 
     }
     else if(op == "sub") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "mul") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "div") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
@@ -67,94 +67,94 @@ unsigned long make_r_type(vector<string> tokens) {
     }
     else if(op == "and") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "or") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "xor") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "nor") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "jr") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
     }
     else if(op == "jral") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
     }
     else if(op == "move") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
     }
     else if(op == "seq") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sge") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sgt") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sle") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "slt") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
     else if(op == "sne") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
-        instruction &= RFormat::pack_rd(Registers[tokens[3]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
+        instruction &= RFormat::pack_rd(RegistersToBits[tokens[3]]);
         instruction &= RFormat::pack_shamt((unsigned long) 0x0);
         instruction &= RFormat::pack_funct((unsigned long) 0x0);
     }
@@ -169,67 +169,67 @@ unsigned long make_i_type(vector<string> tokens) {
 
     if(op == "addi") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "subi") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "muli") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "divi") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "slti") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "andi") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "ori") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "xori") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "sw") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "lw") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "li") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[2]));
     }
     else if(op == "b") {
@@ -238,62 +238,62 @@ unsigned long make_i_type(vector<string> tokens) {
     }
     else if(op == "beq") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bne") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgt") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blt") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtz") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltz") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgte") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blte") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtez") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltez") {
         instruction &= pack_opcode(opc);
-        instruction &= pack_rs(Registers[tokens[1]]);
-        instruction &= pack_rt(Registers[tokens[2]]);
+        instruction &= pack_rs(RegistersToBits[tokens[1]]);
+        instruction &= pack_rt(RegistersToBits[tokens[2]]);
         instruction &= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     cout << bitset<32>(instruction) << endl;

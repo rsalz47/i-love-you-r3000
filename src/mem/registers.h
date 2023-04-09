@@ -3,7 +3,7 @@
 
 // This simulator supports 32 bit registers. Therefore, each register maps to an address 
 // that is 8 bytes away from each other.
-std::map<std::string, unsigned long> Registers {
+std::map<std::string, unsigned long> RegistersToBits {
     {"r0", (unsigned long) 0b0},
     {"r1", (unsigned long) 0b1},
     {"r2", (unsigned long) 0b10},

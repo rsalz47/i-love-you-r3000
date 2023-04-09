@@ -1,5 +1,5 @@
 class WritebackStage {
-	MemStage* mem_stage;
+	MemoryStage* mem_stage;
 	uint32_t* pc;
 
 	uint32_t* registers;

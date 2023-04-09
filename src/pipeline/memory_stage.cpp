@@ -1,4 +1,4 @@
-class MemStage {
+class MemoryStage {
     WritebackStage* wb_stage;
     ExecuteStage* ex_stage;
 
