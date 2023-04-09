@@ -40,7 +40,7 @@ int main() {
     DecodeStage decode_stage(execute_stage, registers);
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
 
-    while(CLK < 10) {
+    while(CLK < 6) {
         std::cout << "current clock: " << CLK << std::endl;
         wb_stage.tick();
         mem_stage.tick();
@@ -53,6 +53,6 @@ int main() {
     }
 
     std::cout << "addr: " << memory.memory[5][0] << std::endl; // should be 10
-    std::cout << "r3: " << registers[3] << std::endl; 
+    std::cout << "r3: " << registers[3] << std::endl; // should be 24
     return 0;
 }
