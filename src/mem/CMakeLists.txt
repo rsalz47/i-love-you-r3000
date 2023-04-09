@@ -3,7 +3,7 @@ file(GLOB LIB_HEADERS *.h)
 option(GUI "build with GUI" ON)
 
 if(GUI)
-  add_library(mem_lib STATIC ${LIB_HEADERS})
+  add_library(mem_lib STATIC memory.cpp cache.cpp  ${LIB_HEADERS})
   target_include_directories (mem_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   
   target_include_directories(mem_lib PRIVATE ${CMAKE_SOURCE_DIR}/src)

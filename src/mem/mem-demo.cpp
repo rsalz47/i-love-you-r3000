@@ -4,7 +4,8 @@
 #include <fstream>
 #include <vector>
 #include <stdio.h>
-#include "cache.cpp"
+#include "cache.h"
+#include "memory.h"
     
 void print_options(int clock_cycle, int dram_delay, int cache_delay) {
   // future: set associativity, enable/disable cache
