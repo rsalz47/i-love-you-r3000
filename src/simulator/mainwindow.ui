@@ -14,12 +14,12 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="cacheView">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>256</width>
+      <width>411</width>
       <height>192</height>
      </rect>
     </property>
@@ -64,12 +64,12 @@
      </property>
     </column>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_2">
+   <widget class="QTableWidget" name="memoryView">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>230</y>
-      <width>256</width>
+      <width>411</width>
       <height>192</height>
      </rect>
     </property>
@@ -94,12 +94,12 @@
      </property>
     </column>
    </widget>
-   <widget class="QTableWidget" name="tableWidget_3">
+   <widget class="QTableWidget" name="registerView">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>430</y>
-      <width>256</width>
+      <width>211</width>
       <height>192</height>
      </rect>
     </property>
@@ -117,7 +117,7 @@
    <widget class="QTableWidget" name="tableWidget_4">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>710</x>
       <y>40</y>
       <width>61</width>
       <height>61</height>
@@ -127,7 +127,7 @@
    <widget class="QTableWidget" name="tableWidget_5">
     <property name="geometry">
      <rect>
-      <x>510</x>
+      <x>790</x>
       <y>40</y>
       <width>61</width>
       <height>61</height>
@@ -137,7 +137,7 @@
    <widget class="QTableWidget" name="tableWidget_6">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>870</x>
       <y>40</y>
       <width>61</width>
       <height>61</height>
@@ -147,7 +147,7 @@
    <widget class="QTableWidget" name="tableWidget_7">
     <property name="geometry">
      <rect>
-      <x>670</x>
+      <x>950</x>
       <y>40</y>
       <width>61</width>
       <height>61</height>
@@ -157,7 +157,7 @@
    <widget class="QTableWidget" name="tableWidget_8">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>1030</x>
       <y>40</y>
       <width>61</width>
       <height>61</height>
