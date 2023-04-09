@@ -12,12 +12,13 @@
 class DecodeStage {
  private: 
     ExecuteStage execute_stage;
+    uint32_t* registers;
  public:
     bool blocked = false;
     uint32_t encoded_instruction = 0x0;
     decoded_instruction decoded;
     
-    DecodeStage(ExecuteStage &e);
+    DecodeStage(ExecuteStage &e, uint32_t *registers);
 
     // In one tick of the decode stage, we decode one instruction 
     // as long as the stage is not currently blocked.

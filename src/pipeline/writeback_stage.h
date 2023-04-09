@@ -5,6 +5,19 @@
 #include <stdio.h>
 #include <unistd.h>
 
+typedef struct executed_instruction {
+    // TO BE FIXED
+    // R-format: opcode + destination + value
+    // I-format: opcode + destination + value
+    //          store: opcode + stored_value + value
+    // J-format: opcode + value
+    
+    char opcode; // opcode of the instruction
+    char destination;
+    uint32_t stored_value; // signed?
+    uint32_t value;
+} executed_instruction;
+
 class WritebackStage {
  private:
 	uint32_t* pc;
@@ -13,11 +26,9 @@ class WritebackStage {
 
  public:
     bool noop;
-    bool branch;
-    bool writeback = false;
-    char reg;
-    uint32_t value;
+    executed_instruction executed;
 
+    WritebackStage(uint32_t* registers);
 	void tick();
 };
 #endif /* WRITEBACK_STAGE_H */

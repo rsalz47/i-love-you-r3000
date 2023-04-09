@@ -6,13 +6,33 @@
 
 #include "memory_stage.h"
 
+// input
+typedef struct decoded_instruction {
+    // R-format: opcode + destination + value_1 + value_2 + shamt
+    // I-format: opcode + destination + value_1 + imm
+    //       lw: opcode + stored_value + value_1 + imm
+    // J-format: opcode + target_addr
+    std::string operation;
+    char opcode; // opcode of the instruction
+    uint32_t operand_1; // src1
+    uint32_t operand_2; // src2
+    char destination; // dest
+    char shamt; // shift amount
+    uint32_t addr_or_imm;
+    uint32_t target_addr;
+
+    uint32_t stored_value;
+} decoded_instruction;
+
 class ExecuteStage {
  private:
     MemoryStage memory_stage;
 
  public:
-    bool blocked = false;
+    bool noop = true;
+    bool blocked = true;
     decoded_instruction decoded;
+    executed_instruction executed;
 
     ExecuteStage(MemoryStage &m_s);
 
