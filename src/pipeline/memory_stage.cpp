@@ -1,48 +1,56 @@
 class MemoryStage {
+private:
     WritebackStage* wb_stage;
-    ExecuteStage* ex_stage;
-
     Cache* cache;
 
-    //instruction info
-    bool noop;
-    // can use several flags, or just store the opcode and parse the opcode in mem()?
-    bool mem; // mem access or not
-    bool store; // store or load
-    int reg;
-    uint32_t addr;
-    uint32_t value;
+    
+public:
+    bool blocked = false;
+    decoded_instruction decoded;
+    bool noop = true;
 
-    void mem() {
+    MemoryStage(WritebackStage* wb_stage, Cache* cache) {
+        this->wb_stage = wb_stage;
+        this->cache = cache;
+    }
+    
+    void tick() {
         if (noop) {
-            ex_stage->ex(0);
+            return;
         }
-        if (!mem) {
-            // if not mem, pass the instruction (reg + value) to wb
-            wb_stage->reg = reg;
-            wb_stage->value = value;
-            ex_stage->ex(0);
-        }        
-        if (store) {
+        // if not mem and writeback, pass the instruction (reg + value) to wb
+        if (decoded.operation != "sw" || decode.operation != "lw") {
+            // add, sub, mul, div, li all require writeback
+            wb_stage->writeback = true;
+            wb_stage->reg = decoded.destination;
+            wb_stage->value = decoded.target_addr;
+            return;
+        }
+
+        if (decoded.operation == "sw") {
+            //TODO need to modify the arguments in the future
             uint32_t* data = cache->store(addr, value, 4); // memory stage id = 4
             if (data == nullptr) {
                 wb_stage->noop = true;
-                ex_stage->ex(1); // call E with blocked
+                blocked = true;
             } else {
                 // for a store, writeback does not need to do anything?
                 wb_stage->noop = true;
-                ex_stage(0);
+                wb_stage->writeback = false;
+                blocked = false;
             }
         } else { // load
+            //TODO need to modify the arguments in the future
             uint32_t* result = cache->load(addr, cache->store(addr, 4));
             if (result == nullptr) {
                 wb_stage->noop = true;
-                ex_stage(1);
+                blocked = true;
             } else {
                 wb_stage->noop = false;
+                wb_stage->writeback = true;
                 wb_stage->reg = reg;
                 wb_stage->value = *result;                    
-                ex_stage(0);
+                blocked = false;
             }                                               
         }
     }
