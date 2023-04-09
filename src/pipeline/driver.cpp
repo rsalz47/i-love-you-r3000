@@ -1,10 +1,13 @@
-#include "fetch.cpp"
-#include "decode.cpp"
-#include "execute.cpp"
+#include "fetch_stage.h"
+#include "decode_stage.h"
+#include "execute_stage.h"
+#include "memory_stage.h"
+#include "writeback_stage.h"
+
 //#include "memacc.cpp"
 //#include "writeback.cpp"
 #include <iostream>
-#include "../mem/cache.cpp"
+#include "../mem/cache.h"
 
 uint32_t CLK = 0;
 uint32_t PROGRAM_COUNTER = 0;
@@ -18,18 +21,21 @@ int main() {
 
     cache.set_initial_delay(888);
     std::cout << cache.initial_delay << std::endl;
-    
-    FetchStage fetch_stage(&PROGRAM_COUNTER, &cache);
-    DecodeStage decode_stage(fetch_stage);
+
+    WritebackStage wb_stage;
+    MemoryStage mem_stage(wb_stage, &cache);
+    ExecuteStage execute_stage(mem_stage);
+    DecodeStage decode_stage(execute_stage);
+    FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
 
     
-    // while(true) {
-        // writeback.tick();
-        // memory.tick();
-        // execute.tick();
-        // decode.tick();
-        // fetch.tick();
-    // }
+    while(true) {
+        wb_stage.tick();
+        mem_stage.tick();
+        execute_stage.tick();
+        decode_stage.tick();
+        fetch_stage.tick();
+    }
 
     return 0;
 }
