@@ -49,6 +49,9 @@ void DecodeStage::tick() {
         case 0b101000:
             decoded.operation = "blt";
             break;
+        case 0b101111:
+            decoded.operation = "j";
+            break;
         }
 
         decoded.opcode = encoded_op;
