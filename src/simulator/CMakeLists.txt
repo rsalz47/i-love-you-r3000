@@ -17,7 +17,22 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-)
+        ../../src/mem/memory.h
+        ../../src/mem/cache.h
+        ../../src/mem/cache.cpp
+        ../../src/mem/memory.cpp
+        ../../src/pipeline/fetch_stage.h
+        ../../src/pipeline/fetch_stage.cpp
+        ../../src/pipeline/decode_stage.h
+        ../../src/pipeline/decode_stage.cpp
+        ../../src/pipeline/execute_stage.h
+        ../../src/pipeline/execute_stage.cpp
+        ../../src/pipeline/memory_stage.h
+        ../../src/pipeline/memory_stage.cpp
+        ../../src/pipeline/writeback_stage.h
+        ../../src/pipeline/writeback_stage.cpp
+        ../../src/asm/assembler.h
+    )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(simulator

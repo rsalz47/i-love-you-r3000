@@ -7,7 +7,8 @@
 
 #include <iostream>
 
-#include "cache.cpp"  // cache.cpp includes memory.cpp
+#include "memory.h"
+#include "cache.h"  
 
 using std::cout;
 using std::endl;
