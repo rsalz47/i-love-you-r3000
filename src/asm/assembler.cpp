@@ -3,6 +3,7 @@
 #include <fstream> 
 #include <vector>
 #include <bitset>
+#include <filesystem>
 
 #include "assembler.h"
 #include "../mem/registers.h"
@@ -360,8 +361,13 @@ void assemble(string file) {
 	}
 
 	ofstream out;
-    // TODO: clear /out/ of any matching file a la make clean to ensure files are always freshly generated
-	out.open("./out/" + file.substr(0, file.length() - 1 - 3) +".r3k");
+    string output_file = "./out/" + file.substr(0, file.length() - 1 - 3) +".r3k";
+
+    // Delete any pre-existing assembled file matching the one we want to generate
+    // and open up a new file 
+    string temp = "rm " + output_file;
+    system(temp.c_str());
+    out.open(output_file);
 
 	// Start assembling line by line
 	string line;

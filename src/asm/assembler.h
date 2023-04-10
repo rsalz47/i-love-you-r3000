@@ -77,7 +77,7 @@ inline namespace IFormat {
     };
 
     inline unsigned long pack_addr_imm(unsigned long addr_or_imm) {
-        return addr_or_imm & 0xFF;
+        return addr_or_imm & 0xFFFF;
     }
 }
 
@@ -90,7 +90,7 @@ inline namespace JFormat {
     };
 
     inline unsigned long pack_target_addr(unsigned long target_addr) {
-        return target_addr & 0x3FFFFFF;
+        return target_addr & 0x1A;
     }
 }
 
