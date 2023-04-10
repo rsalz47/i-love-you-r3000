@@ -20,8 +20,8 @@ typedef struct decoded_instruction {
     char shamt; // shift amount
     uint32_t addr_or_imm;
     uint32_t target_addr;
-
     uint32_t dest_value;
+    
 } decoded_instruction;
 
 class ExecuteStage {

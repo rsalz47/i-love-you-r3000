@@ -1,8 +1,7 @@
-src/asm/*.out
 src/asm/out/*
 *~
 *.sw?
 ivu3k/*.ui.autosave
 *build*
 *CMakeLists.txt.user*
-*a.out   
+*.out   
