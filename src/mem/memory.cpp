@@ -12,10 +12,13 @@ Memory::Memory(int delay) {
     delay_timer = delay;
 }
 
-
 void Memory::set_initial_delay(int delay) {
     initial_delay = delay;
     delay_timer = delay;
+}
+
+void Memory::reset_delay() {
+    delay_timer = initial_delay;
 }
 	
 uint32_t* Memory::fetch_cache_ver(uint32_t addr,int whois_calling) {

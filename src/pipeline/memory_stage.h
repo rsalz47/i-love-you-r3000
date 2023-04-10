@@ -16,6 +16,7 @@ class MemoryStage {
 
     MemoryStage(WritebackStage& wb_stage, Cache* cache);
     
+    void reset(); 
     void tick();
         
 };

@@ -23,6 +23,7 @@ class DecodeStage {
 
     // In one tick of the decode stage, we decode one instruction 
     // as long as the stage is not currently blocked.
+    void reset();
     void tick();
 };
 #endif /* DECODE_STAGE_H */

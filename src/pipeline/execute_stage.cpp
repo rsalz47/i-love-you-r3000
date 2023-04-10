@@ -4,17 +4,23 @@
 ExecuteStage::ExecuteStage(MemoryStage &m_s) : memory_stage(m_s) {}
 
 // In one clock tick, execute executes the instruction that decode has decoded.
+
+void ExecuteStage::reset() {
+    noop = true;
+    blocked = false;
+}
+
 void ExecuteStage::tick() {
     if (noop) {
+        std::cout << "Execute: No instruction delivered by decode, idling for this cycle..." << std::endl;
         return;
     }
     if (!blocked) {
         std::cout << "Execute: Decode has delivered an instruction, now executing... \n";
         // execute an instruction
-        std::cout << "Execute: Opcode: " << static_cast<int>(decoded.opcode) << " dest: " << static_cast<int>(decoded.destination)<< std::endl;
+        std::cout << "Execute: Executing instruction with opcode " << static_cast<int>(decoded.opcode) << std::endl;
         executed.opcode = decoded.opcode;
         executed.destination = decoded.destination;
-        std::cout << "Execute: " << static_cast<int>(executed.destination) << std::endl;
         switch(executed.opcode) {
         case 0b000000:  // add
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.operand_2); 
@@ -65,10 +71,10 @@ void ExecuteStage::tick() {
             executed.addr = decoded.target_addr;
             break;
         }
-        std::cout << "Finished executing the instruction, opcode: " << static_cast<int>(decoded.opcode) << " destination: " << static_cast<int>(executed.destination) << " value: " << executed.value << std::endl; 
+        std::cout << "Finished executing the instruction with opcode " << static_cast<int>(decoded.opcode) << " and value " << executed.value << std::endl; 
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction
-        std::cout << "Decode: Delivering instruction to memory" << std::endl;
+        std::cout << "Execute: Delivering instruction to Memory..." << std::endl;
         memory_stage.executed = executed;
         memory_stage.noop = false;
         blocked = false;

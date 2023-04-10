@@ -37,6 +37,7 @@ class ExecuteStage {
     ExecuteStage(MemoryStage &m_s);
 
     // In one clock tick, execute executes the instruction that decode has decoded.
+    void reset();
     void tick();
 };
 #endif /* EXECUTE_STAGE_H */

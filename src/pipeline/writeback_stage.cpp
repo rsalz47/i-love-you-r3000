@@ -10,6 +10,7 @@ void WritebackStage::tick() {
         return;
     }
     std::cout << "WB: current opcode: " << static_cast<int>(executed.opcode) << std::endl;
+
     // R-format + lw + li need writeback, sw does not need writeback
     if (executed.opcode <= 0b010110 || executed.opcode == 0b100000 || executed.opcode == 0b100001) {        
         registers[executed.destination] = executed.value;
@@ -22,6 +23,7 @@ void WritebackStage::tick() {
             *pc = executed.addr;
         }
         // branching not taken, do nothing
+        noop = true;
     }
         
     // TODO branching

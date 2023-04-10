@@ -28,7 +28,6 @@ class Memory {
 	
 	Memory(int delay);
 
-
 	void set_initial_delay(int delay);
 	
     // This returns a pointer to the start of the matching line of the addr. For
@@ -50,6 +49,7 @@ class Memory {
 
     // assign all memory locations to NULL (essentially 0s)
     void reset();
+    void reset_delay();
 
     // prints out a formatted memory status in the terminal
     void cur_status();

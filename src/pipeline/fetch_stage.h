@@ -21,6 +21,7 @@ class FetchStage {
     // This constructor simply initializes them
     FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d);
 
+    void reset();
     // The tick method is what happens every clock cycle.
     // In the fetch stage of a pipeline, this is one of two things:
     //      1) Begin a memory access for the next instruction (which will be the program counter)

@@ -39,9 +39,9 @@ int main() {
     //memory.memory[0][2] = 0b10001100101001100000000000000000;
 
     //add r1 r2 r3
-    memory.memory[0][0] = 0b00000000001000100001100000000000;
-    registers[2] = 2;
-    registers[3] = 3;
+    // memory.memory[0][0] = 0b00000000001000100001100000000000;
+    // registers[2] = 2;
+    // registers[3] = 3;
 
     memory.memory[0][1] = 0b10111100000000000000000000000000;
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
@@ -55,15 +55,17 @@ int main() {
         wb_stage.tick();
         if (wb_stage.squashed) {
             std::cout << "!! squashing previous stages" << std::endl;
-            wb_stage.noop = true;
-            mem_stage.noop = true;
-            execute_stage.noop = true;
-            decode_stage.noop = true;
+            mem_stage.reset();
+            execute_stage.reset();
+            decode_stage.reset();
+            fetch_stage.reset();
         }
-        mem_stage.tick();
-        execute_stage.tick();
-        decode_stage.tick();
-        fetch_stage.tick();
+        else {
+            mem_stage.tick();
+            execute_stage.tick();
+            decode_stage.tick();
+            fetch_stage.tick();
+        }
         CLK++;
         std::cout << std::endl;
 
