@@ -24,7 +24,7 @@ int main() {
     std::cout << cache.initial_delay << std::endl;
 
 
-    memory.memory[0][0] = 0b10000100001000000000000010100100;
+    //memory.memory[0][0] = 0b10000100001000000000000010100100;
     // sw r0 r1 0
     //memory.memory[0][0] = 0b01111100000000010000000000000000;
     //registers[0] = 10;
@@ -39,15 +39,18 @@ int main() {
     //memory.memory[0][2] = 0b10001100101001100000000000000000;
 
     //add r1 r2 r3
-    //memory.memory[0][3] = 0b00000000001000100001100000000000;
-        
+    memory.memory[0][0] = 0b00000000001000100001100000000000;
+    registers[2] = 2;
+    registers[3] = 3;
+
+    memory.memory[0][1] = 0b10111100000000000000000000000000;
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
     MemoryStage mem_stage(wb_stage, &cache);
     ExecuteStage execute_stage(mem_stage);
     DecodeStage decode_stage(execute_stage, registers);
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
 
-    while(CLK < 7) {
+    while(CLK < 10) {
         std::cout << "current clock: " << CLK << std::endl;
         wb_stage.tick();
         if (wb_stage.squashed) {
