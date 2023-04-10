@@ -11,9 +11,10 @@ void ExecuteStage::tick() {
     if (!blocked) {
         std::cout << "Execute: Decode has delivered an instruction, now executing... \n";
         // execute an instruction
-        std::cout << "Execute: Opcode: " << static_cast<int>(decoded.opcode) << std::endl;
+        std::cout << "Execute: Opcode: " << static_cast<int>(decoded.opcode) << " dest: " << static_cast<int>(decoded.destination)<< std::endl;
         executed.opcode = decoded.opcode;
         executed.destination = decoded.destination;
+        std::cout << "Execute: " << static_cast<int>(executed.destination) << std::endl;
         switch(executed.opcode) {
         case 0b000000:  // add
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.operand_2); 
@@ -38,7 +39,7 @@ void ExecuteStage::tick() {
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm);
             break;
         case 0b100001:  // li
-            executed.value = static_cast<int32_t>(decoded.operand_1);
+            executed.value = static_cast<int32_t>(decoded.addr_or_imm);
             break;
         case 0b100011: { // beq
             executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) == static_cast<int32_t>(decoded.operand_1));
@@ -64,10 +65,10 @@ void ExecuteStage::tick() {
             executed.addr = decoded.target_addr;
             break;
         }
-        std::cout << "Finished executing the instruction, opcode: " << static_cast<int>(decoded.opcode) << " destination: " << executed.destination << " value: " << executed.value << std::endl; 
+        std::cout << "Finished executing the instruction, opcode: " << static_cast<int>(decoded.opcode) << " destination: " << static_cast<int>(executed.destination) << " value: " << executed.value << std::endl; 
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction
-        std::cout << "Delivering instruction to memory" << std::endl;
+        std::cout << "Decode: Delivering instruction to memory" << std::endl;
         memory_stage.executed = executed;
         memory_stage.noop = false;
         blocked = false;

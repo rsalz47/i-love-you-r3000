@@ -60,6 +60,7 @@ void DecodeStage::tick() {
             decoded.shamt = (instr >> 6) & 0b11111;
         } else if (encoded_op >= 0b010111 && encoded_op <= 0b101110) { //I-format
             // need to check dependencies
+            std::cout << "Decode: I-format" << std::endl;
             decoded.destination = (instr >> 21) & 0b11111;
             decoded.operand_1 = registers[(instr >> 16) & 0b11111];
             decoded.addr_or_imm = instr & 0xFFFF;
@@ -88,6 +89,7 @@ void DecodeStage::tick() {
     }
     else {
         execute_stage.decoded = decoded;
+        std::cout << "Decode: destination: " << static_cast<int>(decoded.destination) << std::endl;
         execute_stage.noop = false;
         std::cout << "Decode: Delivered instruction to Execute." << std::endl;
         blocked = false;
