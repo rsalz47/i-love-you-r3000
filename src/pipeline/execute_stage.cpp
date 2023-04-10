@@ -16,7 +16,7 @@ void ExecuteStage::tick() {
         executed.destination = decoded.destination;
         switch(executed.opcode) {
         case 0b000000:  // add
-            executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.operand_2);
+            executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.operand_2); 
             break;
         case 0b000001:  // sub
             executed.value = static_cast<int32_t>(decoded.operand_1) - static_cast<int32_t>(decoded.operand_2);
@@ -29,8 +29,8 @@ void ExecuteStage::tick() {
             break;
         case 0b011111: { // sw
             // address computation
-            executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm);
-            executed.stored_value = decoded.stored_value;
+            executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm); // sign extended
+            executed.dest_value = decoded.dest_value;
             break;
         }
         case 0b100000:   // lw
@@ -40,9 +40,31 @@ void ExecuteStage::tick() {
         case 0b100001:  // li
             executed.value = static_cast<int32_t>(decoded.operand_1);
             break;
-            // branch
+        case 0b100011: { // beq
+            executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) == static_cast<int32_t>(decoded.operand_1));
+            executed.addr = decoded.addr_or_imm;
+            break;
         }
-        std::cout << "Finished executing the instruction, opcode: " << decoded.opcode << " destination: " << executed.destination << " value: " << executed.value << std::endl; 
+        case 0b100100: { // bne
+            executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) != static_cast<int32_t>(decoded.operand_1));
+            executed.addr = decoded.addr_or_imm;            
+            break;
+        }
+        case 0b100111: { // bgt
+            executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) > static_cast<int32_t>(decoded.operand_1));
+            executed.addr = decoded.addr_or_imm;            
+            break;
+        }
+        case 0b101000: { // blt
+            executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) < static_cast<int32_t>(decoded.operand_1));
+            executed.addr = decoded.addr_or_imm;
+            break;
+        }
+        case 0b101111: // j
+            executed.addr = decoded.target_addr;
+            break;
+        }
+        std::cout << "Finished executing the instruction, opcode: " << static_cast<int>(decoded.opcode) << " destination: " << executed.destination << " value: " << executed.value << std::endl; 
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction
         std::cout << "Delivering instruction to memory" << std::endl;

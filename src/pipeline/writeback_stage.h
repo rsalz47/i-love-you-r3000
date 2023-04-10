@@ -9,14 +9,18 @@ typedef struct executed_instruction {
     // TO BE FIXED
     // R-format: opcode + destination + value
     // I-format: opcode + destination + value
-    //          store: opcode + stored_value + value
-    // J-format: opcode + value
+    //          store:  opcode + dest_value + value
+    //          branch: opcode + branch_taken + addr
+    // J-format: opcode + addr
     
     char opcode; // opcode of the instruction
     char destination;
-    uint32_t stored_value; // signed?
-    uint32_t value;
+    uint32_t dest_value; // signed?
+    int32_t value;
+    uint32_t addr;
+    bool branch_taken; // the flag records whether branch is taken for branch instructions
 } executed_instruction;
+
 
 class WritebackStage {
  private:
@@ -26,9 +30,10 @@ class WritebackStage {
 
  public:
     bool noop = true;
+    bool squashed = false; // indicates whether the previous stages should be squashed
     executed_instruction executed;
-
-    WritebackStage(uint32_t* registers);
+    
+    WritebackStage(uint32_t* regs, uint32_t* program_counter);
 	void tick();
 };
 #endif /* WRITEBACK_STAGE_H */

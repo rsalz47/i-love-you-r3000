@@ -37,7 +37,18 @@ void DecodeStage::tick() {
         case 0b100001:
             decoded.operation = "li";
             break;
-            // case branch:
+        case 0b100011: // opcode following assembler.h
+            decoded.operation = "beq";
+            break;
+        case 0b100100:
+            decoded.operation = "bne";
+            break;
+        case 0b100111:
+            decoded.operation = "bgt";
+            break;
+        case 0b101000:
+            decoded.operation = "blt";
+            break;
         }
 
         decoded.opcode = encoded_op;
@@ -55,8 +66,10 @@ void DecodeStage::tick() {
 
             // for sw, need to obtain the value stored in the dest register as well
             // may need to do this for other instructions
-            if (encoded_op == 0b011111) {
-                decoded.stored_value = registers[decoded.destination];
+            if (encoded_op == 0b011111) { // sw
+                decoded.dest_value = registers[decoded.destination];
+            } else if (encoded_op == 0b100011 || encoded_op == 0b100100 || encoded_op == 0b100111 || encoded_op == 0b101000) { //beq, bne, bgt, blt 
+                decoded.dest_value = registers[decoded.destination];
             }
         } else if (encoded_op >= 0b101111 && encoded_op <= 0b111111) { // J-format
             if (encoded_op == 0b101111) {

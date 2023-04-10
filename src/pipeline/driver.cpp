@@ -33,16 +33,29 @@ int main() {
     memory.memory[0][1] = 0b10000000011001000000000000000000;
     registers[4] = 100;
     memory.memory[25][0] = 24;
+
+    //beq r5 r6 0
+    memory.memory[0][2] = 0b10001100101001100000000000000000;
+
+    //add r1 r2 r3
+    memory.memory[0][3] = 0b00000000001000100001100000000000;
         
-    WritebackStage wb_stage(registers);
+    WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
     MemoryStage mem_stage(wb_stage, &cache);
     ExecuteStage execute_stage(mem_stage);
     DecodeStage decode_stage(execute_stage, registers);
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
 
-    while(CLK < 6) {
+    while(CLK < 16) {
         std::cout << "current clock: " << CLK << std::endl;
         wb_stage.tick();
+        if (wb_stage.squashed) {
+            std::cout << "!! squashing previous stages" << std::endl;
+            wb_stage.noop = true;
+            mem_stage.noop = true;
+            execute_stage.noop = true;
+            decode_stage.noop = true;
+        }
         mem_stage.tick();
         execute_stage.tick();
         decode_stage.tick();

@@ -17,9 +17,9 @@ void MemoryStage::tick() {
         }
 
         if (executed.opcode == 0b011111) { // sw
-            std::cout << "Memory: Execute has delivered an store instruction... \n";
+            std::cout << "Memory: Execute has delivered a store instruction... \n";
             // store: opcode stored_value(data) value(addr)
-            uint32_t* data = cache->store(executed.value, executed.stored_value, 4); // memory stage id = 4
+            uint32_t* data = cache->store(executed.value, executed.dest_value, 4); // memory stage id = 4
             if (data == nullptr) {
                 std::cout << "Memory: store blocked\n";
                 wb_stage.noop = true;
@@ -33,7 +33,7 @@ void MemoryStage::tick() {
                 blocked = false;
             }
         } else { //lw
-            std::cout << "Memory: Execute has delivered an load instruction... \n";
+            std::cout << "Memory: Execute has delivered a load instruction... \n";
             uint32_t* result = cache->load(executed.value, 4);
             if (result == nullptr) {
                 std::cout << "Memory: load blocked\n";
@@ -51,7 +51,7 @@ void MemoryStage::tick() {
         // blocked, requst memory access again
         if (executed.opcode == 0b011111) { // sw
             // store: opcode stored_value(data) value(addr)
-            uint32_t* data = cache->store(executed.value, executed.stored_value, 4); // memory stage id = 4
+            uint32_t* data = cache->store(executed.value, executed.dest_value, 4); // memory stage id = 4
             if (data == nullptr) {
                 wb_stage.noop = true;
                 blocked = true;
