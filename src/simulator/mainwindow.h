@@ -22,6 +22,8 @@ private slots:
 
     void on_loadIntructionFile_clicked();
 
+    void on_reset_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -78,6 +78,8 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     // mark the cache location as clean and valid
     line[6] = 0;
     line[7] = 1;
+    this->num_cache_misses += 1;
+
     return 1;
 }
 
