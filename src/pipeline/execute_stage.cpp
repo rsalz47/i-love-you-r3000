@@ -12,7 +12,7 @@ void ExecuteStage::reset() {
 
 void ExecuteStage::tick() {
     if (noop) {
-        std::cout << "Execute: No instruction delivered by decode, idling for this cycle..." << std::endl;
+        std::cout << "Execute: No instruction delivered by decode, idle for this cycle..." << std::endl;
         return;
     }
     if (!blocked) {

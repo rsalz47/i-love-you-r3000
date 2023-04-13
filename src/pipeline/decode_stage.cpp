@@ -13,7 +13,7 @@ void DecodeStage::reset() {
 
 void DecodeStage::tick() {
     if(encoded_instruction == 0x0 || noop) {
-        std::cout << "Decode: Cannot decode an instruction, because Fetch has not delivered an instruction, or this instruction is a noop. Idle for this cycle..." << std::endl;
+        std::cout << "Decode: No instruction delivered by Fetch, or this instruction is a noop. Idle for this cycle..." << std::endl;
         return;
     }
     // only decode an instruction if we ourselves are not blocked

@@ -1,4 +1,6 @@
 src/asm/out/*
+src/pipeline/pipeline-driver
+.vscode
 *~
 *.sw?
 ivu3k/*.ui.autosave

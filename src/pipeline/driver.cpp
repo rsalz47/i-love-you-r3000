@@ -14,6 +14,7 @@ Cache cache(&memory, 5);
 uint32_t registers[32];
 
 int main() {
+    std::string temp;
     // initializations (right now, just confirming stuff gets instantiated)
     memory.set_initial_delay(0);
     std::cout << memory.initial_delay << std::endl;
@@ -21,27 +22,14 @@ int main() {
     cache.set_initial_delay(0);
     std::cout << cache.initial_delay << std::endl;
 
+    memory.memory[0][0] = 0b10111100000000000000000000000010;
+    memory.memory[0][1] = 0b10000100001000000000000000000011;
+    memory.memory[0][2] = 0b10000100000000000000000000000001;
+    memory.memory[0][3] = 0b10000100010000000000000000000100;
+    memory.memory[1][0] = 0b00000000001000010000000000000000;
+    memory.memory[1][1] = 0b00000100000000100000100000000000;
+    memory.memory[1][2] = 0b00001000000000010001000000000000;
 
-    memory.memory[0][0] = 0b10000100001000000000000010100100;
-    // sw r0 r1 0
-    memory.memory[0][0] = 0b01111100000000010000000000000000;
-    registers[0] = 10;
-    registers[1] = 20;
-
-    // lw r3 r4 0, load the data stored in addr r4 and write it to r3
-    memory.memory[0][1] = 0b10000000011001000000000000000000;
-    registers[4] = 100;
-    //memory.memory[25][0] = 24;
-
-    //beq r5 r6 0
-    //memory.memory[0][2] = 0b10001100101001100000000000000000;
-
-    //add r1 r2 r3
-    memory.memory[0][0] = 0b00000000001000100001100000000000;
-    registers[2] = 2;
-    registers[3] = 3;
-
-    memory.memory[0][1] = 0b10111100000000000000000000000000;
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
     MemoryStage mem_stage(wb_stage, &cache);
     ExecuteStage execute_stage(mem_stage);
@@ -66,6 +54,7 @@ int main() {
         }
         CLK++;
         std::cout << std::endl;
+        std::cin >> temp;
     }
 
     std::cout << "addr: " << memory.memory[5][0] << std::endl; // should be 10

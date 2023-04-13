@@ -13,7 +13,7 @@ void MemoryStage::reset() {
 
 void MemoryStage::tick() {
     if (noop) {
-        std::cout << "Memory: No instruction passed by Execute, idle for this cycle..." << std::endl;
+        std::cout << "Memory: No instruction delivered by Execute, idle for this cycle..." << std::endl;
         return;
     }
     if (!blocked) { // if not blocked, process next instruction

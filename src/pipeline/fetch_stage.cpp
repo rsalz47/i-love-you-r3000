@@ -36,6 +36,7 @@ void FetchStage::tick() {
         }
         else {
             decode_stage.encoded_instruction = *result; 
+            decode_stage.noop = false;
             std::cout << "Fetch: Instruction " << decode_stage.encoded_instruction << " delivered to Decode." << std::endl;
             result = nullptr;
             // increment pc
