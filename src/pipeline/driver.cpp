@@ -44,12 +44,12 @@ int main() {
             decode_stage.reset();
             fetch_stage.reset();
         }
-        else {
-            mem_stage.tick();
-            execute_stage.tick();
-            decode_stage.tick();
-            fetch_stage.tick();
-        }
+
+        mem_stage.tick();
+        execute_stage.tick();
+        decode_stage.tick();
+        fetch_stage.tick();
+
         CLK++;
         std::cin >> temp;
     }

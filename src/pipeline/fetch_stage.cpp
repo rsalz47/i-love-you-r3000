@@ -6,7 +6,7 @@ FetchStage::FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d)
 void FetchStage::reset() {
     blocked = false;
     result = nullptr;
-    cache->reset();
+    cache->reset_delay();
 }
 // The tick method is what happens every clock cycle.
 // In the fetch stage of a pipeline, this is one of two things:
@@ -43,5 +43,7 @@ void FetchStage::tick() {
             *pc = *pc + 1;
             blocked = false;                        
         }
+    } else if (!decode_stage.blocked) { // current fetching is blocked, decode stage should recieve a noop
+        decode_stage.noop = true;
     }
 }

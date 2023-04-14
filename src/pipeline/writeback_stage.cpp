@@ -5,6 +5,7 @@
 WritebackStage::WritebackStage(uint32_t* regs, uint32_t* program_counter):registers(regs), pc(program_counter){}
 
 void WritebackStage::tick() {
+    std::cout << std::endl;
     squashed = false;
     if (noop) {
         std::cout << "Writeback: No instruction to execute, Idle for this cycle..." << std::endl;

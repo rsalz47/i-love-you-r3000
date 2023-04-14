@@ -13,6 +13,9 @@ void ExecuteStage::reset() {
 void ExecuteStage::tick() {
     if (noop) {
         std::cout << "Execute: No instruction delivered by decode, idle for this cycle..." << std::endl;
+        if (!memory_stage.blocked) {
+            memory_stage.noop = true;
+        }
         return;
     }
     if (!blocked) {

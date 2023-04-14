@@ -8,12 +8,14 @@ void MemoryStage::reset() {
     blocked = false;
     noop = true;
     // not resetting executed_instruction because there's no reason to 
-    cache->reset();
+    cache->reset_delay();
 }
 
 void MemoryStage::tick() {
     if (noop) {
         std::cout << "Memory: No instruction delivered by Execute, idle for this cycle..." << std::endl;
+        // next stage should be noop as well
+        wb_stage.noop = true;
         return;
     }
     if (!blocked) { // if not blocked, process next instruction

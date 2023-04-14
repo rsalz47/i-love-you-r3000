@@ -14,6 +14,11 @@ void DecodeStage::reset() {
 void DecodeStage::tick() {
     if(encoded_instruction == 0x0 || noop) {
         std::cout << "Decode: No instruction delivered by Fetch, or this instruction is a noop. Idle for this cycle..." << std::endl;
+        // if current instruction is a noop and the next stage is not blocked
+        // need to pass the noop to the next stage
+        if (noop && !execute_stage.blocked) {
+            execute_stage.noop = true;
+        }
         return;
     }
     // only decode an instruction if we ourselves are not blocked
