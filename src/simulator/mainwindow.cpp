@@ -78,6 +78,9 @@ void resetViews(Ui::MainWindow *ui){
     ui->memoryViewPipeline->setItem(0,0,new QTableWidgetItem(QString::number(mem_stage.blocked)));
     ui->writebackView->setItem(0,0,new QTableWidgetItem(QString::number(wb_stage.noop)));
 
+    //update statistics
+    ui->label_16->setText(QString::number(main_cache.num_cache_misses));
+
 }
 
 
@@ -144,4 +147,5 @@ void MainWindow::on_loadIntructionFile_clicked()
     resetViews(ui);
     return;
 }
+
 

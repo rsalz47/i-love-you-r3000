@@ -14,6 +14,8 @@ class Cache {
     bool cache_in_use;
     int cur_caller_id = -1;
     Memory* main_mem;
+
+    int num_cache_misses = 0;
     // Memory * to main_mem
     // 4 tag + 4 index + 2 offset bits + dirty + valid
     uint32_t cache[16][8];
