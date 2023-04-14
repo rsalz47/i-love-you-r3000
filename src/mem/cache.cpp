@@ -24,6 +24,11 @@ void Cache::set_initial_delay(int delay) {
     cache_delay_timer = delay;
 }
 
+void Cache::reset_delay() {
+    cache_delay_timer = initial_delay;
+    main_mem->reset_delay();
+}
+
 uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
                                   uint32_t offset, int whois_calling) {
     // on cache miss, we need to:

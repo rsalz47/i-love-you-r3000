@@ -1,8 +1,9 @@
-src/asm/*.out
 src/asm/out/*
+src/pipeline/pipeline-driver
+.vscode
 *~
 *.sw?
 ivu3k/*.ui.autosave
 *build*
 *CMakeLists.txt.user*
-*a.out   
+*.out   

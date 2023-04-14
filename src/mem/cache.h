@@ -38,5 +38,6 @@ class Cache {
     
     // assign all cache locations to NULL (essentially 0s)
     void reset();
+    void reset_delay();
 };
 #endif /* CACHE_H */
