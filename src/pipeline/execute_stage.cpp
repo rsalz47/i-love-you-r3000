@@ -47,6 +47,11 @@ void ExecuteStage::tick() {
         case 0b100001:  // li
             executed.value = static_cast<int32_t>(decoded.addr_or_imm);
             break;
+        case 0b100010: { //b
+            executed.branch_taken = true;
+            executed.addr = decoded.addr_or_imm;
+            break;
+        }
         case 0b100011: { // beq
             executed.branch_taken = (static_cast<int32_t>(decoded.dest_value) == static_cast<int32_t>(decoded.operand_1));
             executed.addr = decoded.addr_or_imm;

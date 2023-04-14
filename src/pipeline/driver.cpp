@@ -22,13 +22,10 @@ int main() {
     cache.set_initial_delay(0);
     std::cout << cache.initial_delay << std::endl;
 
-    memory.memory[0][0] = 0b10111100000000000000000000000010;
-    memory.memory[0][1] = 0b10000100001000000000000000000011;
-    memory.memory[0][2] = 0b10000100000000000000000000000001;
-    memory.memory[0][3] = 0b10000100010000000000000000000100;
-    memory.memory[1][0] = 0b00000000001000010000000000000000;
-    memory.memory[1][1] = 0b00000100000000100000100000000000;
-    memory.memory[1][2] = 0b00001000000000010001000000000000;
+    memory.memory[0][0] = 0b10000100001000000000000000000011;
+    memory.memory[0][1] = 0b10001000000000000000000000000011;
+    memory.memory[0][2] = 0b10000100001000000000000000001010;
+    memory.memory[0][3] = 0b10000100001000000000000000010100;
 
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
     MemoryStage mem_stage(wb_stage, &cache);
@@ -37,7 +34,8 @@ int main() {
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
 
     while(CLK < 10) {
-        std::cout << "current clock: " << CLK << std::endl;
+        std::cout << "CLOCK: " << CLK << std::endl;
+        std::cout << "PROGRAM COUNTER: " << PROGRAM_COUNTER << std::endl;
         wb_stage.tick();
         if (wb_stage.squashed) {
             std::cout << "!! squashing previous stages" << std::endl;
@@ -53,7 +51,6 @@ int main() {
             fetch_stage.tick();
         }
         CLK++;
-        std::cout << std::endl;
         std::cin >> temp;
     }
 

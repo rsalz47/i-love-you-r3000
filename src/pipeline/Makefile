@@ -13,4 +13,4 @@ pipeline-driver: fetch_stage.cpp decode_stage.cpp execute_stage.cpp memory_stage
     ../mem/memory.cpp
 
 clean: 
-	rm ./driver
+	rm ./pipeline-driver
