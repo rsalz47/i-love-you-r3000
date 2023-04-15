@@ -4,6 +4,13 @@
 
 WritebackStage::WritebackStage(uint32_t* regs, uint32_t* program_counter):registers(regs), pc(program_counter){}
 
+void WritebackStage::reset() {
+    noop = true;
+    squashed = false;
+    exit = false;
+    writeback_finished = false;
+}
+
 void WritebackStage::tick() {
     std::cout << std::endl;
     squashed = false;
@@ -12,10 +19,14 @@ void WritebackStage::tick() {
         return;
     }
     std::cout << "Writeback: current opcode: " << static_cast<int>(executed.opcode) << std::endl;
-
+    writeback_finished = true;
     // R-format + lw + li need writeback, sw does not need writeback
-    if (executed.opcode == 0b111111) { //hcf
+    if (executed.opcode == 0b110001) { //nop
+        std::cout << "Writeback: Current instruction is nop, do nothing... " << std::endl;
+        return;
+    } else if (executed.opcode == 0b111111) { //hcf
         exit = true;
+        std::cout << "Writeback: Current instruction is hcf, exiting... " << std::endl;
     } else if (executed.opcode <= 0b010110 || executed.opcode == 0b100000 || executed.opcode == 0b100001){        
         registers[executed.destination] = executed.value;
         std::cout << "Writeback: Current instruction needs writeback. Writing to Registers..." << std::endl;
@@ -28,10 +39,9 @@ void WritebackStage::tick() {
             std::cout << "Writeback: Jump or branch taken. Issuing signal to squash the pipeline." << std::endl;
             *pc = executed.addr;
         }
-        // branching not taken, do nothing0b110001
+        // branching not taken, do nothing
         noop = true;
     }
         
-    // TODO branching
     // deal with dependencies
 }

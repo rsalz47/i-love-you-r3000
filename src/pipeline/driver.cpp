@@ -33,8 +33,11 @@ int main() {
     ExecuteStage execute_stage(mem_stage);
     DecodeStage decode_stage(execute_stage, registers);
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
-
-    while(CLK < 100) {
+    fetch_stage.disable_pipeline(); // disable pipeline
+    // one can also disable the pipeline using the fetch constructor
+    // fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage, true);
+    
+    while(true) {
         std::cout << "CLOCK: " << CLK << std::endl;
         std::cout << "PROGRAM COUNTER: " << PROGRAM_COUNTER << std::endl;
         if (wb_stage.exit) {

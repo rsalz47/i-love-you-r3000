@@ -6,10 +6,10 @@
 
 class MemoryStage {
  private:
-    WritebackStage &wb_stage;
     Cache* cache;
 
  public:
+    WritebackStage &wb_stage;
     bool blocked = false;
     executed_instruction executed;
     bool noop = true;

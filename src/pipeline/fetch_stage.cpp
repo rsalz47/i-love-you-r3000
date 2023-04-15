@@ -1,18 +1,47 @@
 #include "fetch_stage.h"
 
-FetchStage::FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d)
-    : pc(program_counter), cache(ch), decode_stage(d) {}
+FetchStage::FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d, bool pipe_disabled)
+    : pc(program_counter), cache(ch), decode_stage(d), pipeline_disabled(pipe_disabled) {}
 
 void FetchStage::reset() {
     blocked = false;
     result = nullptr;
+    no_fetch = false;
     cache->reset_delay();
 }
+
+void FetchStage::enable_pipeline() {
+    reset();
+    decode_stage.reset();
+    decode_stage.execute_stage.reset();
+    decode_stage.execute_stage.memory_stage.reset();
+    decode_stage.execute_stage.memory_stage.wb_stage.reset();
+    pipeline_disabled = false;    
+}
+
+void FetchStage::disable_pipeline() {
+    reset();
+    decode_stage.reset();
+    decode_stage.execute_stage.reset();
+    decode_stage.execute_stage.memory_stage.reset();
+    decode_stage.execute_stage.memory_stage.wb_stage.reset();
+    pipeline_disabled = true;    
+}
+
 // The tick method is what happens every clock cycle.
 // In the fetch stage of a pipeline, this is one of two things:
 //      1) Begin a memory access for the next instruction (which will be the program counter)
 //      2) Wait for memory to return the results of the current access
 void FetchStage::tick() {
+    if (pipeline_disabled) {
+        // if not ready to fetch and the writeback has finished, the fetch will restart next cycle
+        if (no_fetch && decode_stage.execute_stage.memory_stage.wb_stage.writeback_finished) {
+            no_fetch = false;
+            return;
+        } else if (no_fetch) { // do nothing when not ready to fetch
+            return;
+        }
+    }
     // If we are not blocked because of a memory access, begin a memory access
     if(!blocked) {
         std::cout << "Fetch: Now beginning a new fetch at address " << *pc << ", blocking." << std::endl;
@@ -41,7 +70,9 @@ void FetchStage::tick() {
             result = nullptr;
             // increment pc
             *pc = *pc + 1;
-            blocked = false;                        
+            blocked = false;
+            no_fetch = true;
+            decode_stage.execute_stage.memory_stage.wb_stage.writeback_finished = false;
         }
     } else if (!decode_stage.blocked) { // current fetching is blocked, decode stage should recieve a noop
         decode_stage.noop = true;

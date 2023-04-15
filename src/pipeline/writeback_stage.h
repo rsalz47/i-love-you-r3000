@@ -32,9 +32,13 @@ class WritebackStage {
     bool noop = true;
     bool squashed = false; // indicates whether the previous stages should be squashed
     bool exit = false; // the program should exit
+    // used in the pipeline disabled mode to indicate whether the writeback has finished
+    // so that fetch stage is no longer blocked
+    bool writeback_finished = false;
     executed_instruction executed;
     
     WritebackStage(uint32_t* regs, uint32_t* program_counter);
+    void reset();
 	void tick();
 };
 #endif /* WRITEBACK_STAGE_H */

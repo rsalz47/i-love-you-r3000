@@ -25,15 +25,12 @@ typedef struct decoded_instruction {
 } decoded_instruction;
 
 class ExecuteStage {
- private:
-    MemoryStage &memory_stage;
-
  public:
     bool noop = true;
     bool blocked = false;
     decoded_instruction decoded;
     executed_instruction executed;
-
+    MemoryStage &memory_stage;
     ExecuteStage(MemoryStage &m_s);
 
     // In one clock tick, execute executes the instruction that decode has decoded.
