@@ -63,6 +63,12 @@ void DecodeStage::tick() {
         case 0b101111:
             decoded.operation = "j";
             break;
+        case 0b110001:
+            decoded.operation = "nop";
+            break;
+        case 0b111111:
+            decoded.operation = "hcf";
+            break;
         }
 
         decoded.opcode = encoded_op;

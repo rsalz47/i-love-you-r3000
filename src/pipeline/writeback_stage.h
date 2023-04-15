@@ -31,6 +31,7 @@ class WritebackStage {
  public:
     bool noop = true;
     bool squashed = false; // indicates whether the previous stages should be squashed
+    bool exit = false; // the program should exit
     executed_instruction executed;
     
     WritebackStage(uint32_t* regs, uint32_t* program_counter);

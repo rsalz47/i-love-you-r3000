@@ -315,7 +315,7 @@ unsigned long make_j_type(vector<string> tokens) {
         instruction |= JFormat::pack_target_addr(stoul(tokens[1]));
     }
     else if(op == "nop") {
-        return opc; 
+        return opc << 26; 
     }
     else if(op == "hcf") {
         instruction |= pack_opcode(opc);

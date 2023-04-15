@@ -21,8 +21,10 @@ void MemoryStage::tick() {
     if (!blocked) { // if not blocked, process next instruction
         std::cout << "Memory: not blocked" << std::endl;
         // if not mem and writeback, pass the instruction (reg + value) to wb
-        if (executed.opcode != 0b011111 && executed.opcode != 0b100000) { // not memory access instruction
-            // add, sub, mul, div, li all require writeback
+        if (executed.opcode == 0b110001) { // nop
+            wb_stage.noop = true;
+        } else if (executed.opcode != 0b011111 && executed.opcode != 0b100000) {
+            // not memory access instruction
             std::cout << "Memory: Delivered instructions with dest " << executed.destination << " to writeback stage" << std::endl;
             std::cout << "dest: " << executed.destination << std::endl;
             wb_stage.executed = executed;

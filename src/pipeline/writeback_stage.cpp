@@ -14,7 +14,9 @@ void WritebackStage::tick() {
     std::cout << "Writeback: current opcode: " << static_cast<int>(executed.opcode) << std::endl;
 
     // R-format + lw + li need writeback, sw does not need writeback
-    if (executed.opcode <= 0b010110 || executed.opcode == 0b100000 || executed.opcode == 0b100001) {        
+    if (executed.opcode == 0b111111) { //hcf
+        exit = true;
+    } else if (executed.opcode <= 0b010110 || executed.opcode == 0b100000 || executed.opcode == 0b100001){        
         registers[executed.destination] = executed.value;
         std::cout << "Writeback: Current instruction needs writeback. Writing to Registers..." << std::endl;
     } else if ((executed.opcode <= 0b101110 && executed.opcode >= 0b100010) || executed.opcode == 0b101111) { //branch + unconditional jump
@@ -26,8 +28,7 @@ void WritebackStage::tick() {
             std::cout << "Writeback: Jump or branch taken. Issuing signal to squash the pipeline." << std::endl;
             *pc = executed.addr;
         }
-        // branching not taken, do nothing
-        noop = true;
+        // branching not taken, do nothing0b110001
     }
         
     // TODO branching
