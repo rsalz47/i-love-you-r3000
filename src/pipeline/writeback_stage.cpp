@@ -29,6 +29,7 @@ void WritebackStage::tick() {
             *pc = executed.addr;
         }
         // branching not taken, do nothing0b110001
+        noop = true;
     }
         
     // TODO branching
