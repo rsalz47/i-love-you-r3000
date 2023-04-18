@@ -9,6 +9,7 @@
 #include "../mem/registers.h"
 
 using namespace std;
+map<string, int> symbols;
 
 unsigned long make_r_type(vector<string> tokens) {
     unsigned long instruction = 0x00000000;
@@ -308,7 +309,15 @@ unsigned long make_j_type(vector<string> tokens) {
 
     if(op == "j") {
         instruction |= pack_opcode(opc);
-        instruction |= JFormat::pack_target_addr(stoul(tokens[1]));
+        
+        if(tokens[1][0] == '.') {
+            cout << "Jump has parameter that is label " << tokens[1] << endl;
+            cout << "Label " << tokens[1] << " corresponds to address " << symbols[tokens[1]] << endl;
+            instruction |= JFormat::pack_target_addr(symbols[tokens[1]]);
+        }
+        else
+            instruction |= JFormat::pack_target_addr(stoul(tokens[1]));
+
     }
     else if(op == "jal") {
         instruction |= pack_opcode(opc);
@@ -327,12 +336,21 @@ unsigned long make_j_type(vector<string> tokens) {
 
 unsigned long build_instruction(string instr) {
 	// Tokenize instruction
-	vector<string> tokens;
+	vector<string> temp_tokens;
+    vector<string> tokens;
 	stringstream inst(instr);
 	string temp;
 	while(getline(inst, temp, ' ')) 
-		tokens.push_back(temp);
+		temp_tokens.push_back(temp);
 	
+    if(temp_tokens[0][0] == '.') {
+        cout << "encountered label " << temp_tokens[0] << endl;
+        tokens.assign(temp_tokens.begin() + 1, temp_tokens.end());
+    }
+    else {
+        tokens = temp_tokens;
+    }
+
     // Pack instruction based on format
 	switch(format_of(tokens[0])) {
 		case R: 
@@ -347,6 +365,19 @@ unsigned long build_instruction(string instr) {
 	}
     cout << "opcode of unrecognized format: " << tokens[0] << endl;
     exit(-1);
+}
+
+void build_symbol_table(string line, int line_num) {
+    vector<string> tokens;
+	stringstream instr(line);
+	string temp;
+	while(getline(instr, temp, ' ')) 
+		tokens.push_back(temp);
+
+    if(tokens[0][0] == '.') {
+        cout << "Encountered symbol " << tokens[0] << " at line " << line_num << endl;
+    }
+    symbols.insert( pair<string, int>(tokens[0], line_num) );
 }
 
 // parses an input file line by line and packs the corresponding instruction.
@@ -369,11 +400,25 @@ void assemble(string file) {
     system(temp.c_str());
     out.open(output_file);
 
-	// Start assembling line by line
+	// Start assembling line by line 
 	string line;
+
+    int line_num = 0;
+    cout << "Building symbol table..." << endl;
 	while(getline(in, line, '\n')) {
+       build_symbol_table(line, line_num);
+       line_num++;
+    }
+    cout << "Symbol table built. " << endl;
+
+    in.clear();
+    in.seekg(0, ios::beg);
+    
+    cout << "Assembling instructions..." << endl;
+    while(getline(in, line, '\n')) {
 		out << build_instruction(line) << endl;
 	}
+    cout << "Assembly complete. Assembled machine code can be found in " << output_file << endl;
 
 	// Close everything up
 	in.close();
