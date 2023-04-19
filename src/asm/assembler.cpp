@@ -1,4 +1,3 @@
-#include <sstream>
 #include <iostream>
 #include <fstream> 
 #include <vector>
@@ -236,67 +235,135 @@ unsigned long make_i_type(vector<string> tokens) {
     }
     else if(op == "b") {
         instruction |= pack_opcode(opc);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[1]));
+        if(tokens[1][0] == '.') {
+            cout << "Branch has parameter that is label " << tokens[1] << endl;
+            cout << "Label " << tokens[1] << " corresponds to address " << symbols[tokens[1]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[1]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[1]));
     }
     else if(op == "beq") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchEQ has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[1] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bne") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchNE has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgt") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchGT has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blt") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchLT has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtz") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchGTZ has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltz") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchLTZ has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+ 
     }
     else if(op == "bgte") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchGTE has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "blte") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchLTE has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bgtez") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+        if(tokens[3][0] == '.') {
+            cout << "BranchGTEZ has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     else if(op == "bltez") {
         instruction |= pack_opcode(opc);
         instruction |= pack_rs(RegistersToBits[tokens[1]]);
         instruction |= pack_rt(RegistersToBits[tokens[2]]);
-        instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
+
+        if(tokens[3][0] == '.') {
+            cout << "BranchLTEZ has parameter that is label " << tokens[3] << endl;
+            cout << "Label " << tokens[3] << " corresponds to address " << symbols[tokens[3]] << endl;
+            instruction |= IFormat::pack_addr_imm(symbols[tokens[3]]);
+        }
+        else
+            instruction |= IFormat::pack_addr_imm(stoul(tokens[3]));
     }
     cout << bitset<32>(instruction) << endl;
     return instruction;
@@ -321,7 +388,13 @@ unsigned long make_j_type(vector<string> tokens) {
     }
     else if(op == "jal") {
         instruction |= pack_opcode(opc);
-        instruction |= JFormat::pack_target_addr(stoul(tokens[1]));
+        if(tokens[1][0] == '.') {
+            cout << "Jump And Link has parameter that is label " << tokens[1] << endl;
+            cout << "Label " << tokens[1] << " corresponds to address " << symbols[tokens[1]] << endl;
+            instruction |= JFormat::pack_target_addr(symbols[tokens[1]]);
+        }
+        else
+            instruction |= JFormat::pack_target_addr(stoul(tokens[1]));
     }
     else if(op == "nop") {
         return opc << 26; 
@@ -374,10 +447,11 @@ void build_symbol_table(string line, int line_num) {
 	while(getline(instr, temp, ' ')) 
 		tokens.push_back(temp);
 
-    if(tokens[0][0] == '.') {
+    if(tokens[0][0] == '.')  {
         cout << "Encountered symbol " << tokens[0] << " at line " << line_num << endl;
+        cout << "inserting " << tokens[0] << endl;
+        symbols.insert({tokens[0], line_num});
     }
-    symbols.insert( pair<string, int>(tokens[0], line_num) );
 }
 
 // parses an input file line by line and packs the corresponding instruction.
@@ -405,9 +479,9 @@ void assemble(string file) {
 
     int line_num = 0;
     cout << "Building symbol table..." << endl;
-	while(getline(in, line, '\n')) {
-       build_symbol_table(line, line_num);
-       line_num++;
+	while(getline(in, line)) {
+        build_symbol_table(line, line_num);
+        line_num++;
     }
     cout << "Symbol table built. " << endl;
 
@@ -415,7 +489,7 @@ void assemble(string file) {
     in.seekg(0, ios::beg);
     
     cout << "Assembling instructions..." << endl;
-    while(getline(in, line, '\n')) {
+    while(getline(in, line)) {
 		out << build_instruction(line) << endl;
 	}
     cout << "Assembly complete. Assembled machine code can be found in " << output_file << endl;
