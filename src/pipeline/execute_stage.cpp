@@ -78,7 +78,9 @@ void ExecuteStage::tick() {
         case 0b101111: // j
             executed.addr = decoded.target_addr;
             break;
-        }
+        case 0b111111: // hcf
+            exit(20);
+    }
         std::cout << "Finished executing the instruction with opcode " << static_cast<int>(decoded.opcode) << " and value " << executed.value << std::endl; 
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction

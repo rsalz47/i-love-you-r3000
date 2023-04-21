@@ -32,10 +32,11 @@ int main() {
     memory.set_initial_delay(3);
     std::cout << memory.initial_delay << std::endl;
 
-    cache.set_initial_delay(0);
+    cache.set_initial_delay(3);
     std::cout << cache.initial_delay << std::endl;
 
-    memory.memory[0][0] = 0b10000100000000000000000000000000;    
+
+    memory.memory[0][0] = 0b10000100000000000000000000000000;
     memory.memory[0][1] = 0b10000100001000000000000000000001;
     memory.memory[0][2] = 0b10000100010000000000000000000101;
     memory.memory[0][3] = 0b00000000000000010000000000000000;
@@ -70,15 +71,14 @@ int main() {
         } 
         else {
             mem_stage.tick();
+            std::cout << "Register 4 expected 100, is: " << registers[4] << std::endl;
+            std::cout << "Register 0 expected 5, is: " << registers[0] << std::endl;
             execute_stage.tick();
             decode_stage.tick();
             fetch_stage.tick();
         }
         CLK++;
-        // std::cin >> temp;
     }
 
-    std::cout << "addr: " << memory.memory[5][0] << std::endl; // should be 10
-    std::cout << "r1: " << registers[1] << std::endl; // should be 24
     return 0;
 }
