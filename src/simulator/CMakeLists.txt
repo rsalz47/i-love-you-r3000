@@ -17,6 +17,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        ../../src/mem/memory_system.h
         ../../src/mem/memory.h
         ../../src/mem/cache.h
         ../../src/mem/cache.cpp

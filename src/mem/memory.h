@@ -4,12 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "memory_system.h"
 
 #define WORDS_PER_LINE 4
 #define NUM_LINES 32
 #define DEFAULT_DELAY 5
 
-class Memory {
+class Memory : public MemorySystem {
    public:
 	int initial_delay = DEFAULT_DELAY;
     int delay_timer = DEFAULT_DELAY;
@@ -43,7 +44,7 @@ class Memory {
     
     uint32_t* store_cache_ver(uint32_t addr, uint32_t data);
     
-    uint32_t* fetch(uint32_t addr, int whois_calling);
+    uint32_t* load(uint32_t addr, int whois_calling);
     
     uint32_t* store(uint32_t addr, uint32_t data, int whois_calling);
 

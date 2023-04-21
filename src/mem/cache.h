@@ -3,11 +3,12 @@
 
 #include <algorithm>
 #include <iterator>
+#include "memory_system.h"
 #include "memory.h"
 
 #define CACHE_DELAY_DEFAULT 2
 
-class Cache {
+class Cache : public MemorySystem {
    public:
 	int initial_delay;
     int cache_delay_timer;

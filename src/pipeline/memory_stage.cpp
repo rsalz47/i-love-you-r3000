@@ -1,15 +1,20 @@
 #include <iostream>
 #include "memory_stage.h"
 
-MemoryStage::MemoryStage(WritebackStage &wb_stage, Cache* cache):
-    wb_stage(wb_stage), cache(cache) {}
+MemoryStage::MemoryStage(WritebackStage &wb_stage, MemorySystem* ms):
+    wb_stage(wb_stage), mem_sys(ms) {}
     
 void MemoryStage::reset() {
     blocked = false;
     noop = true;    
     // not resetting executed_instruction because there's no reason to 
-    cache->reset_delay();
+    mem_sys->reset_delay();
 }
+
+void MemoryStage::set_mem_sys(MemorySystem* mem_sys) {
+    this->mem_sys = mem_sys;
+}
+
 
 void MemoryStage::tick() {
     if (noop) {
@@ -33,7 +38,7 @@ void MemoryStage::tick() {
         if (executed.opcode == 0b011111) { // sw
             std::cout << "Memory: Execute has delivered a store instruction... \n";
             // store: opcode stored_value(data) value(addr)
-            uint32_t* data = cache->store(executed.value, executed.dest_value, 4); // memory stage id = 4
+            uint32_t* data = mem_sys->store(executed.value, executed.dest_value, 4); // memory stage id = 4
             if (data == nullptr) {
                 std::cout << "Memory: store blocked\n";
                 wb_stage.noop = true;
@@ -48,7 +53,7 @@ void MemoryStage::tick() {
             }
         } else { //lw
             std::cout << "Memory: Execute has delivered a load instruction... \n";
-            uint32_t* result = cache->load(executed.value, 4);
+            uint32_t* result = mem_sys->load(executed.value, 4);
             if (result == nullptr) {
                 std::cout << "Memory: load blocked\n";
                 wb_stage.noop = true;
@@ -65,7 +70,7 @@ void MemoryStage::tick() {
         // blocked, requst memory access again
         if (executed.opcode == 0b011111) { // sw
             // store: opcode stored_value(data) value(addr)
-            uint32_t* data = cache->store(executed.value, executed.dest_value, 4); // memory stage id = 4
+            uint32_t* data = mem_sys->store(executed.value, executed.dest_value, 4); // memory stage id = 4
             if (data == nullptr) {
                 wb_stage.noop = true;
                 blocked = true;
@@ -77,7 +82,7 @@ void MemoryStage::tick() {
                 blocked = false;
             }
         } else { //lw
-            uint32_t* result = cache->load(executed.value, 4);
+            uint32_t* result = mem_sys->load(executed.value, 4);
             if (result == nullptr) {
                 wb_stage.noop = true;
                 blocked = true;

@@ -3,13 +3,13 @@
 
 #include <fstream>
 #include <iostream>
-#include "../mem/cache.h"
+#include "../mem/memory_system.h"
 #include "decode_stage.h"
 
 class FetchStage {
  private:
     uint32_t* pc;
-    Cache* cache;
+    MemorySystem* mem_sys;
 
  public:
     DecodeStage &decode_stage;
@@ -24,7 +24,7 @@ class FetchStage {
 
     // The member variables are pointers because they are shared amongst all pipeline stages
     // This constructor simply initializes them
-    FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d, bool pipe_disabled = false);
+    FetchStage(uint32_t* program_counter, MemorySystem* ms, DecodeStage &d, bool pipe_disabled = false);
 
     void reset();
     // The tick method is what happens every clock cycle.
@@ -35,5 +35,7 @@ class FetchStage {
 
     void enable_pipeline();
     void disable_pipeline();
+
+    void set_mem_sys(MemorySystem* mem_sys);
 };
 #endif /* FETCH_STAGE_H */
