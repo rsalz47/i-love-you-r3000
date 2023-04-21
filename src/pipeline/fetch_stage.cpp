@@ -34,6 +34,7 @@ void FetchStage::disable_pipeline() {
 //      2) Wait for memory to return the results of the current access
 void FetchStage::tick() {
     if (pipeline_disabled) {
+        decode_stage.noop = true;
         // if not ready to fetch and the writeback has finished, the fetch will restart next cycle
         if (no_fetch && decode_stage.execute_stage.memory_stage.wb_stage.writeback_finished) {
             no_fetch = false;
