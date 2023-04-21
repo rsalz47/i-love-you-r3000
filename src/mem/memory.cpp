@@ -51,7 +51,7 @@ uint32_t* Memory::store_cache_ver(uint32_t addr, uint32_t data) {
              [addr % WORDS_PER_LINE]);
 }
 
-uint32_t* Memory::fetch(uint32_t addr, int whois_calling) {
+uint32_t* Memory::load(uint32_t addr, int whois_calling) {
     if (this->in_use == false) {
         this->in_use = true;
         cur_caller_id = whois_calling;  // this ensures that each fetch is

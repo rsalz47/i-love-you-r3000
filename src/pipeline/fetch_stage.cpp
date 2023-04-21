@@ -1,13 +1,13 @@
 #include "fetch_stage.h"
 
-FetchStage::FetchStage(uint32_t* program_counter, Cache* ch, DecodeStage &d, bool pipe_disabled)
-    : pc(program_counter), cache(ch), decode_stage(d), pipeline_disabled(pipe_disabled) {}
+FetchStage::FetchStage(uint32_t* program_counter, MemorySystem* ms, DecodeStage &d, bool pipe_disabled)
+    : pc(program_counter), mem_sys(ms), decode_stage(d), pipeline_disabled(pipe_disabled) {}
 
 void FetchStage::reset() {
     blocked = false;
     result = nullptr;
     no_fetch = false;
-    cache->reset_delay();
+    mem_sys->reset_delay();
 }
 
 void FetchStage::enable_pipeline() {
@@ -26,6 +26,10 @@ void FetchStage::disable_pipeline() {
     decode_stage.execute_stage.memory_stage.reset();
     decode_stage.execute_stage.memory_stage.wb_stage.reset();
     pipeline_disabled = true;    
+}
+
+void FetchStage::set_mem_sys(MemorySystem* mem_sys) {
+    this->mem_sys = mem_sys;
 }
 
 // The tick method is what happens every clock cycle.
@@ -48,12 +52,12 @@ void FetchStage::tick() {
         std::cout << "Fetch: Now beginning a new fetch at address " << *pc << ", blocking." << std::endl;
         blocked = true;
         curr_addr_fetching = *pc;
-        result = cache->load(curr_addr_fetching, 0);        
+        result = mem_sys->load(curr_addr_fetching, 0);        
     }
     // if we are blocked and we do not have a result back yet, then we are waiting for memory to finish
     else if(blocked && result == nullptr){
         std::cout << "Fetch: Currently stalled, polling for address " << *pc << std::endl;
-        result = cache->load(curr_addr_fetching, 0); 
+        result = mem_sys->load(curr_addr_fetching, 0); 
     }
 
     // if we have the data we need, see if we can pass it forward
