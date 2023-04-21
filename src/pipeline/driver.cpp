@@ -16,24 +16,26 @@ uint32_t registers[32];
 int main() {
     std::string temp;
     // initializations (right now, just confirming stuff gets instantiated)
-    memory.set_initial_delay(0);
+    memory.set_initial_delay(3);
     std::cout << memory.initial_delay << std::endl;
 
-    cache.set_initial_delay(0);
+    cache.set_initial_delay(3);
     std::cout << cache.initial_delay << std::endl;
 
-    memory.memory[0][0] = 0b10000100001000000000000000000011;
-    memory.memory[0][1] = 0b10001000000000000000000000000011;
-    memory.memory[0][2] = 0b10000100001000000000000000001010;
-    memory.memory[0][3] = 0b10000100001000000000000000010100;
-    memory.memory[1][0] = 0b11111100000000000000000000000000; // hcf
+    memory.memory[0][0] = 0b10000100000000000000000000000000;
+    memory.memory[0][1] = 0b10000100001000000000000000000001;
+    memory.memory[0][2] = 0b10000100010000000000000000000101;
+    memory.memory[0][3] = 0b00000000000000010000000000000000;
+    memory.memory[1][0] = 0b10010000000000100000000000000011;
+    memory.memory[1][1] = 0b10000100100000000000000001100100;
+    memory.memory[1][2] = 0b11111100000000000000000000000000; // hcf
 
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
     MemoryStage mem_stage(wb_stage, &cache);
     ExecuteStage execute_stage(mem_stage);
     DecodeStage decode_stage(execute_stage, registers);
     FetchStage fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage);
-    fetch_stage.disable_pipeline(); // disable pipeline
+    // fetch_stage.disable_pipeline(); // disable pipeline
     // one can also disable the pipeline using the fetch constructor
     // fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage, true);
     
@@ -53,15 +55,14 @@ int main() {
         } 
         else {
             mem_stage.tick();
+            std::cout << "Register 4 expected 100, is: " << registers[4] << std::endl;
+            std::cout << "Register 0 expected 5, is: " << registers[0] << std::endl;
             execute_stage.tick();
             decode_stage.tick();
             fetch_stage.tick();
         }
         CLK++;
-        // std::cin >> temp;
     }
 
-    std::cout << "addr: " << memory.memory[5][0] << std::endl; // should be 10
-    std::cout << "r1: " << registers[1] << std::endl; // should be 24
     return 0;
 }
