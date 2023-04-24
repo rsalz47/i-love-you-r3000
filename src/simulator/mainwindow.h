@@ -18,11 +18,17 @@ public:
 private slots:
     void on_pushButton_clicked();
 
-    void on_clockTick_clicked();
-
     void on_loadIntructionFile_clicked();
 
-    void on_reset_clicked();
+    void on_jumpToMemLoc_clicked();
+
+    void on_runProgram_clicked();
+
+
+
+    void on_pipeLineEnableCheckBox_stateChanged(int arg1);
+
+    void on_checkBox_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

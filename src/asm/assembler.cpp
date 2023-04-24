@@ -459,14 +459,14 @@ void assemble(string file) {
 	ifstream in;
 	
 	// Check if target is valid
-    in.open("./in/" + file);
+    in.open(file);
 	if (!in.is_open()) {
 		cout << "unable to open file ./in/" << file << endl;
 		exit(-1);
 	}
 
 	ofstream out;
-    string output_file = "./out/" + file.substr(0, file.length() - 1 - 3) +".r3k";
+    string output_file = file.substr(0, file.length() - 1 - 3) +".r3k";
 
     // Delete any pre-existing assembled file matching the one we want to generate
     // and open up a new file 

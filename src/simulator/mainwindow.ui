@@ -372,8 +372,8 @@
    <widget class="QLabel" name="clockCycles">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>280</y>
+      <x>800</x>
+      <y>320</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -386,7 +386,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>310</y>
+      <y>350</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -514,8 +514,8 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>370</y>
+      <x>300</x>
+      <y>380</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -551,7 +551,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>280</y>
+      <y>320</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -654,7 +654,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>260</y>
+      <y>300</y>
       <width>101</width>
       <height>18</height>
      </rect>
@@ -666,14 +666,144 @@
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>260</y>
+      <x>800</x>
+      <y>300</y>
       <width>66</width>
       <height>18</height>
      </rect>
     </property>
     <property name="text">
      <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_17">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>280</y>
+      <width>131</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Program Counter</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_18">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>280</y>
+      <width>66</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="inputForJumpTo">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>350</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <row>
+     <property name="text">
+      <string>addr</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="jumpToMemLoc">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>370</y>
+      <width>87</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>jump to</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_19">
+    <property name="geometry">
+     <rect>
+      <x>1115</x>
+      <y>270</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Program Status</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="runningStatus">
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>270</y>
+      <width>66</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="runProgram">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>350</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Run Program</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="pipeLineEnableCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>290</y>
+      <width>121</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>pipeline toggle</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>320</y>
+      <width>111</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>cache toggle</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
