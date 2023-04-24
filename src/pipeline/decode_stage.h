@@ -12,6 +12,7 @@
 class DecodeStage {
  private: 
     uint32_t* registers;
+    std::vector<int> &dependency_list;
  public:
     ExecuteStage &execute_stage;
     bool blocked = false;
@@ -19,11 +20,12 @@ class DecodeStage {
     uint32_t encoded_instruction = 0x0;
     decoded_instruction decoded;
     
-    DecodeStage(ExecuteStage &e, uint32_t *registers);
+    DecodeStage(ExecuteStage &e, uint32_t *registers, std::vector<int> &dependency_list);
 
     // In one tick of the decode stage, we decode one instruction 
     // as long as the stage is not currently blocked.
     void reset();
     void tick();
+    bool check_dependency_issue(int reg);
 };
 #endif /* DECODE_STAGE_H */

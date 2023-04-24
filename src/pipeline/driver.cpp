@@ -5,6 +5,7 @@
 #include "writeback_stage.h"
 
 #include <iostream>
+#include <vector>
 #include "../mem/cache.h"
 
 uint32_t CLK = 0;
@@ -12,6 +13,8 @@ uint32_t PROGRAM_COUNTER = 0;
 Memory memory(10);
 Cache cache(&memory, 5);
 uint32_t registers[32];
+
+std::vector<int> dependency_list;
 
 MemorySystem *mem_sys = &cache; // cache enabled
 
@@ -44,10 +47,10 @@ int main() {
     memory.memory[1][1] = 0b10000100100000000000000001100100;
     memory.memory[1][2] = 0b11111100000000000000000000000000;
 
-    WritebackStage wb_stage(registers, &PROGRAM_COUNTER);
+    WritebackStage wb_stage(registers, &PROGRAM_COUNTER, dependency_list);
     MemoryStage mem_stage(wb_stage, mem_sys);
     ExecuteStage execute_stage(mem_stage);
-    DecodeStage decode_stage(execute_stage, registers);
+    DecodeStage decode_stage(execute_stage, registers, dependency_list);
     FetchStage fetch_stage(&PROGRAM_COUNTER, mem_sys, decode_stage);
     //fetch_stage.disable_pipeline(); // disable pipeline
     // one can also disable the pipeline using the fetch constructor
@@ -63,7 +66,9 @@ int main() {
         }
         wb_stage.tick();
         if (wb_stage.exit || wb_stage.squashed) {
-            std::cout << "!! squashing previous stages" << std::endl;
+            std::cout << "!! CLEARING DEPENDENCY LIST  !!" << std::endl;
+            dependency_list.clear();
+            std::cout << "!! SQUASHING PREVIOUS STAGES !!" << std::endl;
             mem_stage.reset();
             execute_stage.reset();
             decode_stage.reset();
