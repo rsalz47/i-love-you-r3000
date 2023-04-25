@@ -1,5 +1,6 @@
-#include <iostream>
 #include "cache.h"
+
+#include <iostream>
 
 Cache::Cache(Memory* main_mem) {
     initial_delay = CACHE_DELAY_DEFAULT;
@@ -36,16 +37,15 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     uint32_t* fetched_line =
         this->main_mem->fetch_cache_ver(addr, whois_calling);
 
-
     if (fetched_line == nullptr) {
         return 0;
     }
 
-    //  need a copy of the fetched_line rather, fetched_line cannot be a pointer b/c
-    //  if the dirty bit is set, then data will be written back to memory
-    //  thus "fetched_line" will be polluted and the cache will not update		
+    //  need a copy of the fetched_line rather, fetched_line cannot be a pointer
+    //  b/c if the dirty bit is set, then data will be written back to memory
+    //  thus "fetched_line" will be polluted and the cache will not update
     uint32_t fetched_line_copy[4];
-    std::copy(fetched_line, fetched_line+4, std::begin(fetched_line_copy));
+    std::copy(fetched_line, fetched_line + 4, std::begin(fetched_line_copy));
 
     // find row in cache to evict
     // this should be trivial because it's just replace at current index
@@ -60,9 +60,9 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
 
     // if valid and dirty, evict line by writing to main mem
     if (line[7] && line[6]) {
-        uint32_t addr_to_write_to = tag;
+        uint32_t addr_to_write_to = line[0];
         addr_to_write_to = addr_to_write_to << 4;
-        addr_to_write_to += index;
+        addr_to_write_to += line[1];
         addr_to_write_to = addr_to_write_to << 2;
         std::cout << addr_to_write_to << std::endl;
 
@@ -78,7 +78,6 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     line[3] = fetched_line_copy[1];
     line[4] = fetched_line_copy[2];
     line[5] = fetched_line_copy[3];
-
 
     // mark the cache location as clean and valid
     line[6] = 0;
@@ -150,10 +149,9 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
     uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
 
-    uint32_t* ret_val = this->main_mem->store(addr, data, whois_calling);
-
     // Check if cache hit
     uint32_t* matching_line = nullptr;
+    uint32_t* ret_val;  // can return cache line or memory line
     for (int i = 0; i < 16; i++) {
         if (cache[i][0] == tag && cache[i][1] == index && cache[i][7]) {
             // goes to the first word,
@@ -162,8 +160,18 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         // if hit, fill in the corresponding line
         if (matching_line) {
             matching_line[0] = data;
+            // writing dirty bit to 1
+            // writing to [4] as we have moved to the data portion of the line
+            matching_line[4] = 1;
+            ret_val = matching_line;
         }
-        // write directly to memory
+
+        // following write around for cache write misses
+        // missed the write back to cache as it is a write miss so write
+        // straight to memory instead
+        if (!matching_line) {
+            ret_val = this->main_mem->store(addr, data, whois_calling);
+        }
 
         if (ret_val == nullptr) {
             return nullptr;
@@ -182,22 +190,21 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     return matching_line;  // indicating success
 }
 
-
 void Cache::cur_status() {
     printf(
-           "\n------TAG------ | -----INDEX----- | ---WORD1(00)--- | "
-           "---WORD2(01)--- | ---WORD3(10)--- | ---WORD4(11)--- | "
-           "-----DIRTY----- | "
-           "-----VALID----- | \n");
+        "\n------TAG------ | -----INDEX----- | ---WORD1(00)--- | "
+        "---WORD2(01)--- | ---WORD3(10)--- | ---WORD4(11)--- | "
+        "-----DIRTY----- | "
+        "-----VALID----- | \n");
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 8; j++) {
             printf("%15d | ", this->cache[i][j]);
         }
         printf(
-               "\n--------------- | --------------- | --------------- | "
-               "--------------- | --------------- | --------------- | "
-               "--------------- | "
-               "--------------- | \n");
+            "\n--------------- | --------------- | --------------- | "
+            "--------------- | --------------- | --------------- | "
+            "--------------- | "
+            "--------------- | \n");
     }
 }
 
