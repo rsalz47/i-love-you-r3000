@@ -161,8 +161,7 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         if (matching_line) {
             matching_line[0] = data;
             // writing dirty bit to 1
-            // writing to [4] as we have moved to the data portion of the line
-            matching_line[4] = 1;
+            cache[index][6] = 1;
             ret_val = matching_line;
         }
 
