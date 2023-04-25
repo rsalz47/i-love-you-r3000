@@ -23,7 +23,6 @@
 #include <QDir>
 
 
-uint32_t CLK = 0;
 uint32_t PROGRAM_COUNTER = 0;
 Memory main_mem(2);
 Cache main_cache(&main_mem, 1);
@@ -37,7 +36,10 @@ DecodeStage decode_stage(execute_stage, registers);
 FetchStage fetch_stage(&PROGRAM_COUNTER, &main_cache, decode_stage);
 
 void reset_registers(){
-
+    for (int i = 0; i<32; i++){
+        registers[i] = 0;
+    }
+    return;
 }
 
 void enable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Cache* cache) {
@@ -99,6 +101,8 @@ void refreshViews(Ui::MainWindow *ui){
     //update statistics
     ui->label_16->setText(QString::number(main_cache.num_cache_misses));
     ui->label_18->setText(QString::number(PROGRAM_COUNTER));
+    ui->clockCycles->setText(QString::number(clock_cycle));
+
 }
 
 
@@ -145,7 +149,6 @@ void MainWindow::on_pushButton_clicked()
         fetch_stage.tick();
     }
     clock_cycle +=1;
-    ui->clockCycles->setText(QString::number(clock_cycle));
     refreshViews(ui);
     return;
 }
@@ -260,10 +263,19 @@ void MainWindow::on_resetSimulatorButton_clicked()
 {
     main_mem.reset();
     main_cache.reset();
-    CLK = 0;
+    clock_cycle = 0;
     PROGRAM_COUNTER = 0;
 
     //reset registers
+    reset_registers();
+    main_cache.num_cache_misses = 0;
+
+    //reset pipeline
+    wb_stage.reset();
+    mem_stage.reset();
+    execute_stage.reset();
+    decode_stage.reset();
+    fetch_stage.reset();
 
     refreshViews(ui);
 }

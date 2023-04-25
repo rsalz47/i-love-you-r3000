@@ -60,9 +60,9 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
 
     // if valid and dirty, evict line by writing to main mem
     if (line[7] && line[6]) {
-        uint32_t addr_to_write_to = tag;
+        uint32_t addr_to_write_to = line[0];
         addr_to_write_to = addr_to_write_to << 4;
-        addr_to_write_to += index;
+        addr_to_write_to += line[1];
         addr_to_write_to = addr_to_write_to << 2;
         std::cout << addr_to_write_to << std::endl;
 
@@ -151,6 +151,7 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
 
     // Check if cache hit
     uint32_t* matching_line = nullptr;
+    uint32_t* ret_val;  // can return cache line or memory line
     for (int i = 0; i < 16; i++) {
         if (cache[i][0] == tag && cache[i][1] == index && cache[i][7]) {
             // goes to the first word,
@@ -159,16 +160,19 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         // if hit, fill in the corresponding line
         if (matching_line) {
             matching_line[0] = data;
-            // writing dirty bit to 1 
-            matching_line[6] = 1;
+            // writing dirty bit to 1
+            // writing to [4] as we have moved to the data portion of the line
+            matching_line[4] = 1;
+            ret_val = matching_line;
         }
 
         // following write around for cache write misses
-        //missed the write back to cache as it is a write miss so write straight to memory instead
-        if (!matching_line){
-            uint32_t* ret_val = this->main_mem->store(addr, data, whois_calling);
+        // missed the write back to cache as it is a write miss so write
+        // straight to memory instead
+        if (!matching_line) {
+            ret_val = this->main_mem->store(addr, data, whois_calling);
         }
-    
+
         if (ret_val == nullptr) {
             return nullptr;
         } else {
