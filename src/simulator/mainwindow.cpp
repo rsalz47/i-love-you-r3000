@@ -10,6 +10,8 @@
 #include "../../src/pipeline/writeback_stage.h"
 #include "../../src/asm/assembler.cpp"
 #include <sstream>
+#include<iostream>
+#include<array>
 
 
 #include <QString>
@@ -23,8 +25,8 @@
 
 uint32_t CLK = 0;
 uint32_t PROGRAM_COUNTER = 0;
-Memory main_mem(3);
-Cache main_cache(&main_mem, 3);
+Memory main_mem(2);
+Cache main_cache(&main_mem, 1);
 uint32_t registers[32];
 volatile int clock_cycle = 0;
 
@@ -33,6 +35,10 @@ MemoryStage mem_stage(wb_stage, &main_cache);
 ExecuteStage execute_stage(mem_stage);
 DecodeStage decode_stage(execute_stage, registers);
 FetchStage fetch_stage(&PROGRAM_COUNTER, &main_cache, decode_stage);
+
+void reset_registers(){
+
+}
 
 void enable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Cache* cache) {
     fetch_stage.set_mem_sys(cache);
@@ -249,3 +255,16 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
     }
     return;
 }
+
+void MainWindow::on_resetSimulatorButton_clicked()
+{
+    main_mem.reset();
+    main_cache.reset();
+    CLK = 0;
+    PROGRAM_COUNTER = 0;
+
+    //reset registers
+
+    refreshViews(ui);
+}
+
