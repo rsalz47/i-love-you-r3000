@@ -32,10 +32,10 @@ void disable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Memory* m
 int main() {
     std::string temp;
     // initializations (right now, just confirming stuff gets instantiated)
-    memory.set_initial_delay(3);
+    memory.set_initial_delay(0);
     std::cout << memory.initial_delay << std::endl;
 
-    cache.set_initial_delay(3);
+    cache.set_initial_delay(0);
     std::cout << cache.initial_delay << std::endl;
 
 

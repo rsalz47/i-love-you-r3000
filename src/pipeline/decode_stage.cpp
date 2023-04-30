@@ -127,7 +127,10 @@ void DecodeStage::tick() {
             // and this if-condition makes it so that we do not accidentally
             // push anything related to them to the dependency list
             if(encoded_op < 0b100010 && encoded_op != 0b011111) {
+                std::cout << "Decode: Adding dest register to the dependency list... " << std::endl;
                 dependency_list.push_back(decoded.destination);
+                std::cout << "Decode: Dest register added. The dependency list currently has "
+                          << dependency_list.size() << " elements" << std::endl;
             }
 
         } else if (encoded_op >= 0b101111 && encoded_op <= 0b111111) { // J-format
@@ -144,6 +147,11 @@ void DecodeStage::tick() {
     if(execute_stage.blocked) {
         std::cout << "Decode: Cannot deliver instruction to Execute because Execute is blocked. Blocking." << std::endl;
         blocked = true;
+    }
+    else if (dependency_issue) {
+        std::cout << "Decode: Cannot deliver instruction to Execute beacuse of dependency issues. Blocking." << std::endl;
+        blocked = true;
+        execute_stage.noop = true;
     }
     else {
         execute_stage.decoded = decoded;

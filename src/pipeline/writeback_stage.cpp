@@ -40,7 +40,9 @@ void WritebackStage::tick() {
         registers[executed.destination] = executed.value;
         std::cout << "Writeback: Current instruction needs writeback. Writing to Registers..." << std::endl;
 
+        std::cout << "Writeback: Current dependency list has " << dependency_list.size() << " elements" << std::endl;
         dependency_list.erase(dependency_list.begin());
+        std::cout << "Writeback: Dest register removed from the dependency list" << std::endl;
 
     } else if ((executed.opcode <= 0b101110 && executed.opcode >= 0b100010) || executed.opcode == 0b101111) { //branch + unconditional jump
 
