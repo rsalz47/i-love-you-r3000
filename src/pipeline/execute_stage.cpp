@@ -41,14 +41,46 @@ void ExecuteStage::tick() {
             executed.value = decoded.operand_1 << decoded.shamt;
             break;
         }
-        case 0b000101: { // sllw
+        case 0b000101: { // sllv
             executed.value = decoded.operand_1 << decoded.operand_2;
+            break;
+        }
+        case 0b000110: { // srl
+            executed.value = decoded.operand_1 >> decoded.shamt;
+            break;
+        }
+        case 0b000111: { // srlv
+            executed.value = decoded.operand_1 >> decoded.operand_2;
+            break;
+        }
+        case 0b001000: { // sra
+            executed.value = static_cast<int32_t>(decoded.operand_1) >> decoded.shamt;
+            break;
+        }
+        case 0b001001: { // srav
+            executed.value = static_cast<int32_t>(decoded.operand_1) >> decoded.operand_2;
             break;
         }
         case 0b011111: { // sw
             // address computation
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm); // sign extended
             executed.dest_value = decoded.dest_value;
+            break;
+        }
+        case 0b001010: { // and
+            executed.value = decoded.operand_1 & decoded.operand_2;
+            break;
+        }
+        case 0b001011: { // or
+            executed.value = decoded.operand_1 | decoded.operand_2;
+            break;
+        }
+        case 0b001100: { // xor
+            executed.value = decoded.operand_1 ^ decoded.operand_2;
+            break;
+        }
+        case 0b001101: { // nor
+            executed.value = ~ (decoded.operand_1 | decoded.operand_2);
             break;
         }
         case 0b100000:   // lw
