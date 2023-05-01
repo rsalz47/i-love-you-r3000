@@ -199,6 +199,7 @@ void MainWindow::on_loadIntructionFile_clicked()
     QProcess *proc = new QProcess();
 
     //This is OS specific/ user specific right now // needs to be changed for other systems
+    //This is the path to the assembler binary output
     QString program = "/home/nandu/Documents/i-love-you-r3000/src/asm/a.out";
 
     proc->start(program,QStringList() << asmFileName);
