@@ -675,12 +675,12 @@
      <rect>
       <x>650</x>
       <y>280</y>
-      <width>101</width>
+      <width>111</width>
       <height>18</height>
      </rect>
     </property>
     <property name="text">
-     <string>cache misses</string>
+     <string>int cache misses</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_16">

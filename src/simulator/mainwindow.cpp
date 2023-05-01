@@ -10,8 +10,9 @@
 #include "../../src/pipeline/writeback_stage.h"
 #include "../../src/asm/assembler.cpp"
 #include <sstream>
-#include<iostream>
-#include<array>
+#include <iostream>
+#include <array>
+#include <vector>
 
 
 #include <QString>
@@ -28,14 +29,15 @@ uint32_t PROGRAM_COUNTER = 0;
 Memory main_mem(4);
 Cache data_cache(&main_mem, 2);
 Cache inst_cache(&main_mem, 2);
+std::vector<int> dependency_list;
 
 uint32_t registers[32];
 volatile int clock_cycle = 0;
 
-WritebackStage wb_stage(registers,&PROGRAM_COUNTER);
+WritebackStage wb_stage(registers,&PROGRAM_COUNTER,dependency_list);
 MemoryStage mem_stage(wb_stage, &data_cache);
 ExecuteStage execute_stage(mem_stage);
-DecodeStage decode_stage(execute_stage, registers);
+DecodeStage decode_stage(execute_stage, registers,dependency_list);
 FetchStage fetch_stage(&PROGRAM_COUNTER, &inst_cache, decode_stage);
 
 void reset_registers(){
@@ -124,7 +126,7 @@ void refreshViews(Ui::MainWindow *ui){
     ui->writebackView->setItem(0,0,new QTableWidgetItem(QString::number(wb_stage.noop)));
 
     //update statistics
-    ui->label_16->setText(QString::number(data_cache.num_cache_misses));
+    ui->label_16->setText(QString::number(inst_cache.num_cache_misses));
     ui->label_18->setText(QString::number(PROGRAM_COUNTER));
     ui->clockCycles->setText(QString::number(clock_cycle));
 
