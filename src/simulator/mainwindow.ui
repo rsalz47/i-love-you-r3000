@@ -7,18 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>1485</width>
-    <height>743</height>
+    <height>1198</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="cacheView">
+   <widget class="QTableWidget" name="instCacheView">
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>410</y>
+      <y>390</y>
       <width>821</width>
       <height>271</height>
      </rect>
@@ -70,7 +70,7 @@
       <x>200</x>
       <y>411</y>
       <width>431</width>
-      <height>271</height>
+      <height>551</height>
      </rect>
     </property>
     <column>
@@ -100,7 +100,7 @@
       <x>20</x>
       <y>411</y>
       <width>151</width>
-      <height>271</height>
+      <height>551</height>
      </rect>
     </property>
     <row>
@@ -272,15 +272,20 @@
    <widget class="QTableWidget" name="fetchView">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>180</y>
-      <width>161</width>
-      <height>51</height>
+      <x>450</x>
+      <y>160</y>
+      <width>181</width>
+      <height>81</height>
      </rect>
     </property>
     <row>
      <property name="text">
       <string>Blocked</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>curAddr</string>
      </property>
     </row>
     <column>
@@ -293,14 +298,19 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>180</y>
+      <y>160</y>
       <width>161</width>
-      <height>51</height>
+      <height>81</height>
      </rect>
     </property>
     <row>
      <property name="text">
       <string>Blocked</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>encInst</string>
      </property>
     </row>
     <column>
@@ -313,14 +323,19 @@
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>180</y>
+      <y>160</y>
       <width>151</width>
-      <height>51</height>
+      <height>81</height>
      </rect>
     </property>
     <row>
      <property name="text">
       <string>Blocked</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>opcode</string>
      </property>
     </row>
     <column>
@@ -333,14 +348,19 @@
     <property name="geometry">
      <rect>
       <x>980</x>
-      <y>180</y>
+      <y>160</y>
       <width>161</width>
-      <height>51</height>
+      <height>81</height>
      </rect>
     </property>
     <row>
      <property name="text">
       <string>Blocked</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>result</string>
      </property>
     </row>
     <column>
@@ -353,7 +373,7 @@
     <property name="geometry">
      <rect>
       <x>1160</x>
-      <y>180</y>
+      <y>160</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -373,7 +393,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>320</y>
+      <y>300</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -386,7 +406,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>350</y>
+      <y>330</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -398,7 +418,7 @@
    <widget class="QTableWidget" name="instructionsView">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>130</y>
       <width>421</width>
       <height>192</height>
@@ -431,8 +451,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>160</y>
+      <x>530</x>
+      <y>130</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -444,8 +464,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>160</y>
+      <x>690</x>
+      <y>130</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -458,7 +478,7 @@
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>160</y>
+      <y>130</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -471,7 +491,7 @@
     <property name="geometry">
      <rect>
       <x>1030</x>
-      <y>160</y>
+      <y>130</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -484,7 +504,7 @@
     <property name="geometry">
      <rect>
       <x>1200</x>
-      <y>160</y>
+      <y>130</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -493,12 +513,12 @@
      <string>Writeback</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="instCacheHeader">
     <property name="geometry">
      <rect>
       <x>1010</x>
-      <y>370</y>
-      <width>91</width>
+      <y>360</y>
+      <width>151</width>
       <height>21</height>
      </rect>
     </property>
@@ -508,7 +528,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Cache</string>
+     <string>Instruction Cache</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
@@ -551,7 +571,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>320</y>
+      <y>300</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -617,8 +637,8 @@
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>120</y>
+      <x>840</x>
+      <y>90</y>
       <width>141</width>
       <height>31</height>
      </rect>
@@ -654,7 +674,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>300</y>
+      <y>280</y>
       <width>101</width>
       <height>18</height>
      </rect>
@@ -667,7 +687,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>300</y>
+      <y>280</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -680,7 +700,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>280</y>
+      <y>260</y>
       <width>131</width>
       <height>18</height>
      </rect>
@@ -693,7 +713,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>280</y>
+      <y>260</y>
       <width>66</width>
       <height>18</height>
      </rect>
@@ -765,7 +785,7 @@
     <property name="geometry">
      <rect>
       <x>780</x>
-      <y>350</y>
+      <y>330</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -809,14 +829,82 @@
    <widget class="QPushButton" name="resetSimulatorButton">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>380</y>
+      <x>650</x>
+      <y>360</y>
       <width>121</width>
       <height>26</height>
      </rect>
     </property>
     <property name="text">
      <string>reset simulator</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="dataCacheView">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>700</y>
+      <width>821</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>Tag</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Index</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Word 1 (00)</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Word 2 (01)</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Word 3 (10)</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Word 4 (11)</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Dirty</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Valid</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QLabel" name="dataCacheHeader">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>670</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Data Cache</string>
     </property>
    </widget>
   </widget>

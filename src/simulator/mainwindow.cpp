@@ -21,19 +21,22 @@
 #include <QProcess>
 #include <QThread>
 #include <QDir>
+#include <QApplication>
 
 
 uint32_t PROGRAM_COUNTER = 0;
-Memory main_mem(2);
-Cache main_cache(&main_mem, 1);
+Memory main_mem(4);
+Cache data_cache(&main_mem, 2);
+Cache inst_cache(&main_mem, 2);
+
 uint32_t registers[32];
 volatile int clock_cycle = 0;
 
 WritebackStage wb_stage(registers,&PROGRAM_COUNTER);
-MemoryStage mem_stage(wb_stage, &main_cache);
+MemoryStage mem_stage(wb_stage, &data_cache);
 ExecuteStage execute_stage(mem_stage);
 DecodeStage decode_stage(execute_stage, registers);
-FetchStage fetch_stage(&PROGRAM_COUNTER, &main_cache, decode_stage);
+FetchStage fetch_stage(&PROGRAM_COUNTER, &inst_cache, decode_stage);
 
 void reset_registers(){
     for (int i = 0; i<32; i++){
@@ -55,18 +58,31 @@ void disable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Memory* m
 
 
 void refreshViews(Ui::MainWindow *ui){
-    // update cache view
-    ui->cacheView->setColumnCount(8);
-    ui->cacheView->setRowCount(16);
+    // update int cache view
+    ui->instCacheView->setColumnCount(8);
+    ui->instCacheView->setRowCount(16);
     QStringList cacheHeaders;
         cacheHeaders<< "Tag" << "Index" << "Word1(00)" << "Word2(01)" << "Word3(10)" << "Word4(11)" << "Dirty" << "Valid";
-    ui->cacheView->setHorizontalHeaderLabels(cacheHeaders);
+    ui->instCacheView->setHorizontalHeaderLabels(cacheHeaders);
 
     for (int i = 0; i < 16; i++){
         for(int j = 0; j<8; j++){
-            ui->cacheView->setItem(i,j,new QTableWidgetItem(QString::number(main_cache.cache[i][j])));
+            ui->instCacheView->setItem(i,j,new QTableWidgetItem(QString::number(inst_cache.cache[i][j])));
         }
     }
+
+    // update int cache view
+    ui->dataCacheView->setColumnCount(8);
+    ui->dataCacheView->setRowCount(16);
+        cacheHeaders<< "Tag" << "Index" << "Word1(00)" << "Word2(01)" << "Word3(10)" << "Word4(11)" << "Dirty" << "Valid";
+    ui->dataCacheView->setHorizontalHeaderLabels(cacheHeaders);
+
+    for (int i = 0; i < 16; i++){
+        for(int j = 0; j<8; j++){
+            ui->dataCacheView->setItem(i,j,new QTableWidgetItem(QString::number(data_cache.cache[i][j])));
+        }
+    }
+
 
     // update memoryView
     ui->memoryView->setColumnCount(WORDS_PER_LINE);
@@ -93,13 +109,22 @@ void refreshViews(Ui::MainWindow *ui){
 
     // update pipeline view
     ui->fetchView->setItem(0,0,new QTableWidgetItem(QString::number(fetch_stage.blocked)));
+    ui->fetchView->setItem(1,0,new QTableWidgetItem(QString::number(fetch_stage.curr_addr_fetching)));
+
     ui->decodeView->setItem(0,0,new QTableWidgetItem(QString::number(decode_stage.blocked)));
+    ui->decodeView->setItem(1,0,new QTableWidgetItem(QString::number(decode_stage.encoded_instruction)));
+
+
     ui->executeView->setItem(0,0,new QTableWidgetItem(QString::number(execute_stage.blocked)));
+    ui->executeView->setItem(1,0,new QTableWidgetItem(QString::number(execute_stage.decoded.opcode)));
+
     ui->memoryViewPipeline->setItem(0,0,new QTableWidgetItem(QString::number(mem_stage.blocked)));
+    ui->memoryViewPipeline->setItem(1,0,new QTableWidgetItem(QString::number(mem_stage.executed.value)));
+
     ui->writebackView->setItem(0,0,new QTableWidgetItem(QString::number(wb_stage.noop)));
 
     //update statistics
-    ui->label_16->setText(QString::number(main_cache.num_cache_misses));
+    ui->label_16->setText(QString::number(data_cache.num_cache_misses));
     ui->label_18->setText(QString::number(PROGRAM_COUNTER));
     ui->clockCycles->setText(QString::number(clock_cycle));
 
@@ -150,6 +175,7 @@ void MainWindow::on_pushButton_clicked()
     }
     clock_cycle +=1;
     refreshViews(ui);
+    qApp->processEvents();
     return;
 }
 
@@ -249,7 +275,7 @@ void MainWindow::on_pipeLineEnableCheckBox_stateChanged(int arg1)
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     if (arg1 > 0){
-        enable_cache(fetch_stage, mem_stage, &main_cache); // enable cache
+        enable_cache(fetch_stage, mem_stage, &data_cache); // enable cache
         return;
     }
     else{
@@ -262,13 +288,14 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 void MainWindow::on_resetSimulatorButton_clicked()
 {
     main_mem.reset();
-    main_cache.reset();
+    data_cache.reset();
+    inst_cache.reset();
     clock_cycle = 0;
     PROGRAM_COUNTER = 0;
 
     //reset registers
     reset_registers();
-    main_cache.num_cache_misses = 0;
+    data_cache.num_cache_misses = 0;
 
     //reset pipeline
     wb_stage.reset();
@@ -276,6 +303,15 @@ void MainWindow::on_resetSimulatorButton_clicked()
     execute_stage.reset();
     decode_stage.reset();
     fetch_stage.reset();
+    //extra pipeline calls to reset artifacts in pipeline
+    fetch_stage.curr_addr_fetching = 0;
+    decode_stage.encoded_instruction = 0;
+    execute_stage.decoded.opcode = 0;
+    mem_stage.executed.value = 0;
+
+
+    //refresh instruction view
+    ui->instructionsView->setRowCount(0);
 
     refreshViews(ui);
 }

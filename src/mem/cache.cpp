@@ -145,8 +145,8 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         return nullptr;
     }
 
-    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b1111;
-    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
+    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b0000001111;
+    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b0000001111;
     uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
 
     // Check if cache hit
