@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <vector>
 
 typedef struct executed_instruction {
     // TO BE FIXED
@@ -26,7 +27,7 @@ class WritebackStage {
  private:
 	uint32_t* pc;
 	uint32_t* registers;
-	//pending registers?
+    std::vector<int> &dependency_list; 
 
  public:
     bool noop = true;
@@ -37,7 +38,7 @@ class WritebackStage {
     bool writeback_finished = false;
     executed_instruction executed;
     
-    WritebackStage(uint32_t* regs, uint32_t* program_counter);
+    WritebackStage(uint32_t* regs, uint32_t* program_counter, std::vector<int> &dependency_list);
     void reset();
 	void tick();
 };
