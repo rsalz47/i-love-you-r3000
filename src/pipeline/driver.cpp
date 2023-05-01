@@ -35,11 +35,18 @@ int main() {
     memory.set_initial_delay(0);
     std::cout << memory.initial_delay << std::endl;
 
+<<<<<<< HEAD
     cache.set_initial_delay(0);
     std::cout << cache.initial_delay << std::endl;
 
 
     /**
+=======
+    cache.set_initial_delay(4);
+    std::cout << cache.initial_delay << std::endl;
+
+    /***
+>>>>>>> full-isa
     memory.memory[0][0] = 0b10000100000000000000000000000000;
     memory.memory[0][1] = 0b10000100001000000000000000000001;
     memory.memory[0][2] = 0b10000100010000000000000000000101;
@@ -48,11 +55,19 @@ int main() {
     memory.memory[1][1] = 0b10000100100000000000000001100100;
     memory.memory[1][2] = 0b11111100000000000000000000000000;
     **/
+<<<<<<< HEAD
     memory.memory[0][0] = 0b10000100001000000000000000000010;
     memory.memory[0][1] = 0b10000100010000000000000000000011;
     memory.memory[0][2] = 0b00000000000000010001000000000000;
     memory.memory[0][3] = 0b11111100000000000000000000000000;
 
+=======
+
+    memory.memory[0][0] = 0b10000100001000000000000000000010;
+    memory.memory[0][1] = 0b10000100010000000000000000000011;
+    memory.memory[0][2] = 0b01011100000000010000000000000011;
+    memory.memory[0][3] = 0b11111100000000000000000000000000;
+>>>>>>> full-isa
 
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER, dependency_list);
     MemoryStage mem_stage(wb_stage, mem_sys);
@@ -63,7 +78,7 @@ int main() {
     // one can also disable the pipeline using the fetch constructor
     // fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage, true);
 
-    disable_cache(fetch_stage, mem_stage, &memory); // disable cache
+    // disable_cache(fetch_stage, mem_stage, &memory); // disable cache
 
     while(true) {
         std::cout << "CLOCK: " << CLK << std::endl;
