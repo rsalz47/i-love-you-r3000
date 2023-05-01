@@ -177,15 +177,15 @@ void MainWindow::on_pushButton_clicked()
     }
     clock_cycle +=1;
     refreshViews(ui);
-    qApp->processEvents();
+    if(clock_cycle % 100 == 0){
+        qApp->processEvents();
+    }
     return;
 }
 
 
 void MainWindow::on_loadIntructionFile_clicked()
 {
-// todo rework loading files into the gui. use assemble instead of build_instruction
-
     QString asmFileName = QFileDialog::getOpenFileName(this,tr("Open .ily file"),"/home/$USER",tr("Image Files (*.ily)"));
     std::cout << asmFileName.toStdString() << std::endl;
     if (asmFileName.isEmpty()){
@@ -278,7 +278,7 @@ void MainWindow::on_pipeLineEnableCheckBox_stateChanged(int arg1)
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     if (arg1 > 0){
-        enable_cache(fetch_stage, mem_stage, &data_cache); // enable cache
+        enable_cache(fetch_stage, mem_stage, &inst_cache); // enable cache
         return;
     }
     else{

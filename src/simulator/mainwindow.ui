@@ -680,7 +680,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>int cache misses</string>
+     <string>inst cache misses</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_16">
@@ -820,7 +820,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>cache toggle</string>
+     <string>Inst cache toggle</string>
     </property>
     <property name="checked">
      <bool>true</bool>
