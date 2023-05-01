@@ -45,7 +45,6 @@ void ExecuteStage::tick() {
             executed.value = decoded.operand_1 << decoded.operand_2;
             break;
         }
-        case 0b000110: { // srl
         case 0b011111: { // sw
             // address computation
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm); // sign extended
