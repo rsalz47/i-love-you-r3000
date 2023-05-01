@@ -3,6 +3,7 @@
 #include <vector>
 #include <bitset>
 #include <filesystem>
+#include <sstream>
 
 #include "assembler.h"
 #include "../mem/registers.h"
