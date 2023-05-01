@@ -37,6 +37,15 @@ void ExecuteStage::tick() {
         case 0b000011:  // div
             executed.value = static_cast<int32_t>(decoded.operand_1) / static_cast<int32_t>(decoded.operand_2);
             break;
+        case 0b000100: { // sll
+            executed.value = decoded.operand_1 << decoded.shamt;
+            break;
+        }
+        case 0b000101: { // sllw
+            executed.value = decoded.operand_1 << decoded.operand_2;
+            break;
+        }
+        case 0b000110: { // srl
         case 0b011111: { // sw
             // address computation
             executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm); // sign extended
@@ -75,6 +84,43 @@ void ExecuteStage::tick() {
             executed.addr = decoded.addr_or_imm;
             break;
         }
+        case 0b010111: { // addi
+            executed.value = static_cast<int32_t>(decoded.operand_1) + static_cast<int32_t>(decoded.addr_or_imm);
+            break;
+        }
+        case 0b011000: { // subi
+            executed.value = static_cast<int32_t>(decoded.operand_1) - static_cast<int32_t>(decoded.addr_or_imm);
+            break;
+        }
+        case 0b011001: { // muli
+            executed.value = static_cast<int32_t>(decoded.operand_1) * static_cast<int32_t>(decoded.addr_or_imm);
+            break;
+        }
+        case 0b011010: { // divi
+            executed.value = static_cast<int32_t>(decoded.operand_1) / static_cast<int32_t>(decoded.addr_or_imm);
+            break;
+        }
+        case 0b011011: { // slti
+            if (static_cast<int32_t>(decoded.operand_1) < static_cast<int32_t>(decoded.addr_or_imm)) {
+                executed.value = 1;
+            }
+            else {
+                executed.value = 0;
+            }
+            break;
+        }
+        case 0b011100: { // andi
+            executed.value = decoded.operand_1 & decoded.addr_or_imm;
+            break;
+        }
+        case 0b011101: { // ori
+            executed.value = decoded.operand_1 | decoded.addr_or_imm;
+            break;
+        }
+        case 0b011110: { // xori
+            executed.value = decoded.operand_1 ^ decoded.addr_or_imm;
+            break;
+        }                        
         case 0b101111: // j
             executed.addr = decoded.target_addr;
             break;

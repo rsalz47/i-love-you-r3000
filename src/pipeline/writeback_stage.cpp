@@ -27,7 +27,7 @@ void WritebackStage::tick() {
     } else if (executed.opcode == 0b111111) { //hcf
         exit = true;
         std::cout << "Writeback: Current instruction is hcf, exiting... " << std::endl;
-    } else if (executed.opcode <= 0b010110 || executed.opcode == 0b100000 || executed.opcode == 0b100001){        
+    } else if (executed.opcode <= 0b11110 || executed.opcode == 0b100000 || executed.opcode == 0b100001){        
         registers[executed.destination] = executed.value;
         std::cout << "Writeback: Current instruction needs writeback. Writing to Registers..." << std::endl;
     } else if ((executed.opcode <= 0b101110 && executed.opcode >= 0b100010) || executed.opcode == 0b101111) { //branch + unconditional jump
