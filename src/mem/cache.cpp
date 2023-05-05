@@ -152,42 +152,27 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     // Check if cache hit
     uint32_t* matching_line = nullptr;
     uint32_t* ret_val;  // can return cache line or memory line
-    for (int i = 0; i < 16; i++) {
-        if (cache[i][0] == tag && cache[i][1] == index && cache[i][7]) {
-            // goes to the first word,
-            matching_line = &(cache[i][2 + offset]);
-        }
-        // if hit, fill in the corresponding line
-        if (matching_line) {
-            matching_line[0] = data;
-            // writing dirty bit to 1
-            cache[index][6] = 1;
-            ret_val = matching_line;
-        }
-
+    if (cache[index][7] && cache[index][0] == tag) { // cache hit
+        matching_line = &(cache[index][2 + offset]);
+        matching_line[0] = data;
+        cache[index][6] = 1;
+        ret_val = matching_line;
+    } else {                
         // following write around for cache write misses
         // missed the write back to cache as it is a write miss so write
-        // straight to memory instead
-        if (!matching_line) {
-            ret_val = this->main_mem->store(addr, data, whois_calling);
-        }
-
-        if (ret_val == nullptr) {
-            return nullptr;
-        } else {
-            this->cache_delay_timer = initial_delay;
-            this->cache_in_use = false;
-            cur_caller_id = -1;  // reset caller id
-            return ret_val;      // indicating success
-        }
+        // straight to memory instead        
+        ret_val = this->main_mem->store(addr, data, whois_calling);
     }
-    // once you reach here in the code, delay_timer should be 0, so we reset
-    // memory and free it for other calls
-    this->cache_delay_timer = initial_delay;
-    this->cache_in_use = false;
-    cur_caller_id = -1;    // reset caller id
-    return matching_line;  // indicating success
-}
+
+    if (ret_val == nullptr) {
+        return nullptr;
+    } else {
+        this->cache_delay_timer = initial_delay;
+        this->cache_in_use = false;
+        cur_caller_id = -1;  // reset caller id
+        return ret_val;      // indicating success
+    }    
+}    
 
 void Cache::cur_status() {
     printf(
