@@ -4,12 +4,10 @@
 
 # The filename is specified by command line arguments
 
-# argv[0]: starting address
 # argv[1]: file that contains the data, with type suffix .dat
 import sys
 import re
 
-#starting_addr = int(sys.argv[1]);
 data_filename = sys.argv[1];
 # remove .dat and append .ily
 output_filename = data_filename.split(".", 1)[0] + ".ily"
