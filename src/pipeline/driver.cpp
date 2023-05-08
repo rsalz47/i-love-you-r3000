@@ -56,32 +56,74 @@ int main() {
     memory.memory[0][3] = 0b11111100000000000000000000000000;
     **/
 
-    memory.memory[0][0] = 0b10000100000000000000000000000000;
-    memory.memory[0][1] = 0b10000100001000000000000000000100;
+    memory.memory[0][0] = 0b10000100000000000000000000000100;
+    memory.memory[0][1] = 0b10000100001000000000000000000000;
     memory.memory[0][2] = 0b10000100010000000000000000000000;
-    memory.memory[0][3] = 0b10000000100000000000000000010100;
-    memory.memory[1][0] = 0b10000000101000000000000000011000;
-    memory.memory[1][1] = 0b00001000110001010010000000000000;
-    memory.memory[1][2] = 0b00000000010000100011000000000000;
-    memory.memory[1][3] = 0b01011100000000000000000000000001;
-    memory.memory[2][0] = 0b10010000000000010000000000000011;
-    memory.memory[2][1] = 0b01111100010000010000000000101000;
-    memory.memory[2][2] = 0b11111100000000000000000000000000;
+    memory.memory[0][3] = 0b10000100011000000000000000000000;
+    memory.memory[1][0] = 0b10000100100000000000000000000000;
+    memory.memory[1][1] = 0b10000100101000000000000000100000;
+    memory.memory[1][2] = 0b10000100110000000000000000110000;
+    memory.memory[1][3] = 0b10000110000000000000000001000000;
+    memory.memory[2][0] = 0b10000100001000000000000000000000;
+    memory.memory[2][1] = 0b00001000111000100000000000000000;
+    memory.memory[2][2] = 0b00000000111001000011100000000000;
+    memory.memory[2][3] = 0b00000000111001010011100000000000;
+    memory.memory[3][0] = 0b10000001000001110000000000000000;
+    memory.memory[3][1] = 0b00001001001001000000000000000000;
+    memory.memory[3][2] = 0b00000001001000110100100000000000;
+    memory.memory[3][3] = 0b00000001001001100100100000000000;
+    memory.memory[4][0] = 0b10000001010010010000000000000000;
+    memory.memory[4][1] = 0b00001001010010000101000000000000;
+    memory.memory[4][2] = 0b00000000001000010101000000000000;
+    memory.memory[4][3] = 0b01011100100001000000000000000001;
+    memory.memory[5][0] = 0b10010000000001000000000000001001;
+    memory.memory[5][1] = 0b00001001111000100000000000000000;
+    memory.memory[5][2] = 0b00000001111000110111100000000000;
+    memory.memory[5][3] = 0b00000001111100000111100000000000;
+    memory.memory[6][0] = 0b01111100001011110000000000000000;
+    memory.memory[6][1] = 0b01011100011000110000000000000001;
+    memory.memory[6][2] = 0b10010000000000110000000000001000;
+    memory.memory[6][3] = 0b01011100010000100000000000000001;
+    memory.memory[7][0] = 0b10000100011000000000000000000000;
+    memory.memory[7][1] = 0b10010000000000100000000000001000;
+    memory.memory[7][2] = 0b11111100000000000000000000000000;
 
-    // vector 1
-    memory.memory[5][0] = 0b1;
-    memory.memory[5][1] = 0b10;
-    memory.memory[5][2] = 0b11;
-    memory.memory[5][3] = 0b100;
+    // array 1
+    memory.memory[8][0] = 1;
+    memory.memory[8][1] = 2;
+    memory.memory[8][2] = 3;
+    memory.memory[8][3] = 4;
+    memory.memory[9][0] = 5;
+    memory.memory[9][1] = 6;
+    memory.memory[9][2] = 7;
+    memory.memory[9][3] = 8;
+    memory.memory[10][0] = 1;
+    memory.memory[10][1] = 2;
+    memory.memory[10][2] = 3;
+    memory.memory[10][3] = 4;
+    memory.memory[11][0] = 5;
+    memory.memory[11][1] = 6;
+    memory.memory[11][2] = 7;
+    memory.memory[11][3] = 8;
 
-    // vector 2
-    memory.memory[6][0] = 0b101;
-    memory.memory[6][1] = 0b110;
-    memory.memory[6][2] = 0b111;
-    memory.memory[6][3] = 0b1000;
-
+    // array 2
+    memory.memory[12][0] = 5;
+    memory.memory[12][1] = 6;
+    memory.memory[12][2] = 7;
+    memory.memory[12][3] = 8;
+    memory.memory[13][0] = 1;
+    memory.memory[13][1] = 2;
+    memory.memory[13][2] = 3;
+    memory.memory[13][3] = 4;
+    memory.memory[14][0] = 5;
+    memory.memory[14][1] = 6;
+    memory.memory[14][2] = 7;
+    memory.memory[14][3] = 8;
+    memory.memory[15][0] = 1;
+    memory.memory[15][1] = 2;
+    memory.memory[15][2] = 3;
+    memory.memory[15][3] = 4;
     
-
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER, dependency_list);
     MemoryStage mem_stage(wb_stage, mem_sys);
     ExecuteStage execute_stage(mem_stage);
@@ -111,8 +153,6 @@ int main() {
         } 
         else {
             mem_stage.tick();
-            std::cout << "Register 4 expected 100, is: " << registers[4] << std::endl;
-            std::cout << "Register 0 expected 5, is: " << registers[0] << std::endl;
             execute_stage.tick();
             decode_stage.tick();
             fetch_stage.tick();
