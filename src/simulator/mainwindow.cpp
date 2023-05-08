@@ -26,9 +26,9 @@
 
 
 uint32_t PROGRAM_COUNTER = 0;
-Memory main_mem(4);
-Cache data_cache(&main_mem, 2);
-Cache inst_cache(&main_mem, 2);
+Memory main_mem(0);
+Cache data_cache(&main_mem, 0);
+Cache inst_cache(&main_mem, 0);
 std::vector<int> dependency_list;
 
 uint32_t registers[32];
@@ -153,33 +153,36 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    int tick_value = ui->tick_value->toPlainText().toInt();
+    for (int i = 0; i < tick_value; i++) {
+        if (wb_stage.exit) {
+            std::cout << "program end" << std::endl; // in gui code, just return
+            //update label
+            ui->runningStatus->setText("halt");
+            return;
+        }
+        wb_stage.tick();
+        ui->runningStatus->setText("running");
+        if (wb_stage.exit || wb_stage.squashed) {
+            std::cout << "!! squashing previous stages" << std::endl;
+            mem_stage.reset();
+            execute_stage.reset();
+            decode_stage.reset();
+            fetch_stage.reset();
+        }
+        else {
+            mem_stage.tick();
+            execute_stage.tick();
+            decode_stage.tick();
+            fetch_stage.tick();
+        }
+        clock_cycle += 1;
+        refreshViews(ui);
+        if(clock_cycle % 100 == 0){
+            qApp->processEvents();
+        }
+    }
 
-    if (wb_stage.exit) {
-        std::cout << "program end" << std::endl; // in gui code, just return
-        //update label
-        ui->runningStatus->setText("halt");
-        return;
-    }
-    wb_stage.tick();
-    ui->runningStatus->setText("running");
-    if (wb_stage.exit || wb_stage.squashed) {
-        std::cout << "!! squashing previous stages" << std::endl;
-        mem_stage.reset();
-        execute_stage.reset();
-        decode_stage.reset();
-        fetch_stage.reset();
-    }
-    else {
-        mem_stage.tick();
-        execute_stage.tick();
-        decode_stage.tick();
-        fetch_stage.tick();
-    }
-    clock_cycle +=1;
-    refreshViews(ui);
-    if(clock_cycle % 100 == 0){
-        qApp->processEvents();
-    }
     return;
 }
 
@@ -200,7 +203,7 @@ void MainWindow::on_loadIntructionFile_clicked()
 
     //This is OS specific/ user specific right now // needs to be changed for other systems
     //This is the path to the assembler binary output
-    QString program = "/home/nandu/Documents/i-love-you-r3000/src/asm/a.out";
+    QString program = "/home/duckduck/i-love-you-r3000/src/asm/a.out";
 
     proc->start(program,QStringList() << asmFileName);
     proc->waitForFinished();
