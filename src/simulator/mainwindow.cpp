@@ -196,7 +196,6 @@ void MainWindow::on_pushButton_clicked()
                 qApp->processEvents();
                 QObject::connect(ui->runProgram, SIGNAL(clicked()), &loop, SLOT(quit()));
                 loop.exec();
-
             }
         }
         clock_cycle += 1;
