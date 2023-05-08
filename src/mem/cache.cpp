@@ -152,15 +152,15 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     // Check if cache hit
     uint32_t* matching_line = nullptr;
     uint32_t* ret_val;  // can return cache line or memory line
-    if (cache[index][7] && cache[index][0] == tag) { // cache hit
+    if (cache[index][7] && cache[index][0] == tag) {  // cache hit
         matching_line = &(cache[index][2 + offset]);
         matching_line[0] = data;
         cache[index][6] = 1;
         ret_val = matching_line;
-    } else {                
+    } else {
         // following write around for cache write misses
         // missed the write back to cache as it is a write miss so write
-        // straight to memory instead        
+        // straight to memory instead
         ret_val = this->main_mem->store(addr, data, whois_calling);
     }
 
@@ -171,25 +171,25 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         this->cache_in_use = false;
         cur_caller_id = -1;  // reset caller id
         return ret_val;      // indicating success
-    }    
-}    
+    }
+}
 
 void Cache::flush() {
     std::cout << "Cache flushing... Writeback to main memory" << std::endl;
     for (int i = 0; i < 16; i++) {
         // if valid and dirty, write the line back to memory
         if (cache[i][7] && cache[i][6]) {
-            uint32_t base_address = (cache[i][0] << 6); // tag component
-            base_address |= (cache[i][1] << 2); // index component
-            int line_num = (base_address / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES);
+            uint32_t base_address = (cache[i][0] << 6);  // tag component
+            base_address |= (cache[i][1] << 2);          // index component
+            int line_num =
+                (base_address / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES);
             for (int j = 0; j < WORDS_PER_LINE; j++) {
-                main_mem->memory[line_num][j] = cache[i][j+2];
+                main_mem->memory[line_num][j] = cache[i][j + 2];
             }
+            cache[i][6] = 0;
         }
-    }                           
+    }
 }
-            
-
 
 void Cache::cur_status() {
     printf(
