@@ -1,5 +1,7 @@
-# This program generates the assembly file that stores
-# data in a file to memory starting from some address
+# This program generates the assembly file that sorts the data
+# in the incresing order using exchange sort given a file containing
+# the data and the starting address of the memory to store the data
+
 # The file and the address are specified by command line arguments
 
 # argv[0]: starting address
@@ -33,4 +35,22 @@ for num in data:
         output_file.write("li r1 " + str(num) + "\n")
         output_file.write("sw r1 r0 " + str(starting_addr) + "\n")
         starting_addr += 1
-output_file.close()    
+output_file.write("li r2 0\n\
+li r3 99\n\
+li r7 100\n\
+.outerloop beq r2 r3 .exitouter\n\
+addi r4 r2 1\n\
+.innerloop beq r4 r7 .exitinner\n\
+")
+output_file.write("lw r5 r4 " + sys.argv[1] + "\n")
+output_file.write("lw r6 r2 " + sys.argv[1] + "\n")
+output_file.write("blt r6 r5 .exitif\n")
+output_file.write("sw r5 r2 " + sys.argv[1] + "\n")
+output_file.write("sw r6 r4 " + sys.argv[1] + "\n")
+output_file.write("\
+.exitif addi r4 r4 1\n\
+j .innerloop\n\
+.exitinner addi r2 r2 1\n\
+j .outerloop\n\
+.exitouter hcf")        
+output_file.close()
