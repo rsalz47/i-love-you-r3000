@@ -1,4 +1,3 @@
-li r0 0
 li r1 1
 sw r1 r0 96
 li r1 2
