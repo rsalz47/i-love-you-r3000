@@ -161,6 +161,7 @@ void MainWindow::on_pushButton_clicked()
             ui->runningStatus->setText("halt");
             return;
         }
+
         wb_stage.tick();
         ui->runningStatus->setText("running");
         if (wb_stage.exit || wb_stage.squashed) {
@@ -203,7 +204,7 @@ void MainWindow::on_loadIntructionFile_clicked()
 
     //This is OS specific/ user specific right now // needs to be changed for other systems
     //This is the path to the assembler binary output
-    QString program = "/home/duckduck/i-love-you-r3000/src/asm/a.out";
+    QString program = "/home/nandu/i-love-you-r3000/src/asm/a.out";
 
     proc->start(program,QStringList() << asmFileName);
     proc->waitForFinished();
