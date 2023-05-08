@@ -23,6 +23,7 @@
 #include <QThread>
 #include <QDir>
 #include <QApplication>
+#include <QThread>
 
 
 uint32_t PROGRAM_COUNTER = 0;
@@ -47,15 +48,23 @@ void reset_registers(){
     return;
 }
 
-void enable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Cache* cache) {
+void enable_cache_fetch(FetchStage& fetch_stage, MemoryStage& memory_stage, Cache* cache) {
     fetch_stage.set_mem_sys(cache);
+}
+
+void disable_cache_fetch(FetchStage& fetch_stage, MemoryStage& memory_stage, Memory* memory) {
+    fetch_stage.set_mem_sys(memory);
+}
+
+
+void enable_cache_wb(WritebackStage& wb_stage, MemoryStage& memory_stage, Cache* cache) {
     memory_stage.set_mem_sys(cache);
 }
 
-void disable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Memory* memory) {
-    fetch_stage.set_mem_sys(memory);
+void disable_cache_wb(WritebackStage& wb_stage, MemoryStage& memory_stage, Memory* memory) {
     memory_stage.set_mem_sys(memory);
 }
+
 
 
 
@@ -127,6 +136,7 @@ void refreshViews(Ui::MainWindow *ui){
 
     //update statistics
     ui->label_16->setText(QString::number(inst_cache.num_cache_misses));
+    ui->label_21->setText(QString::number(data_cache.num_cache_misses));
     ui->label_18->setText(QString::number(PROGRAM_COUNTER));
     ui->clockCycles->setText(QString::number(clock_cycle));
 
@@ -154,6 +164,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     int tick_value = ui->tick_value->toPlainText().toInt();
+    QEventLoop loop;
     for (int i = 0; i < tick_value; i++) {
         if (wb_stage.exit) {
             std::cout << "program end" << std::endl; // in gui code, just return
@@ -176,6 +187,17 @@ void MainWindow::on_pushButton_clicked()
             execute_stage.tick();
             decode_stage.tick();
             fetch_stage.tick();
+        }
+        if (ui->breakpointValue->toPlainText().toInt()){
+            std::cout<< ui->breakpointValue->toPlainText().toInt() <<std::endl;
+            std::cout<< PROGRAM_COUNTER <<std::endl;
+            if (PROGRAM_COUNTER == ui->breakpointValue->toPlainText().toInt()){
+                refreshViews(ui);
+                qApp->processEvents();
+                QObject::connect(ui->runProgram, SIGNAL(clicked()), &loop, SLOT(quit()));
+                loop.exec();
+
+            }
         }
         clock_cycle += 1;
         refreshViews(ui);
@@ -278,25 +300,14 @@ void MainWindow::on_pipeLineEnableCheckBox_stateChanged(int arg1)
     return;
 }
 
-
-void MainWindow::on_checkBox_stateChanged(int arg1)
-{
-    if (arg1 > 0){
-        enable_cache(fetch_stage, mem_stage, &inst_cache); // enable cache
-        return;
-    }
-    else{
-        disable_cache(fetch_stage, mem_stage, &main_mem); // disable cache
-
-    }
-    return;
-}
-
 void MainWindow::on_resetSimulatorButton_clicked()
 {
+    //reset mem systems
     main_mem.reset();
     data_cache.reset();
     inst_cache.reset();
+    data_cache.num_cache_misses = 0;
+    inst_cache.num_cache_misses = 0;
     clock_cycle = 0;
     PROGRAM_COUNTER = 0;
 
@@ -317,9 +328,44 @@ void MainWindow::on_resetSimulatorButton_clicked()
     mem_stage.executed.value = 0;
 
 
-    //refresh instruction view
+    //reset instruction view
     ui->instructionsView->setRowCount(0);
 
+    //reset tick value
+    ui->tick_value->clear();
+    ui->tick_value->insertPlainText("1");
+
+    //reset status
+    ui->runningStatus->setText("not running");
+
     refreshViews(ui);
+}
+
+
+void MainWindow::on_checkBox_stateChanged(int arg1)
+{
+    if (arg1 > 0){
+        enable_cache_fetch(fetch_stage, mem_stage, &inst_cache); // enable cache
+        return;
+    }
+    else{
+        disable_cache_fetch(fetch_stage, mem_stage, &main_mem); // disable cache
+
+    }
+    return;
+}
+
+
+void MainWindow::on_data_cacheCheckbox_stateChanged(int arg1)
+{
+    if (arg1 > 0){
+        enable_cache_wb(wb_stage, mem_stage, &data_cache); // enable cache
+        return;
+    }
+    else{
+        disable_cache_wb(wb_stage, mem_stage, &main_mem); // disable cache
+
+    }
+    return;
 }
 

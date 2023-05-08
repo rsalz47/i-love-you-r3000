@@ -24,13 +24,13 @@ private slots:
 
     void on_runProgram_clicked();
 
-
-
     void on_pipeLineEnableCheckBox_stateChanged(int arg1);
 
     void on_checkBox_stateChanged(int arg1);
 
     void on_resetSimulatorButton_clicked();
+
+    void on_data_cacheCheckbox_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;
