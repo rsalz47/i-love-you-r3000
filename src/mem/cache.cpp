@@ -174,6 +174,23 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     }    
 }    
 
+void Cache::flush() {
+    std::cout << "Cache flushing... Writeback to main memory" << std::endl;
+    for (int i = 0; i < 16; i++) {
+        // if valid and dirty, write the line back to memory
+        if (cache[i][7] && cache[i][6]) {
+            uint32_t base_address = (cache[i][0] << 6); // tag component
+            base_address |= (cache[i][1] << 2); // index component
+            int line_num = (base_address / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES);
+            for (int j = 0; j < WORDS_PER_LINE; j++) {
+                main_mem->memory[line_num][j] = cache[i][j+2];
+            }
+        }
+    }                           
+}
+            
+
+
 void Cache::cur_status() {
     printf(
         "\n------TAG------ | -----INDEX----- | ---WORD1(00)--- | "

@@ -26,9 +26,9 @@
 
 
 uint32_t PROGRAM_COUNTER = 0;
-Memory main_mem(0);
-Cache data_cache(&main_mem, 0);
-Cache inst_cache(&main_mem, 0);
+Memory main_mem(100);
+Cache data_cache(&main_mem, 5);
+Cache inst_cache(&main_mem, 5);
 std::vector<int> dependency_list;
 
 uint32_t registers[32];
@@ -156,6 +156,10 @@ void MainWindow::on_pushButton_clicked()
     int tick_value = ui->tick_value->toPlainText().toInt();
     for (int i = 0; i < tick_value; i++) {
         if (wb_stage.exit) {
+            // flush cache and update ui
+            data_cache.flush();
+            refreshViews(ui);
+            qApp->processEvents();
             std::cout << "program end" << std::endl; // in gui code, just return
             //update label
             ui->runningStatus->setText("halt");
@@ -257,6 +261,10 @@ void MainWindow::on_runProgram_clicked()
         ui->runningStatus->setText("running");
         on_pushButton_clicked();
     }
+    // flush cache and update ui
+    data_cache.flush();
+    refreshViews(ui);
+    qApp->processEvents();
     std::cout << "program end" << std::endl; // in gui code, just return
     //update label
     ui->runningStatus->setText("halt");

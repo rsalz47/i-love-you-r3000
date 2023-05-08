@@ -34,6 +34,8 @@ class Cache : public MemorySystem {
 
     uint32_t* store(uint32_t addr, uint32_t data, int whois_calling);
 
+    void flush();
+
     // prints out the current cache status
     void cur_status();
     
