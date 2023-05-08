@@ -90,7 +90,8 @@ inline namespace JFormat {
     };
 
     inline unsigned long pack_target_addr(unsigned long target_addr) {
-        return target_addr & 0x1A;
+        std::cout << "target addr: " << target_addr << std::endl;
+        return target_addr & 0x2FFFFFF;
     }
 }
 

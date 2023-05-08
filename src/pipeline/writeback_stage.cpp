@@ -18,6 +18,11 @@ void WritebackStage::reset() {
 void WritebackStage::tick() {
     std::cout << std::endl;
     squashed = false;
+    std::cout << "Writeback: Current dependency list has " << dependency_list.size() << " elements." << std::endl;
+    for (unsigned int i = 0; i < dependency_list.size(); ++i) {
+        std::cout << dependency_list[i] << " ";
+    }
+    std::cout << std::endl;
     if (noop) {
         std::cout << "Writeback: No instruction to execute, Idle for this cycle..." << std::endl;
         return;
@@ -26,12 +31,9 @@ void WritebackStage::tick() {
     writeback_finished = true;
     // R-format + lw + li need writeback, sw does not need writeback
     if (executed.opcode == 0b110001) { //nop
-
         std::cout << "Writeback: Current instruction is nop, do nothing... " << std::endl;
         return;
-
     } else if (executed.opcode == 0b111111) { //hcf
-
         exit = true;
         std::cout << "Writeback: Current instruction is hcf, exiting... " << std::endl;
     } else if (executed.opcode <= 0b11110 || executed.opcode == 0b100000 || executed.opcode == 0b100001){        

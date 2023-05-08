@@ -102,6 +102,10 @@ uint32_t* Memory::store(uint32_t addr, uint32_t data, int whois_calling) {
              [addr % WORDS_PER_LINE]);
 }
 
+void Memory::flush() {
+    return;
+}
+
 void Memory::reset() {
     for (int i = 0; i < NUM_LINES; i++) {
         for (int j = 0; j < WORDS_PER_LINE; j++) {

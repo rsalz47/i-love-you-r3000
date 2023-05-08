@@ -7,7 +7,7 @@
 #include "memory_system.h"
 
 #define WORDS_PER_LINE 4
-#define NUM_LINES 32
+#define NUM_LINES 256
 #define DEFAULT_DELAY 5
 
 class Memory : public MemorySystem {
@@ -47,6 +47,8 @@ class Memory : public MemorySystem {
     uint32_t* load(uint32_t addr, int whois_calling);
     
     uint32_t* store(uint32_t addr, uint32_t data, int whois_calling);
+
+    void flush();
 
     // assign all memory locations to NULL (essentially 0s)
     void reset();
