@@ -55,11 +55,11 @@ void MemoryStage::tick() {
             std::cout << "Memory: Execute has delivered a load instruction... \n";
             uint32_t* result = mem_sys->load(executed.value, 4);
             if (result == nullptr) {
-                std::cout << "Memory: load blocked\n";
+                std::cout << "Memory: Load blocked\n";
                 wb_stage.noop = true;
                 blocked = true;
             } else {
-                std::cout << "Memory: load finished\n";
+                std::cout << "Memory: Load finished. The value loaded is " << *result << std::endl;
                 wb_stage.noop = false;
                 wb_stage.executed = executed;
                 wb_stage.executed.value = *result;

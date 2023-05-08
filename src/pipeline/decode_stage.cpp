@@ -12,6 +12,7 @@ void DecodeStage::reset() {
     noop = true;
     blocked = false;
     encoded_instruction = 0x0;
+    dependency_list.clear();
 }  
 
 bool DecodeStage::check_dependency_issue(int reg) {
@@ -36,7 +37,7 @@ void DecodeStage::tick() {
     bool dependency_issue;
 
     next_stage_blocked = execute_stage.blocked;
-
+    
     dependency_issue = check_dependency_issue((encoded_instruction >> 21) & 0b11111) ||
                        check_dependency_issue((encoded_instruction >> 16) & 0b11111) || 
                        check_dependency_issue((encoded_instruction >> 11) & 0b11111);     
@@ -129,7 +130,7 @@ void DecodeStage::tick() {
             if(encoded_op < 0b100010 && encoded_op != 0b011111) {
                 std::cout << "Decode: Adding dest register to the dependency list... " << std::endl;
                 dependency_list.push_back(decoded.destination);
-                std::cout << "Decode: Dest register added. The dependency list currently has "
+                std::cout << "Decode: Dest register added. Opcode: " << encoded_op << " The dependency list currently has "
                           << dependency_list.size() << " elements" << std::endl;
             }
 

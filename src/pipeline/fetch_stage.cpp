@@ -63,7 +63,7 @@ void FetchStage::tick() {
     // if we have the data we need, see if we can pass it forward
     if(result != nullptr) {
         std::cout << "Fetch: Memory access to " << " finished, no longer blocked." << std::endl;
-        std::cout << "Fetch: Delivering instruction " << result << " to Decode" << std::endl;
+        std::cout << "Fetch: Delivering instruction " << *result << " to Decode" << std::endl;
         if(decode_stage.blocked) {
             std::cout << "Fetch: Instruction not delivered because Decode is blocked. Trying again next cycle." << std::endl;
             return;
