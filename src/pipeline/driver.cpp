@@ -137,8 +137,24 @@ int main() {
     cache.set_initial_delay(0);
     std::cout << cache.initial_delay << std::endl;
 
-    load_instructions_matmul();
+    /**
+    memory.memory[0][0] = 0b10000100000000000000000000000000;
+    memory.memory[0][1] = 0b10000100001000000000000000000001;
+    memory.memory[0][2] = 0b10000100010000000000000000000101;
+    memory.memory[0][3] = 0b00000000000000010000000000000000;
+    memory.memory[1][0] = 0b10010000000000100000000000000011;
+    memory.memory[1][1] = 0b10000100100000000000000001100100;
+    memory.memory[1][2] = 0b11111100000000000000000000000000;
+    **/
 
+    /**
+    memory.memory[0][0] = 0b10000100001000000000000000000010;
+    memory.memory[0][1] = 0b10000100010000000000000000000011;
+    memory.memory[0][2] = 0b00000000000000010001000000000000;
+    memory.memory[0][3] = 0b11111100000000000000000000000000;
+    **/
+    load_instructions_matmul();
+    
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER, dependency_list);
     MemoryStage mem_stage(wb_stage, mem_sys);
     ExecuteStage execute_stage(mem_stage);
@@ -168,15 +184,12 @@ int main() {
         } 
         else {
             mem_stage.tick();
-            std::cout << "Register 4 expected 100, is: " << registers[4] << std::endl;
-            std::cout << "Register 0 expected 5, is: " << registers[0] << std::endl;
             execute_stage.tick();
             decode_stage.tick();
             fetch_stage.tick();
         }
         CLK++;
     }
-            
 
     return 0;
 }

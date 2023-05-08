@@ -1,0 +1,53 @@
+li r0 4 // N row and column lim (4x4 matrix)
+li r1 0 // sum
+li r2 0 // i
+li r3 0 // j
+li r4 0 // k
+li r5 FIRST_MATRIX_BASE_ADDR
+li r6 SECOND_MATRIX_BASE_ADDR
+li r16 OUTPUT_MATRIX_BASE_ADDR
+.j-loop-body li r1 0 //sum = 0
+
+.k-loop-body 
+mul r7 r2 r0 // 4i
+add r7 r4 r7 // k
+add r7 r5 r7 // offset to base address
+
+lw r8 r7 0 // A[i][k] = 4i + k + offset
+
+mul r9 r4 r0 // 4k
+add r9 r3 r9 // j
+add r9 r6 r9 // offset to base address
+lw r10 r9 0 // B[k][j] = 4k + j + offset
+
+mul r10 r8 r10 // A[i][k] * B[i][k]
+
+add r1 r1 r10 // sum += A[i][k] * B[j][k]
+
+addi r4 r4 1
+bne r0 r4 .k-loop-body
+
+mul r15 r2 r0 // 4i
+add r15 r3 r15 // j
+add r15 r16 r15 //offset
+sw r1 r15 0 // C[i][j] = sum
+
+addi r3 r3 1
+bne r0 r3 .j-loop-body
+
+addi r2 r2 1
+li r3 0
+bne r0 r2 .j-loop-body
+hcf
+
+void matrix_multiply(int A[][N], int B[][N], int C[][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            int sum = 0;
+            for (int k = 0; k < N; k++) {
+                sum += A[i][k] * B[k][j];
+            }
+            C[i][j] = sum;
+        }
+    }
+}

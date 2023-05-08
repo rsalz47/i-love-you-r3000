@@ -460,6 +460,7 @@ void assemble(string file) {
 	ifstream in;
 	
 	// Check if target is valid
+    file = "./in/" + file;
     in.open(file);
 	if (!in.is_open()) {
 		cout << "unable to open file ./in/" << file << endl;
