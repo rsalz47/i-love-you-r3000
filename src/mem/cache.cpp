@@ -73,6 +73,7 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     }
     // load in new data with appropriate tag/index/offset
     line[0] = tag;
+    std::cout << "add: " << addr << " tag: " << tag << std::endl;
     line[1] = index;
     line[2] = fetched_line_copy[0];
     line[3] = fetched_line_copy[1];
@@ -106,20 +107,18 @@ uint32_t* Cache::load(uint32_t addr, int whois_calling) {
     // index essentially becomes which row of the cache we need to access
     // tag is verifying that it is the correct row
     // offset is which word to pick from the line.
-    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b1111;
-    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
-    uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
+    uint32_t tag = (uint32_t)((addr >> 6) & 0b1111);
+    uint32_t index = (uint32_t)((addr >> 2) & 0b1111);
+    uint32_t offset = (uint32_t)(addr & 0b0000000011);
 
-    // loop over all 16 entries checking for the right index
-    // if no valid match by end of loop, cache miss and fetch from mem
-    for (int i = 0; i < 16; i++) {
-        if (cache[i][0] == tag && cache[i][1] == index & cache[i][7]) {
-            this->cache_delay_timer = initial_delay;
-            this->cache_in_use = false;
-            cur_caller_id = -1;  // reset caller id
-            return &(cache[i][2 + offset]);
-        }
+    // if no valid match, cache miss and fetch from mem
+    if (cache[index][0] == tag && cache[index][7]) {
+        this->cache_delay_timer = initial_delay;
+        this->cache_in_use = false;
+        cur_caller_id = -1;  // reset caller id
+        return &(cache[index][2 + offset]);
     }
+
     // if we did not find the corresponding address then we have a cache
     // miss
     // std::cout << "cache miss on address" << addr << std::endl;
@@ -145,9 +144,9 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         return nullptr;
     }
 
-    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b0000001111;
-    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b0000001111;
-    uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
+    uint32_t tag = (uint32_t)((addr >> 6) & 0b1111);
+    uint32_t index = (uint32_t)((addr >> 2) & 0b1111);
+    uint32_t offset = (uint32_t)(addr & 0b0000000011);
 
     // Check if cache hit
     uint32_t* matching_line = nullptr;
