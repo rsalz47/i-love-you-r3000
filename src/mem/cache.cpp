@@ -73,6 +73,7 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     }
     // load in new data with appropriate tag/index/offset
     line[0] = tag;
+    std::cout << "add: " << addr << " tag: " << tag << std::endl;
     line[1] = index;
     line[2] = fetched_line_copy[0];
     line[3] = fetched_line_copy[1];
@@ -106,20 +107,18 @@ uint32_t* Cache::load(uint32_t addr, int whois_calling) {
     // index essentially becomes which row of the cache we need to access
     // tag is verifying that it is the correct row
     // offset is which word to pick from the line.
-    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b1111;
-    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b1111;
-    uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
+    uint32_t tag = (uint32_t)((addr >> 6) & 0b1111);
+    uint32_t index = (uint32_t)((addr >> 2) & 0b1111);
+    uint32_t offset = (uint32_t)(addr & 0b0000000011);
 
-    // loop over all 16 entries checking for the right index
-    // if no valid match by end of loop, cache miss and fetch from mem
-    for (int i = 0; i < 16; i++) {
-        if (cache[i][0] == tag && cache[i][1] == index & cache[i][7]) {
-            this->cache_delay_timer = initial_delay;
-            this->cache_in_use = false;
-            cur_caller_id = -1;  // reset caller id
-            return &(cache[i][2 + offset]);
-        }
+    // if no valid match, cache miss and fetch from mem
+    if (cache[index][0] == tag && cache[index][7]) {
+        this->cache_delay_timer = initial_delay;
+        this->cache_in_use = false;
+        cur_caller_id = -1;  // reset caller id
+        return &(cache[index][2 + offset]);
     }
+
     // if we did not find the corresponding address then we have a cache
     // miss
     // std::cout << "cache miss on address" << addr << std::endl;
@@ -145,22 +144,22 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         return nullptr;
     }
 
-    uint32_t tag = (uint32_t)((unsigned char)addr >> 6) & 0b0000001111;
-    uint32_t index = (uint32_t)((unsigned char)addr >> 2) & 0b0000001111;
-    uint32_t offset = (uint32_t)((unsigned char)addr & 0b0000000011);
+    uint32_t tag = (uint32_t)((addr >> 6) & 0b1111);
+    uint32_t index = (uint32_t)((addr >> 2) & 0b1111);
+    uint32_t offset = (uint32_t)(addr & 0b0000000011);
 
     // Check if cache hit
     uint32_t* matching_line = nullptr;
     uint32_t* ret_val;  // can return cache line or memory line
-    if (cache[index][7] && cache[index][0] == tag) { // cache hit
+    if (cache[index][7] && cache[index][0] == tag) {  // cache hit
         matching_line = &(cache[index][2 + offset]);
         matching_line[0] = data;
         cache[index][6] = 1;
         ret_val = matching_line;
-    } else {                
+    } else {
         // following write around for cache write misses
         // missed the write back to cache as it is a write miss so write
-        // straight to memory instead        
+        // straight to memory instead
         ret_val = this->main_mem->store(addr, data, whois_calling);
     }
 
@@ -171,25 +170,25 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
         this->cache_in_use = false;
         cur_caller_id = -1;  // reset caller id
         return ret_val;      // indicating success
-    }    
-}    
+    }
+}
 
 void Cache::flush() {
     std::cout << "Cache flushing... Writeback to main memory" << std::endl;
     for (int i = 0; i < 16; i++) {
         // if valid and dirty, write the line back to memory
         if (cache[i][7] && cache[i][6]) {
-            uint32_t base_address = (cache[i][0] << 6); // tag component
-            base_address |= (cache[i][1] << 2); // index component
-            int line_num = (base_address / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES);
+            uint32_t base_address = (cache[i][0] << 6);  // tag component
+            base_address |= (cache[i][1] << 2);          // index component
+            int line_num =
+                (base_address / WORDS_PER_LINE) % (WORDS_PER_LINE * NUM_LINES);
             for (int j = 0; j < WORDS_PER_LINE; j++) {
-                main_mem->memory[line_num][j] = cache[i][j+2];
+                main_mem->memory[line_num][j] = cache[i][j + 2];
             }
+            cache[i][6] = 0;
         }
-    }                           
+    }
 }
-            
-
 
 void Cache::cur_status() {
     printf(
