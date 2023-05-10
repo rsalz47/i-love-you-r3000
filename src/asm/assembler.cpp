@@ -460,20 +460,21 @@ void assemble(string file) {
 	ifstream in;
 	
 	// Check if target is valid
-    in.open(file);
+  in.open(file);
+  
 	if (!in.is_open()) {
 		cout << "unable to open file ./in/" << file << endl;
 		exit(-1);
 	}
 
 	ofstream out;
-    string output_file = file.substr(0, file.length() - 1 - 3) +".r3k";
+    string outfile = "./out/" + file.substr(0, file.length() - 1 - 3) +".r3k";
 
     // Delete any pre-existing assembled file matching the one we want to generate
     // and open up a new file 
-    string temp = "rm " + output_file;
+    string temp = "rm " + outfile;
     system(temp.c_str());
-    out.open(output_file);
+    out.open(outfile);
 
 	// Start assembling line by line 
 	string line;
@@ -493,7 +494,7 @@ void assemble(string file) {
     while(getline(in, line)) {
 		out << build_instruction(line) << endl;
 	}
-    cout << "Assembly complete. Assembled machine code can be found in " << output_file << endl;
+    cout << "Assembly complete. Assembled machine code can be found in " << outfile << endl;
 
 	// Close everything up
 	in.close();
