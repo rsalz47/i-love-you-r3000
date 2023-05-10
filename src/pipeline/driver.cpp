@@ -11,13 +11,30 @@
 uint32_t CLK = 0;
 uint32_t PROGRAM_COUNTER = 0;
 Memory memory(10);
-Cache cache(&memory, 5);
+Cache data_cache(&memory, 5);
+Cache instr_cache(&memory, 5);
 uint32_t registers[32];
 
 std::vector<int> dependency_list;
 
-MemorySystem *mem_sys = &cache; // cache enabled
+//MemorySystem *mem_sys = &cache; // cache enabled
 
+void enable_data_cache(MemoryStage& memory_stage, Cache* cache) {
+    memory_stage.set_mem_sys(cache);
+}
+
+void enable_instr_cache(FetchStage& fetch_stage, Cache* cache) {
+    fetch_stage.set_mem_sys(cache);
+}
+
+void disable_data_cache(MemoryStage& memory_stage, Memory* memory) {
+    memory_stage.set_mem_sys(memory);
+}
+
+void disable_instr_cache(MemoryStage& fetch_stage, Memory* memory) {
+    fetch_stage.set_mem_sys(memory);
+}
+    
 void enable_cache(FetchStage& fetch_stage, MemoryStage& memory_stage, Cache* cache) {
     fetch_stage.set_mem_sys(cache);
     memory_stage.set_mem_sys(cache);
@@ -985,38 +1002,39 @@ void load_instructions_1to100() {
 int main() {
     std::string temp;
     // initializations (right now, just confirming stuff gets instantiated)
-    memory.set_initial_delay(0);
+    memory.set_initial_delay(100);
     std::cout << memory.initial_delay << std::endl;
 
 
-    cache.set_initial_delay(0);
-    std::cout << cache.initial_delay << std::endl;
+    data_cache.set_initial_delay(3);
+    instr_cache.set_initial_delay(3);
+    std::cout << data_cache.initial_delay << std::endl;
 
-    //load_instructions_1to100();
-    load_instructions_matmul_huge();
+    load_instructions_1to100();
+    // load_instructions_matmul_huge();
     
     WritebackStage wb_stage(registers, &PROGRAM_COUNTER, dependency_list);
-    MemoryStage mem_stage(wb_stage, mem_sys);
+    MemoryStage mem_stage(wb_stage, &data_cache);
     ExecuteStage execute_stage(mem_stage);
     DecodeStage decode_stage(execute_stage, registers, dependency_list);
-    FetchStage fetch_stage(&PROGRAM_COUNTER, mem_sys, decode_stage);
-    //fetch_stage.disable_pipeline(); // disable pipeline
+    FetchStage fetch_stage(&PROGRAM_COUNTER, &instr_cache, decode_stage);
+    fetch_stage.disable_pipeline(); // disable pipeline
     // one can also disable the pipeline using the fetch constructor
     // fetch_stage(&PROGRAM_COUNTER, &cache, decode_stage, true);
 
-    // disable_cache(fetch_stage, mem_stage, &memory); // disable cache
+    disable_cache(fetch_stage, mem_stage, &memory); // disable cache
 
     while(true) {
-        std::cout << "CLOCK: " << CLK << std::endl;
-        std::cout << "PROGRAM COUNTER: " << PROGRAM_COUNTER << std::endl;
-        if (wb_stage.exit) {
+        // std::cout << "CLOCK: " << CLK << std::endl;
+        // std::cout << "PROGRAM COUNTER: " << PROGRAM_COUNTER << std::endl;
+        if (wb_stage.exit) {            
             break; // in gui code, just return
         }
         wb_stage.tick();
         if (wb_stage.exit || wb_stage.squashed) {
-            std::cout << "!! CLEARING DEPENDENCY LIST  !!" << std::endl;
+            // std::cout << "!! CLEARING DEPENDENCY LIST  !!" << std::endl;
             dependency_list.clear();
-            std::cout << "!! SQUASHING PREVIOUS STAGES !!" << std::endl;
+            // std::cout << "!! SQUASHING PREVIOUS STAGES !!" << std::endl;
             mem_stage.reset();
             execute_stage.reset();
             decode_stage.reset();
@@ -1031,5 +1049,6 @@ int main() {
         CLK++;
     }
 
+    std::cout << "Clock cycle: " << CLK << std::endl;
     return 0;
 }

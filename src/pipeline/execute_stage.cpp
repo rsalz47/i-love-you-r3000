@@ -12,16 +12,13 @@ void ExecuteStage::reset() {
 
 void ExecuteStage::tick() {
     if (noop) {
-        std::cout << "Execute: No instruction delivered by decode, idle for this cycle..." << std::endl;
         if (!memory_stage.blocked) {
             memory_stage.noop = true;
         }
         return;
     }
     if (!blocked) {
-        std::cout << "Execute: Decode has delivered an instruction, now executing... \n";
         // execute an instruction
-        std::cout << "Execute: Executing instruction with opcode " << static_cast<int>(decoded.opcode) << std::endl;
         executed.opcode = decoded.opcode;
         executed.destination = decoded.destination;
         switch(executed.opcode) {
@@ -156,10 +153,9 @@ void ExecuteStage::tick() {
             executed.addr = decoded.target_addr;
             break;
     }
-        std::cout << "Finished executing the instruction with opcode " << static_cast<int>(decoded.opcode) << " and value " << executed.value << std::endl; 
+
     }
     if (!memory_stage.blocked) { // memory stage not blocked, pass the executed instruction
-        std::cout << "Execute: Delivering instruction to Memory..." << std::endl;
         memory_stage.executed = executed;
         memory_stage.noop = false;
         blocked = false;

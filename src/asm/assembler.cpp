@@ -468,7 +468,7 @@ void assemble(string file) {
 	}
 
 	ofstream out;
-    string outfile = "./out/" + file.substr(0, file.length() - 1 - 3) +".r3k";
+    string outfile = file.substr(0, file.length() - 1 - 3) +".r3k";
 
     // Delete any pre-existing assembled file matching the one we want to generate
     // and open up a new file 

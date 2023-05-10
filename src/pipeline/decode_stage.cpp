@@ -23,7 +23,6 @@ bool DecodeStage::check_dependency_issue(int reg) {
 
 void DecodeStage::tick() {
     if(encoded_instruction == 0x0 || noop) {
-        std::cout << "Decode: No instruction delivered by Fetch, or this instruction is a noop. Idle for this cycle..." << std::endl;
         // if current instruction is a noop and the next stage is not blocked
         // need to pass the noop to the next stage
         if (noop && !execute_stage.blocked) {
@@ -45,7 +44,6 @@ void DecodeStage::tick() {
     blocked = (next_stage_blocked || dependency_issue);
     // only decode an instruction if we ourselves are not blocked
     if(!blocked) {
-        std::cout << "Decode: Fetch has delivered an instruction, now decoding " << encoded_instruction << std::endl;
         uint32_t instr = encoded_instruction;
         uint32_t encoded_op = (instr >> 26) & 0b111111;        
         switch(encoded_op) {
@@ -111,7 +109,6 @@ void DecodeStage::tick() {
 
         } else if (encoded_op >= 0b010111 && encoded_op <= 0b101110) { //I-format
             // need to check dependencies
-            std::cout << "Decode: I-format" << std::endl;
             decoded.destination = (instr >> 21) & 0b11111;
             decoded.operand_1 = registers[(instr >> 16) & 0b11111];
             decoded.addr_or_imm = instr & 0xFFFF;
@@ -128,10 +125,7 @@ void DecodeStage::tick() {
             // and this if-condition makes it so that we do not accidentally
             // push anything related to them to the dependency list
             if(encoded_op < 0b100010 && encoded_op != 0b011111) {
-                std::cout << "Decode: Adding dest register to the dependency list... " << std::endl;
                 dependency_list.push_back(decoded.destination);
-                std::cout << "Decode: Dest register added. Opcode: " << encoded_op << " The dependency list currently has "
-                          << dependency_list.size() << " elements" << std::endl;
             }
 
         } else if (encoded_op >= 0b101111 && encoded_op <= 0b111111) { // J-format
@@ -140,25 +134,19 @@ void DecodeStage::tick() {
             }
             // TODO: jal, nop, hcf
         }            
-        std::cout << "Decode: Finished decoding an instruction of type " << decoded.operation << std::endl;
     }
 
-    std::cout << "Decode: Attempting to deliver instruction of type " << decoded.operation << " to Execute." << std::endl;
     // if execute is blocked, then we cannot pass data forward.
     if(execute_stage.blocked) {
-        std::cout << "Decode: Cannot deliver instruction to Execute because Execute is blocked. Blocking." << std::endl;
         blocked = true;
     }
     else if (dependency_issue) {
-        std::cout << "Decode: Cannot deliver instruction to Execute beacuse of dependency issues. Blocking." << std::endl;
         blocked = true;
         execute_stage.noop = true;
     }
     else {
         execute_stage.decoded = decoded;
-        std::cout << "Decode: destination: " << static_cast<int>(decoded.destination) << std::endl;
         execute_stage.noop = false;
-        std::cout << "Decode: Delivered instruction to Execute." << std::endl;
         blocked = false;
     }
 }

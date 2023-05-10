@@ -16,6 +16,8 @@ class FetchStage {
     bool blocked = false;
     uint32_t* result = nullptr;
     uint32_t curr_addr_fetching; // This variable is needed in the case that the pc changes while we are in the middle of a fetch
+
+    bool fetched; // flag the indicates the stage has already fetched an instruction
     
     bool pipeline_disabled;
     // used in the pipeline disabled mode

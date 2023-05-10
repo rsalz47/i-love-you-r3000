@@ -7,6 +7,7 @@ void FetchStage::reset() {
     blocked = false;
     result = nullptr;
     no_fetch = false;
+    fetched = false;
     mem_sys->reset_delay();
 }
 
@@ -47,36 +48,36 @@ void FetchStage::tick() {
             return;
         }
     }
-    // If we are not blocked because of a memory access, begin a memory access
-    if(!blocked) {
-        std::cout << "Fetch: Now beginning a new fetch at address " << *pc << ", blocking." << std::endl;
-        blocked = true;
-        curr_addr_fetching = *pc;
-        result = mem_sys->load(curr_addr_fetching, 0);        
-    }
-    // if we are blocked and we do not have a result back yet, then we are waiting for memory to finish
-    else if(blocked && result == nullptr){
-        std::cout << "Fetch: Currently stalled, polling for address " << *pc << std::endl;
-        result = mem_sys->load(curr_addr_fetching, 0); 
+    if (!fetched) {
+        // If we are not blocked because of a memory access, begin a memory access
+        if(!blocked) {
+    
+            blocked = true;
+            curr_addr_fetching = *pc;
+            result = mem_sys->load(curr_addr_fetching, 0);        
+        }
+        // if we are blocked and we do not have a result back yet, then we are waiting for memory to finish
+        else if(blocked && result == nullptr){
+            result = mem_sys->load(curr_addr_fetching, 0);
+        }
     }
 
     // if we have the data we need, see if we can pass it forward
     if(result != nullptr) {
-        std::cout << "Fetch: Memory access to " << " finished, no longer blocked." << std::endl;
-        std::cout << "Fetch: Delivering instruction " << *result << " to Decode" << std::endl;
+        fetched = true;
         if(decode_stage.blocked) {
-            std::cout << "Fetch: Instruction not delivered because Decode is blocked. Trying again next cycle." << std::endl;
             return;
         }
         else {
             decode_stage.encoded_instruction = *result; 
             decode_stage.noop = false;
-            std::cout << "Fetch: Instruction " << decode_stage.encoded_instruction << " delivered to Decode." << std::endl;
             result = nullptr;
             // increment pc
             *pc = *pc + 1;
             blocked = false;
             no_fetch = true;
+            fetched = false;
+            result = nullptr;
             decode_stage.execute_stage.memory_stage.wb_stage.writeback_finished = false;
         }
     } else if (!decode_stage.blocked) { // current fetching is blocked, decode stage should recieve a noop

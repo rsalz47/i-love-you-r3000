@@ -28,8 +28,8 @@
 
 uint32_t PROGRAM_COUNTER = 0;
 Memory main_mem(100);
-Cache data_cache(&main_mem, 5);
-Cache inst_cache(&main_mem, 5);
+Cache data_cache(&main_mem, 2);
+Cache inst_cache(&main_mem, 2);
 std::vector<int> dependency_list;
 
 uint32_t registers[32];
@@ -229,7 +229,7 @@ void MainWindow::on_loadIntructionFile_clicked()
 
     //This is OS specific/ user specific right now // needs to be changed for other systems
     //This is the path to the assembler binary output
-    QString program = "/home/nandu/Documents/i-love-you-r3000/src/asm/a.out";
+    QString program = "/home/duckduck/i-love-you-r3000/src/asm/a.out";
 
     proc->start(program,QStringList() << asmFileName);
     proc->waitForFinished();

@@ -20,6 +20,10 @@ Cache::Cache(Memory* main_mem, int delay) : Cache(main_mem) {
     cache_delay_timer = delay;
 }
 
+bool Cache::mem_in_use() {
+    return main_mem->in_use;
+}
+
 void Cache::set_initial_delay(int delay) {
     initial_delay = delay;
     cache_delay_timer = delay;
@@ -28,9 +32,11 @@ void Cache::set_initial_delay(int delay) {
 void Cache::reset_delay() {
     cache_delay_timer = initial_delay;
     main_mem->reset_delay();
+    cache_in_use = false;
+    cur_caller_id = -1;
 }
 
-uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
+uint32_t* Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
                                   uint32_t offset, int whois_calling) {
     // on cache miss, we need to:
     // fetch the line we want from memory
@@ -38,7 +44,8 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
         this->main_mem->fetch_cache_ver(addr, whois_calling);
 
     if (fetched_line == nullptr) {
-        return 0;
+        //return 0;
+        return nullptr;
     }
 
     //  need a copy of the fetched_line rather, fetched_line cannot be a pointer
@@ -64,7 +71,6 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
         addr_to_write_to = addr_to_write_to << 4;
         addr_to_write_to += line[1];
         addr_to_write_to = addr_to_write_to << 2;
-        std::cout << addr_to_write_to << std::endl;
 
         this->main_mem->store_cache_ver(addr_to_write_to, line[2]);
         this->main_mem->store_cache_ver(addr_to_write_to + 1, line[3]);
@@ -73,7 +79,6 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     }
     // load in new data with appropriate tag/index/offset
     line[0] = tag;
-    std::cout << "add: " << addr << " tag: " << tag << std::endl;
     line[1] = index;
     line[2] = fetched_line_copy[0];
     line[3] = fetched_line_copy[1];
@@ -85,13 +90,14 @@ uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
     line[7] = 1;
     this->num_cache_misses += 1;
 
-    return 1;
+    return &(line[2+offset]);
 }
 
 uint32_t* Cache::load(uint32_t addr, int whois_calling) {
     if (this->cache_in_use == false) {
         this->cache_in_use = true;
         cur_caller_id = whois_calling;
+
     }
     if (!(this->cache_in_use == true && whois_calling == cur_caller_id)) {
         return nullptr;
@@ -102,7 +108,6 @@ uint32_t* Cache::load(uint32_t addr, int whois_calling) {
         return nullptr;
     }
     // here cache_delay should be 0
-
     // first extracts tag, index and offset bits into variables
     // index essentially becomes which row of the cache we need to access
     // tag is verifying that it is the correct row
@@ -121,12 +126,14 @@ uint32_t* Cache::load(uint32_t addr, int whois_calling) {
 
     // if we did not find the corresponding address then we have a cache
     // miss
-    // std::cout << "cache miss on address" << addr << std::endl;
-    if (handle_cache_miss(addr, tag, index, offset, whois_calling) == 0) {
-        return nullptr;
+
+    uint32_t* result = handle_cache_miss(addr, tag, index, offset, whois_calling);
+    if (result != nullptr) {
+        this->cache_delay_timer = initial_delay;
+        this->cache_in_use = false;
+        cur_caller_id = -1;  // reset caller id
     }
-    // should be in the cache by now
-    return load(addr, whois_calling);
+    return result;
 }
 
 uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
@@ -174,7 +181,6 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
 }
 
 void Cache::flush() {
-    std::cout << "Cache flushing... Writeback to main memory" << std::endl;
     for (int i = 0; i < 16; i++) {
         // if valid and dirty, write the line back to memory
         if (cache[i][7] && cache[i][6]) {
@@ -216,3 +222,4 @@ void Cache::reset() {
         }
     }
 }
+

@@ -27,7 +27,7 @@ class Cache : public MemorySystem {
 
 	void set_initial_delay(int delay);
 
-    uint32_t handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
+    uint32_t* handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
                                uint32_t offset, int whois_calling);
     
     uint32_t* load(uint32_t addr, int whois_calling);
@@ -42,5 +42,7 @@ class Cache : public MemorySystem {
     // assign all cache locations to NULL (essentially 0s)
     void reset();
     void reset_delay();
+
+    bool mem_in_use();
 };
 #endif /* CACHE_H */

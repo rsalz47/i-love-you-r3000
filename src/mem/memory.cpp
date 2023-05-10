@@ -4,12 +4,17 @@
 // remove mem_access
 // add delay_int and in_use to memory class
 // rework functions to work with above changes
+#include <iostream>
 
 Memory::Memory(){}
 	
 Memory::Memory(int delay) {
     initial_delay = delay;
     delay_timer = delay;
+}
+
+bool Memory::mem_in_use() {
+    return in_use;
 }
 
 void Memory::set_initial_delay(int delay) {
@@ -19,13 +24,15 @@ void Memory::set_initial_delay(int delay) {
 
 void Memory::reset_delay() {
     delay_timer = initial_delay;
+    in_use = false;
+    cur_caller_id = -1;
 }
 	
 uint32_t* Memory::fetch_cache_ver(uint32_t addr,int whois_calling) {
     if (this->in_use == false) {
         this->in_use = true;
         cur_caller_id = whois_calling;  // this ensures that each fetch is
-        // unique to a single caller
+        // unique to a single caller        
     }
     if (!(this->in_use == true && whois_calling == cur_caller_id)) {
         return nullptr;  // says wait to other callers other than caller_id

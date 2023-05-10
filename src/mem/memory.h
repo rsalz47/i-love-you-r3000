@@ -56,6 +56,8 @@ class Memory : public MemorySystem {
 
     // prints out a formatted memory status in the terminal
     void cur_status();
+
+    bool mem_in_use();
 };
 
 
