@@ -19,6 +19,8 @@ void Memory::set_initial_delay(int delay) {
 
 void Memory::reset_delay() {
     delay_timer = initial_delay;
+    in_use = false;
+    cur_caller_id = -1;
 }
 	
 uint32_t* Memory::fetch_cache_ver(uint32_t addr,int whois_calling) {

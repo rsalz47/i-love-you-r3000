@@ -10,11 +10,15 @@
 
 class Cache : public MemorySystem {
    public:
-	int initial_delay;
+    int initial_delay;
     int cache_delay_timer;
     bool cache_in_use;
     int cur_caller_id = -1;
     Memory* main_mem;
+
+  // default write policy is writeback no allocate
+  // when set to false, policy is write through no allocate
+  bool writeback = true;
 
     int num_cache_misses = 0;
     // Memory * to main_mem

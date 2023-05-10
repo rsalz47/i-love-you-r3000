@@ -28,6 +28,8 @@ void Cache::set_initial_delay(int delay) {
 void Cache::reset_delay() {
     cache_delay_timer = initial_delay;
     main_mem->reset_delay();
+    cache_in_use = false;
+    cur_caller_id = -1;
 }
 
 uint32_t Cache::handle_cache_miss(uint32_t addr, uint32_t tag, uint32_t index,
@@ -154,8 +156,12 @@ uint32_t* Cache::store(uint32_t addr, uint32_t data, int whois_calling) {
     if (cache[index][7] && cache[index][0] == tag) {  // cache hit
         matching_line = &(cache[index][2 + offset]);
         matching_line[0] = data;
-        cache[index][6] = 1;
-        ret_val = matching_line;
+	if (writeback) {
+	  cache[index][6] = 1;
+	  ret_val = matching_line;
+	} else {
+	  ret_val = this->main_mem->store(addr, data, whois_calling);
+	}
     } else {
         // following write around for cache write misses
         // missed the write back to cache as it is a write miss so write
